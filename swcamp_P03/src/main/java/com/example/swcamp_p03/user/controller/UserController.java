@@ -1,13 +1,12 @@
 package com.example.swcamp_p03.user.controller;
 
 import com.example.swcamp_p03.config.UserDetailsImpl;
-import com.example.swcamp_p03.user.domain.User;
+import com.example.swcamp_p03.user.entity.User;
 import com.example.swcamp_p03.user.dto.RequestLogin;
 import com.example.swcamp_p03.user.service.UserService;
-import com.example.swcamp_p03.util.dto.ResponseDto;
+import com.example.swcamp_p03.common.dto.ResponseDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

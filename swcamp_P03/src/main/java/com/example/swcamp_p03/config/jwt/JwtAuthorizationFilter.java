@@ -1,7 +1,7 @@
 package com.example.swcamp_p03.config.jwt;
 
 import com.example.swcamp_p03.config.UserDetailsImpl;
-import com.example.swcamp_p03.user.domain.User;
+import com.example.swcamp_p03.user.entity.User;
 import com.example.swcamp_p03.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

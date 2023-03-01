@@ -1,4 +1,4 @@
-package com.example.swcamp_p03.user.domain;
+package com.example.swcamp_p03.user.entity;
 
 import lombok.AccessLevel;
 import lombok.Builder;

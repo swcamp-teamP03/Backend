@@ -1,4 +1,4 @@
-package com.example.swcamp_p03.util.dto;
+package com.example.swcamp_p03.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

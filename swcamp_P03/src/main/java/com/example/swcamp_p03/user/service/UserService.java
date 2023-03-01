@@ -1,10 +1,10 @@
 package com.example.swcamp_p03.user.service;
 
 import com.example.swcamp_p03.user.controller.UserController;
-import com.example.swcamp_p03.user.domain.User;
+import com.example.swcamp_p03.user.entity.User;
 import com.example.swcamp_p03.user.dto.RequestLogin;
 import com.example.swcamp_p03.user.repository.UserRepository;
-import com.example.swcamp_p03.util.dto.ResponseDto;
+import com.example.swcamp_p03.common.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

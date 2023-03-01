@@ -1,6 +1,6 @@
 package com.example.swcamp_p03.config;
 
-import com.example.swcamp_p03.user.domain.User;
+import com.example.swcamp_p03.user.entity.User;
 import com.example.swcamp_p03.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

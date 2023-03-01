@@ -1,6 +1,6 @@
-package com.example.swcamp_p03.util.exception;
+package com.example.swcamp_p03.common.exception;
 
-import com.example.swcamp_p03.util.dto.ResponseDto;
+import com.example.swcamp_p03.common.dto.ResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

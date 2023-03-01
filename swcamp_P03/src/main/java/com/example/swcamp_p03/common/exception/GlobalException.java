@@ -1,4 +1,4 @@
-package com.example.swcamp_p03.util.exception;
+package com.example.swcamp_p03.common.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

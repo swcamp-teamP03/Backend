@@ -1,6 +1,6 @@
 package com.example.swcamp_p03.config;
 
-import com.example.swcamp_p03.user.domain.User;
+import com.example.swcamp_p03.user.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
