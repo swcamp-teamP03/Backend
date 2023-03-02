@@ -6,8 +6,8 @@ import java.util.List;
 
 @Getter
 public class CopyGroupListResponseDto {
-    String totalCopy;
-    List<CopyGroupListElementDto> copyList;
+    private String totalCopy;
+    private List<CopyGroupListElementDto> copyList;
 
     public CopyGroupListResponseDto(int totalCopy, List<CopyGroupListElementDto> copyList) {
         this.totalCopy = String.valueOf(totalCopy);

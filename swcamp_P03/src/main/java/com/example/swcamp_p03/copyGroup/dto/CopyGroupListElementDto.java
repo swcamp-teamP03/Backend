@@ -7,11 +7,11 @@ import java.time.LocalDateTime;
 
 @Getter
 public class CopyGroupListElementDto {
-    String copyId;
-    LocalDateTime createDate;
-    Boolean like;
-    String copyName;
-    String tag;
+    private String copyId;
+    private LocalDateTime createDate;
+    private Boolean like;
+    private String copyName;
+    private String tag;
 
     public CopyGroupListElementDto(CopyGroup e) {
         this.copyId = e.getCopyGroupId().toString();

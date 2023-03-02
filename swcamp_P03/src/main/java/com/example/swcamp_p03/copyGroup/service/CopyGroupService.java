@@ -74,11 +74,11 @@ public class CopyGroupService {
         return copyGroupRepository.save(copyGroup).getCopyGroupId();
     }
 
-    private String getGptCopy(String question) throws Exception{
+    public String getGptCopy(String question) throws Exception{
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/json");
-        headers.add("Authorization", "Bearer " + messageSource.getMessage("key.openAI", null, LocaleContextHolder.getLocale()));
+        headers.add("Authorization", "Bearer " + messageSource.getMessage("key.openAI", null, null));
 
         // Body 생성
         String bodyJson = "{\r\n" +
@@ -87,6 +87,8 @@ public class CopyGroupService {
                 "    \"max_tokens\": 2000,\r\n" +
                 "    \"user\": \"1\"\r\n"+
                 "}";
+
+        log.trace("bodyJson = {}", bodyJson);
 
         // HTTP 요청 보내기
         HttpEntity<String> kakaoTokenRequest =new HttpEntity<>(bodyJson,headers);
@@ -97,8 +99,6 @@ public class CopyGroupService {
                 kakaoTokenRequest,
                 String.class
         );
-
-        log.trace("bodyJson = {}", bodyJson);
 
         // HTTP 응답 (JSON)
         String responseBody = response.getBody();
