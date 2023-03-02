@@ -7,16 +7,11 @@
 - MySQL
 - Spring Security + JWT Token
 - AWS EC2 , RDS(MySQL)
----
 <br>
-
-## [ERD-wiki](https://github.com/swcamp-teamP03/Backend/wiki/ERD)
-
----
 
 ## 🌟 Commit Convention 🌟
 
-### git flow
+>### git flow
 
 > 👉 참고 사이트: [우형 기술 블로그](https://techblog.woowahan.com/2553/)
 > 
@@ -41,7 +36,7 @@ team-24(master)
             
 ```
 
-### issue
+>### issue
 
 issue 를 쓸때 작업 흐름
 
@@ -62,7 +57,7 @@ issue 를 쓸때 작업 흐름
 [ ] 작업3
 ```
 
-### commit
+>### commit
 
 작업에 대한 간략한 키워드를 제목 가장 앞에 추가한다.
 
@@ -84,4 +79,69 @@ issue 를 쓸때 작업 흐름
 feat: 컬렉션뷰 ViewController 에 적용 
 
 컬렉션뷰를 ViewController 에 적용했다
+```
+<br>
+
+## ERD
+```mermaid
+erDiagram
+        User ||--o{ CustomerGroup : ""
+        User ||--o{ CopyGroup : ""
+	CustomerGroup  ||--o{ CustomerGroupProperty : ""
+	CustomerGroup ||--|| ExcelFile : ""
+	ExcelFile ||--o{ ExcelData : ""
+	CopyGroup ||--o{ GptCopy : ""
+	User {
+		Long userId PK
+		String username
+		String password
+	}
+	CustomerGroup {
+		Long customerGroupId PK
+                Long userId FK
+		String groupName
+		Boolean favorite
+		LocalDateTime dateStart "?"
+		LocalDateTime dateEnd "?"
+		LocalDateTime createdAt
+	}
+        CustomerGroupProperty {
+		Long customerGroupPropertyId PK
+		Long customerGroupId FK
+		String propertyName
+		String propertyValue
+	}
+	ExcelFile {
+		Long excelFileId PK
+		Long customerGroupId FK
+		String excelFileOrgName
+		String excelFileSavedName
+		String excelFileSavedPath
+		String excelFileSize
+		LocalDateTime createdAt
+	}
+	ExcelData {
+		Long excelDataId PK
+		Long excelFileId FK
+		String phoneNumber
+	}
+	CopyGroup {
+		Long copyGroupId PK
+                Long userId FK
+		String copyGroupName
+		String tag
+		String brandName
+		String productName
+		String keyword
+		String type
+		Boolean favorite
+		Integer createCount
+		Integer copyLength
+	}
+	GptCopy {
+		Long gptCopyId PK
+		Long copyGroupId FK
+		String content
+		String state
+	}
 ```
