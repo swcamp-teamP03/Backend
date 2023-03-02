@@ -82,7 +82,7 @@ feat: 컬렉션뷰 ViewController 에 적용
 ```
 <br>
 
-## ERD
+## 🌟 ERD 🌟
 ```mermaid
 erDiagram
         User ||--o{ CustomerGroup : ""
