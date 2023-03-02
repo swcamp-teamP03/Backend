@@ -1,17 +1,22 @@
 package com.example.swcamp_p03.copyGroup.entity;
 
 import com.example.swcamp_p03.user.entity.User;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class CopyGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +35,14 @@ public class CopyGroup {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
+    @OneToMany(mappedBy = "copyGroup", cascade = CascadeType.ALL)
+    private List<GptCopy> gptCopyList = new ArrayList<>();
+
+    public void addGptCopy(GptCopy gptCopy){
+        gptCopyList.add(gptCopy);
+    }
 }
