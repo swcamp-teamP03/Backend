@@ -74,7 +74,7 @@ public class CopyGroupService {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/json");
-        headers.add("Authorization", "Bearer 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");
+        headers.add("Authorization", "Bearer " + {});
 
         // Body 생성
         String bodyJson = "{\r\n" +
