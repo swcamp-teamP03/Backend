@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -32,6 +34,8 @@ import java.util.List;
 public class CopyGroupService {
 
     private final CopyGroupRepository copyGroupRepository;
+    private final MessageSource messageSource;
+
 
     public CopyGroupListResponseDto copyGroupList( User user, int page, int size){
         Pageable pageable = PageRequest.of(page, size);
@@ -74,7 +78,7 @@ public class CopyGroupService {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/json");
-        headers.add("Authorization", "Bearer " + {});
+        headers.add("Authorization", "Bearer " + messageSource.getMessage("key.openAI", null, LocaleContextHolder.getLocale()));
 
         // Body 생성
         String bodyJson = "{\r\n" +
