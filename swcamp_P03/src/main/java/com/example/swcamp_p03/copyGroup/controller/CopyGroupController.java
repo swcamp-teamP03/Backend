@@ -1,22 +1,12 @@
 package com.example.swcamp_p03.copyGroup.controller;
 
-import com.example.swcamp_p03.common.dto.ResponseDto;
-import com.example.swcamp_p03.common.exception.GlobalException;
 import com.example.swcamp_p03.config.UserDetailsImpl;
 import com.example.swcamp_p03.copyGroup.dto.*;
 import com.example.swcamp_p03.copyGroup.service.CopyGroupService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,9 +23,14 @@ public class CopyGroupController {
     }
 
     @PostMapping("/copy")
-    public CopyGroupCreateResponseDto createCopyGroup(@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody CopyGroupCreateDto copyGroupCreateDto){
-        Long copyGroupId = copyGroupService.createCopyGroup(userDetails.getUser(), copyGroupCreateDto);
+    public CopyGroupCreateResponseDto createCopyGroup(@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody CopyGroupDto copyGroupDto){
+        Long copyGroupId = copyGroupService.createCopyGroup(userDetails.getUser(), copyGroupDto);
         return new CopyGroupCreateResponseDto(copyGroupId.toString(), "success");
+    }
+
+    @GetMapping("/copy/{copyGroupId}")
+    public CopyGroupDto getCopyGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long copyGroupId){
+        return copyGroupService.getCopyGroup(userDetails.getUser(), copyGroupId);
     }
 
     @PostMapping("/gptcopy")
