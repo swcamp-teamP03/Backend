@@ -87,10 +87,17 @@ feat: 컬렉션뷰 ViewController 에 적용
 erDiagram
         User ||--o{ CustomerGroup : ""
         User ||--o{ CopyGroup : ""
-	CustomerGroup  ||--o{ CustomerGroupProperty : ""
+	User ||--o{ Campaign : ""
+	CustomerGroup  ||--o{ GroupProperty : ""
 	CustomerGroup ||--|| ExcelFile : ""
 	ExcelFile ||--o{ ExcelData : ""
 	CopyGroup ||--o{ GptCopy : ""
+	Campaign ||--o{ CampaignMessage : ""
+	Campaign ||--o{ SendMessages : ""
+	Campaign ||--|| CustomerGroup : ""
+	Campaign ||--|| CopyGroup : ""
+	CampaignMessage ||--o{ ClickCount : ""
+
 	User {
 		Long userId PK
 		String username
@@ -99,21 +106,22 @@ erDiagram
 	CustomerGroup {
 		Long customerGroupId PK
                 Long userId FK
+		Long excelFileId FK
 		String groupName
-		Boolean favorite
-		LocalDateTime dateStart "?"
-		LocalDateTime dateEnd "?"
+		Boolean likeCheck
+		LocalDateTime extractStart "?"
+		LocalDateTime extractEnt"?"
 		LocalDateTime createdAt
+		Boolean unableEdit
 	}
-        CustomerGroupProperty {
-		Long customerGroupPropertyId PK
+	GroupProperty {
+		Long groupPropertyId PK
 		Long customerGroupId FK
 		String propertyName
 		String propertyValue
 	}
 	ExcelFile {
 		Long excelFileId PK
-		Long customerGroupId FK
 		String excelFileOrgName
 		String excelFileSavedName
 		String excelFileSavedPath
@@ -134,15 +142,35 @@ erDiagram
 		String productName
 		String keyword
 		String type
-		Boolean favorite
+		Boolean likeCheck
 		Integer createCount
 		Integer copyLength
+		Boolean unableEdit
 	}
 	GptCopy {
 		Long gptCopyId PK
 		Long copyGroupId FK
 		String content
 		String state
+	}
+	Campaign {
+		Long campaignId PK
+		Long userId FK
+		Long customerGroupId FK
+		Long opyGroupId FK 
+	}
+	CampaignMessage {
+		Long campaignMessageId PK
+		Long campaignId FK
+		String message
+		String messageSection
+	}
+	SendMessages {
+		Long sendMessageId PK
+	}
+	ClickCount {
+		Long clickCountId PK
+		Long campaignMessageId FK
 	}
 ```
 ---
