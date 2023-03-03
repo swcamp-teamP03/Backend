@@ -2,18 +2,18 @@ package com.example.swcamp_p03.copyGroup.service;
 
 import com.example.swcamp_p03.common.exception.ErrorCode;
 import com.example.swcamp_p03.common.exception.GlobalException;
-import com.example.swcamp_p03.copyGroup.dto.CopyGroupCreateDto;
-import com.example.swcamp_p03.copyGroup.dto.CopyGroupListElementDto;
-import com.example.swcamp_p03.copyGroup.dto.CopyGroupListResponseDto;
-import com.example.swcamp_p03.copyGroup.dto.GptCopyDto;
+import com.example.swcamp_p03.config.UserDetailsImpl;
+import com.example.swcamp_p03.copyGroup.dto.*;
 import com.example.swcamp_p03.copyGroup.entity.CopyGroup;
 import com.example.swcamp_p03.copyGroup.entity.GptCopy;
 import com.example.swcamp_p03.copyGroup.repository.CopyGroupRepository;
+import com.example.swcamp_p03.copyGroup.repository.GptCopyRepository;
 import com.example.swcamp_p03.user.entity.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
@@ -22,19 +22,26 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class CopyGroupService {
 
     private final CopyGroupRepository copyGroupRepository;
     private final MessageSource messageSource;
+    private final GptCopyRepository gptCopyRepository;
 
 
     public CopyGroupListResponseDto copyGroupList( User user, int page, int size){
@@ -47,6 +54,7 @@ public class CopyGroupService {
         return new CopyGroupListResponseDto(list.size(),list);
     }
 
+    @Transactional
     public Long createCopyGroup(User user, CopyGroupCreateDto createDto) {
         if (Integer.parseInt(createDto.getCreateCount()) != createDto.getCopyList().size()) {
             throw new GlobalException(ErrorCode.VALIDATION_FAIL);
@@ -112,4 +120,27 @@ public class CopyGroupService {
 
         return answer;
     }
+
+    @Transactional
+    public CopyGroupLikeDto CopyGroupLike(User user , Long copyGroupId, CopyGroupLikeDto requestDto) {
+        CopyGroup copyGroup = copyGroupRepository.findById(copyGroupId).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
+        if(user.getUserId()!=copyGroup.getUser().getUserId()){
+            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
+        }
+
+        copyGroup.clickFavorite(requestDto.getFavorite());
+        return requestDto;
+    }
+
+    @Transactional
+    public CopyReportResponseDto CopyReport(User user , Long copyId){
+
+        GptCopy gptCopy = gptCopyRepository.findById(copyId).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
+        if(gptCopy.getCopyGroup().getUser().getUserId() != user.getUserId()){
+            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
+        }
+        gptCopy.report();
+        return new CopyReportResponseDto("success");
+    }
+
 }

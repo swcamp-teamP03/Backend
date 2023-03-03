@@ -26,4 +26,8 @@ public class GptCopy {
         this.state = state;
         this.copyGroup = copyGroup;
     }
+
+    public void report(){
+        state = "reported";
+    }
 }

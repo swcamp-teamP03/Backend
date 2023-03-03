@@ -53,4 +53,15 @@ public class CopyGroupController {
         return responseDto;
     }
 
+    @PostMapping("/copy/{copyGroupId}/like")
+    public CopyGroupLikeDto CopyGroupLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long copyGroupId, @RequestBody CopyGroupLikeDto requestDto){
+        copyGroupService.CopyGroupLike(userDetails.getUser(), copyGroupId, requestDto);
+        return requestDto;
+    }
+
+    @PostMapping("/copy/{copyId}/report")
+    public CopyReportResponseDto CopyReport(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long copyId) {
+        return copyGroupService.CopyReport(userDetails.getUser(),copyId);
+    }
+
 }

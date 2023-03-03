@@ -2,7 +2,6 @@ package com.example.swcamp_p03.copyGroup.entity;
 
 import com.example.swcamp_p03.user.entity.User;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -44,5 +43,9 @@ public class CopyGroup {
 
     public void addGptCopy(GptCopy gptCopy){
         gptCopyList.add(gptCopy);
+    }
+
+    public void clickFavorite(Boolean setValue) {
+        favorite = setValue;
     }
 }
