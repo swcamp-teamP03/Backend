@@ -1,6 +1,7 @@
 package com.example.swcamp_p03.customerGroup.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +17,19 @@ public class CustomerProperty {
     private String propertyName;
     private String propertyValue;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CUSTOMER_GROUP")
     private CustomerGroup customerGroup;
+
+    @Builder
+    public CustomerProperty(String propertyName, String propertyValue, CustomerGroup customerGroup) {
+        this.propertyName = propertyName;
+        this.propertyValue = propertyValue;
+        this.customerGroup = customerGroup;
+    }
+
+    public void update(String propertyName, String propertyValue) {
+        this.propertyName = propertyName;
+        this.propertyValue = propertyValue;
+    }
 }
