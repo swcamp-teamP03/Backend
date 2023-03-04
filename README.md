@@ -88,18 +88,31 @@ erDiagram
         User ||--o{ CustomerGroup : ""
         User ||--o{ CopyGroup : ""
 	User ||--o{ Campaign : ""
+	User ||--o{ UserHistory : ""
 	CustomerGroup  ||--o{ GroupProperty : ""
 	CustomerGroup ||--|| ExcelFile : ""
+	CustomerGroup ||--o{ CutomerGroupHistory : ""
+	CutomerGroupHistory ||--o{ GroupPropertyHistory : ""
+	CutomerGroupHistory ||--|| ExcelFileHistory : ""
+	ExcelFileHistory ||--o{ ExcelDataHistory : ""
 	ExcelFile ||--o{ ExcelData : ""
 	CopyGroup ||--o{ GptCopy : ""
+	CopyGroup ||--o{ CopyGroupHistory : ""
+	CopyGroupHistory ||--o{ GptCopyHistory : ""
 	Campaign ||--o{ CampaignMessage : ""
 	Campaign ||--o{ SendMessages : ""
-	Campaign ||--|| CustomerGroup : ""
-	Campaign ||--|| CopyGroup : ""
+	Campaign ||--|| CutomerGroupHistory  : ""
+	Campaign ||--|| CopyGroupHistory : ""
 	CampaignMessage ||--o{ ClickCount : ""
 
 	User {
 		Long userId PK
+		String username
+		String password
+	}
+	UserHistory{
+		Long userHistoryId Pk
+		String userId FK
 		String username
 		String password
 	}
@@ -109,19 +122,42 @@ erDiagram
 		Long excelFileId FK
 		String groupName
 		Boolean likeCheck
-		LocalDateTime extractStart "?"
-		LocalDateTime extractEnt"?"
+		LocalDateTime updatedAt
 		LocalDateTime createdAt
 		Boolean unableEdit
 	}
+	CutomerGroupHistory {
+		Long customerGroupHistoryId PK
+		Long customerGroupId FK
+		Long excelFileHistoryId FK
+		String groupName
+		Boolean likeCheck
+		LocalDateTime updatedAt
+		LocalDateTime createdAt
+		Boolean unableEdit
+       }
 	GroupProperty {
 		Long groupPropertyId PK
 		Long customerGroupId FK
 		String propertyName
 		String propertyValue
 	}
+	GroupPropertyHistory {
+		Long groupPropertyHistoryId PK
+		Long customerGroupHistoryId FK
+		String propertyName
+		String propertyValue
+       }
 	ExcelFile {
 		Long excelFileId PK
+		String excelFileOrgName
+		String excelFileSavedName
+		String excelFileSavedPath
+		String excelFileSize
+		LocalDateTime createdAt
+	}
+	ExcelFileHistory {
+		Long excelFileHistoryId PK
 		String excelFileOrgName
 		String excelFileSavedName
 		String excelFileSavedPath
@@ -133,9 +169,28 @@ erDiagram
 		Long excelFileId FK
 		String phoneNumber
 	}
+	ExcelDataHistory {
+		Long excelDataId PK
+		Long excelFileHistoryId FK
+		String phoneNumber
+	}
 	CopyGroup {
 		Long copyGroupId PK
                 Long userId FK
+		String copyGroupName
+		String tag
+		String brandName
+		String productName
+		String keyword
+		String type
+		Boolean likeCheck
+		Integer createCount
+		Integer copyLength
+		Boolean unableEdit
+	}
+		CopyGroupHistory {
+		Long copyGroupHistoryId PK
+		Long copyGroupId FK
 		String copyGroupName
 		String tag
 		String brandName
@@ -153,11 +208,17 @@ erDiagram
 		String content
 		String state
 	}
+	GptCopyHistory {
+		Long gptCopyHistoryId PK
+		Long copyGroupHistoryId FK
+		String content
+		String state
+	}
 	Campaign {
 		Long campaignId PK
 		Long userId FK
-		Long customerGroupId FK
-		Long opyGroupId FK 
+		Long customerGroupHistoryId FK
+		Long copyGroupHistoryId FK 
 	}
 	CampaignMessage {
 		Long campaignMessageId PK
@@ -172,6 +233,7 @@ erDiagram
 		Long clickCountId PK
 		Long campaignMessageId FK
 	}
+	
 ```
 ---
 # [API 명세서](https://documenter.getpostman.com/view/22820772/2s93CNNZ8b)
