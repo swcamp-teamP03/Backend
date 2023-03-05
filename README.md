@@ -233,6 +233,8 @@ erDiagram
 	}
 	SendMessages {
 		Long sendMessageId PK
+		Long campaignMessage FK
+		LOng campaign FK
     LocalDateTime sendDateTime
 		String name
 	  String phoneNumber
