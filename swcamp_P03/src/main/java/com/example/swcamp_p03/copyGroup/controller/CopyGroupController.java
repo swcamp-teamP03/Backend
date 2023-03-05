@@ -2,6 +2,11 @@ package com.example.swcamp_p03.copyGroup.controller;
 
 import com.example.swcamp_p03.config.UserDetailsImpl;
 import com.example.swcamp_p03.copyGroup.dto.*;
+import com.example.swcamp_p03.copyGroup.dto.request.CreateCopyRequestDto;
+import com.example.swcamp_p03.copyGroup.dto.request.CreateCopyResponseDto;
+import com.example.swcamp_p03.copyGroup.dto.response.CopyGroupCreateResponseDto;
+import com.example.swcamp_p03.copyGroup.dto.response.CopyGroupListResponseDto;
+import com.example.swcamp_p03.copyGroup.dto.response.CopyReportResponseDto;
 import com.example.swcamp_p03.copyGroup.service.CopyGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +28,17 @@ public class CopyGroupController {
     }
 
     @PostMapping("/copy")
-    public CopyGroupCreateResponseDto createCopyGroup(@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody CopyGroupDto copyGroupDto){
+    public CopyGroupCreateResponseDto createCopyGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CopyGroupDto copyGroupDto){
         Long copyGroupId = copyGroupService.createCopyGroup(userDetails.getUser(), copyGroupDto);
         return new CopyGroupCreateResponseDto(copyGroupId.toString(), "success");
+    }
+
+    @PutMapping("/copy/{copyGroupId}")
+    public CopyGroupDto updateCopyGroup(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long copyGroupId,
+            @RequestBody CopyGroupDto copyGroupDto) {
+        return copyGroupService.updateCopyGroup(userDetails.getUser(),copyGroupDto , copyGroupId);
     }
 
     @GetMapping("/copy/{copyGroupId}")

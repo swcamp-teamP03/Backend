@@ -3,10 +3,14 @@ package com.example.swcamp_p03.copyGroup.service;
 import com.example.swcamp_p03.common.exception.ErrorCode;
 import com.example.swcamp_p03.common.exception.GlobalException;
 import com.example.swcamp_p03.copyGroup.dto.*;
+import com.example.swcamp_p03.copyGroup.dto.response.CopyGroupListResponseDto;
+import com.example.swcamp_p03.copyGroup.dto.response.CopyReportResponseDto;
 import com.example.swcamp_p03.copyGroup.entity.CopyGroup;
 import com.example.swcamp_p03.copyGroup.entity.GptCopy;
+import com.example.swcamp_p03.copyGroup.entity.history.CopyGroupHistory;
 import com.example.swcamp_p03.copyGroup.repository.CopyGroupRepository;
 import com.example.swcamp_p03.copyGroup.repository.GptCopyRepository;
+import com.example.swcamp_p03.copyGroup.repository.history.CopyGroupHistoryRepository;
 import com.example.swcamp_p03.user.entity.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +41,8 @@ public class CopyGroupService {
     private final CopyGroupRepository copyGroupRepository;
     private final MessageSource messageSource;
     private final GptCopyRepository gptCopyRepository;
+    private final CopyGroupHistoryRepository copyGroupHistoryRepository;
+    private final EntityManager em;
 
 
     public CopyGroupListResponseDto copyGroupList( User user, int page, int size){
@@ -81,10 +89,35 @@ public class CopyGroupService {
 
         List<GptCopyDto> copyList = createDto.getCopyList();
         for (GptCopyDto gptCopyDto : copyList) {
-            copyGroup.addGptCopy(new GptCopy(gptCopyDto.getContent(), gptCopyDto.getState(), copyGroup, gptCopyDto.getPin()));
+            copyGroup.addGptCopy(new GptCopy(gptCopyDto.getContent(), gptCopyDto.getState(), copyGroup, gptCopyDto.getPin(), null));
         }
 
         return copyGroupRepository.save(copyGroup).getCopyGroupId();
+    }
+
+    @Transactional
+    public CopyGroupDto updateCopyGroup(User user,CopyGroupDto copyGroupDto, Long copyGroupId) {
+        CopyGroup copyGroup = copyGroupRepository.findById(copyGroupId).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
+        copyGroupHistoryRepository.save(new CopyGroupHistory(copyGroup));
+
+        List<GptCopy> gptCopyList = copyGroup.getGptCopyList();
+        for (GptCopy gptCopy : gptCopyList) {
+            gptCopyRepository.delete(gptCopy);
+        }
+        copyGroup.updateCopyList(
+                copyGroupDto
+                        .getCopyList()
+                        .stream()
+                        .map(c-> new GptCopy(c.getContent(),c.getState(),copyGroup,c.getPin(), LocalDateTime.now()))
+                        .toList());
+
+        em.flush();
+
+        CopyGroupDto responseDto = new CopyGroupDto(copyGroup);
+        for (GptCopy gptCopy : copyGroup.getGptCopyList()) {
+            responseDto.getCopyList().add(new GptCopyDto(gptCopy));
+        }
+        return responseDto;
     }
 
     public String getGptCopy(String question) throws Exception{

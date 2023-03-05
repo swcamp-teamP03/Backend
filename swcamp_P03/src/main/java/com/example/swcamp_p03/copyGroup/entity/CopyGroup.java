@@ -1,5 +1,6 @@
 package com.example.swcamp_p03.copyGroup.entity;
 
+import com.example.swcamp_p03.copyGroup.dto.GptCopyDto;
 import com.example.swcamp_p03.user.entity.User;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -33,6 +34,7 @@ public class CopyGroup {
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdAt;
+    private LocalDateTime updateAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
@@ -47,5 +49,13 @@ public class CopyGroup {
 
     public void clickFavorite(Boolean setValue) {
         favorite = setValue;
+    }
+
+    public void updateCopyList(List<GptCopy> copyList) {
+        updateAt = LocalDateTime.now();
+        gptCopyList.clear();
+        for (GptCopy gptCopy : copyList) {
+            gptCopyList.add(gptCopy);
+        }
     }
 }

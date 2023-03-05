@@ -1,5 +1,6 @@
-package com.example.swcamp_p03.copyGroup.dto;
+package com.example.swcamp_p03.copyGroup.dto.response;
 
+import com.example.swcamp_p03.copyGroup.dto.CopyGroupListElementDto;
 import lombok.Getter;
 
 import java.util.List;
