@@ -108,8 +108,13 @@ erDiagram
 
 	User {
 		Long userId PK
-		String username
+		String email
 		String password
+		String company
+		String username
+		String phoneNumber
+		String companyNumber
+		
 	}
 	UserHistory{
 		Long userHistoryId Pk
