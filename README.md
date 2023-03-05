@@ -103,6 +103,7 @@ erDiagram
 	Campaign ||--o{ SendMessages : ""
 	Campaign ||--|| CutomerGroupHistory  : ""
 	Campaign ||--|| CopyGroupHistory : ""
+	CampaignMessage ||--o{ SendMessages : ""
 
 
 	User {
