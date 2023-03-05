@@ -5,16 +5,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Getter
-@ToString
 public class ExcelDataDto {
     private String username;
     private String phoneNumber;
-    private ExcelFile excelFile;
-    @Builder
-    public ExcelDataDto(String username, String phoneNumber, ExcelFile excelFile) {
+    private Long excelFileId;
+    private LocalDateTime createdAt;
+
+    @Builder(builderClassName = "excelDataRegister", builderMethodName = "excelDataRegister")
+    public ExcelDataDto(String username, String phoneNumber, Long excelFileId) {
         this.username = username;
         this.phoneNumber = phoneNumber;
-        this.excelFile = excelFile;
+        this.excelFileId = excelFileId;
+        this.createdAt = LocalDateTime.now();
     }
 }

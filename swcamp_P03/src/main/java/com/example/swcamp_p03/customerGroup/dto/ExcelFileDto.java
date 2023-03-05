@@ -10,6 +10,7 @@ public class ExcelFileDto {
     private LocalDateTime excelUploadTime;
     private Long customerCnt;
 
+    // bulk insert
     public ExcelFileDto(String excelFileName, String excelFileSize, LocalDateTime excelUploadTime, Long customerCnt) {
         this.excelFileName = excelFileName;
         this.excelFileSize = excelFileSize;

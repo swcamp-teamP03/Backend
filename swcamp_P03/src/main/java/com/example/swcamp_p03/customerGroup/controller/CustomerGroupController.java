@@ -26,9 +26,9 @@ public class CustomerGroupController {
     private final GroupReadService groupReadService;
 
     @GetMapping("/groups")
-    public ResponseDto<TotalGroupResponseDto> getTotalGroup(@RequestParam int page, @RequestParam int size) {
+    public ResponseDto<TotalGroupResponseDto> getTotalGroup(@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        return groupReadService.getTotalGroup(pageable);
+        return groupReadService.getTotalGroup(userDetails,pageable);
     }
 
     @GetMapping("/groups/{groupId}")
@@ -42,8 +42,8 @@ public class CustomerGroupController {
     }
 
     @PutMapping("/groups/{groupId}")
-    public void groupUpdate(@PathVariable Long groupId, @ModelAttribute GroupWriteRequestDto requestDto) throws IOException {
-        groupWriteService.groupUpdate(groupId, requestDto);
+    public void groupUpdate(@PathVariable Long groupId, @AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute GroupWriteRequestDto requestDto) throws IOException {
+        groupWriteService.groupUpdate(groupId, requestDto, userDetails);
     }
 
     @PostMapping("/groups/{groupId}/file/download")

@@ -1,6 +1,7 @@
 package com.example.swcamp_p03.customerGroup.service;
 
 import com.example.swcamp_p03.common.dto.ResponseDto;
+import com.example.swcamp_p03.config.UserDetailsImpl;
 import com.example.swcamp_p03.customerGroup.dto.reponse.DetailGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.dto.reponse.TotalGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.repository.CustomerGroupRepository;
@@ -14,8 +15,8 @@ public class GroupReadService {
     private final CustomerGroupRepository customerGroupRepository;
 
     // group list
-    public ResponseDto<TotalGroupResponseDto> getTotalGroup(Pageable pageable) {
-        TotalGroupResponseDto totalGroup = customerGroupRepository.findTotalGroup(pageable);
+    public ResponseDto<TotalGroupResponseDto> getTotalGroup(UserDetailsImpl userDetails, Pageable pageable) {
+        TotalGroupResponseDto totalGroup = customerGroupRepository.findTotalGroup(userDetails.getUser(), pageable);
         return ResponseDto.success(totalGroup);
     }
 

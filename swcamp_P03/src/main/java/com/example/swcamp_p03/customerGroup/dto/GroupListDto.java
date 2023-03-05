@@ -13,6 +13,7 @@ public class GroupListDto {
     private Boolean favorite;
     private LocalDateTime date;
 
+    // querydsl
     public GroupListDto(CustomerGroup customerGroup, Long customerCnt) {
         this.customerGroupId = customerGroup.getCustomerGroupId();
         this.groupName = customerGroup.getCustomerGroupName();

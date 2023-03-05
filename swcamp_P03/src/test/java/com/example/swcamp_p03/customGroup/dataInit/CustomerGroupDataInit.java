@@ -43,7 +43,7 @@ public class CustomerGroupDataInit {
         if (i <= 7) {
             excelFile = initExcelFile(i);
         }
-        CustomerGroup group = CustomerGroup.builder()
+        CustomerGroup group = CustomerGroup.register()
                 .customerGroupName("name" + i)
                 .favorite(false)
                 .excelFile(excelFile)
@@ -55,7 +55,7 @@ public class CustomerGroupDataInit {
     }
 
     private void initCustomerProperty(CustomerGroup group, int j) {
-        CustomerProperty property = CustomerProperty.builder()
+        CustomerProperty property = CustomerProperty.register()
                 .propertyName("속성" + j)
                 .propertyValue("속성값" + j)
                 .customerGroup(group)
@@ -64,7 +64,7 @@ public class CustomerGroupDataInit {
     }
 
     private ExcelFile initExcelFile(int i) {
-        ExcelFile excelFile = ExcelFile.builder()
+        ExcelFile excelFile = ExcelFile.register()
                 .excelFileOrgName("고객모수" + i + ".xls")
                 .excelFileSavedName("100000" + i + ".xls")
                 .excelFileSavedPath("/file/엑셀" + i)
@@ -74,7 +74,7 @@ public class CustomerGroupDataInit {
 
         List<ExcelData> excelDataList = new ArrayList<>();
         for (int j = 1; j < 10; j++) {
-            ExcelData excelData = ExcelData.builder()
+            ExcelData excelData = ExcelData.testInsert()
                     .username("이름"+j)
                     .phoneNumber("010-1234-123" + j)
                     .excelFile(excelFile)

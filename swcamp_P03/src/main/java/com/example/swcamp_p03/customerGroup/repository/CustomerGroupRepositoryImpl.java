@@ -5,6 +5,8 @@ import com.example.swcamp_p03.customerGroup.dto.GroupListDto;
 import com.example.swcamp_p03.customerGroup.dto.reponse.DetailGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.dto.reponse.TotalGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.entity.CustomerGroup;
+import com.example.swcamp_p03.user.entity.User;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,8 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public TotalGroupResponseDto findTotalGroup(Pageable pageable) {
+    public TotalGroupResponseDto findTotalGroup(User user, Pageable pageable) {
+
         List<GroupListDto> result = jpaQueryFactory.select(Projections.constructor(GroupListDto.class,
                         customerGroup,
                         excelData.excelDataId.count()
@@ -30,6 +33,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                 .from(customerGroup)
                 .leftJoin(customerGroup.excelFile, excelFile).fetchJoin()
                 .leftJoin(excelData).on(excelFile.eq(excelData.excelFile))
+                .where(customerGroup.user.eq(user))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .groupBy(customerGroup.customerGroupId)

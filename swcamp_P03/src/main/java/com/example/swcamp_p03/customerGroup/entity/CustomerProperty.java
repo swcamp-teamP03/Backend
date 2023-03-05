@@ -1,11 +1,13 @@
 package com.example.swcamp_p03.customerGroup.entity;
 
+import com.example.swcamp_p03.customerGroup.dto.request.PropertyDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -17,19 +19,18 @@ public class CustomerProperty {
     private String propertyName;
     private String propertyValue;
 
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CUSTOMER_GROUP")
+    @JoinColumn(name = "CUSTOMER_GROUP_ID")
     private CustomerGroup customerGroup;
 
-    @Builder
-    public CustomerProperty(String propertyName, String propertyValue, CustomerGroup customerGroup) {
-        this.propertyName = propertyName;
-        this.propertyValue = propertyValue;
+    @Builder(builderClassName = "register", builderMethodName = "register")
+    public CustomerProperty(PropertyDto property, CustomerGroup customerGroup) {
+        this.propertyName = property != null ? property.getPropertyName() : null;
+        this.propertyValue = property != null ? property.getPropertyValue() : null;
         this.customerGroup = customerGroup;
-    }
-
-    public void update(String propertyName, String propertyValue) {
-        this.propertyName = propertyName;
-        this.propertyValue = propertyValue;
+        this.createdAt = LocalDateTime.now();
     }
 }
