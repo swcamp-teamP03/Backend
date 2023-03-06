@@ -8,10 +8,10 @@ import java.util.List;
 @Data
 public class CreateCopyResponseDto {
 
-    List<CreateCopyContent> resultlist = new ArrayList<>();
+    List<CreateCopyContent> resultList = new ArrayList<>();
 
     public void addCopy(String content){
-        resultlist.add(new CreateCopyContent(content));
+        resultList.add(new CreateCopyContent(content));
     }
 
 }
