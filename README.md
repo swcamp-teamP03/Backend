@@ -243,7 +243,7 @@ erDiagram
     LocalDateTime sendDateTime
 		String name
 	  String phoneNumber
-		Boolean sendCheck
+		String sendCheck
 		String errorMessage
 		String uniqueUrl
     LocalDateTime visitedTime
