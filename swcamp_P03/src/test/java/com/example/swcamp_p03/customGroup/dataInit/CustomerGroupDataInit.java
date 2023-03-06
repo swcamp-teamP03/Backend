@@ -33,7 +33,7 @@ public class CustomerGroupDataInit {
 
     @BeforeEach
     void before() {
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 20; i++) {
             initCustomerGroup(i);
         }
     }
@@ -56,8 +56,6 @@ public class CustomerGroupDataInit {
 
     private void initCustomerProperty(CustomerGroup group, int j) {
         CustomerProperty property = CustomerProperty.register()
-                .propertyName("속성" + j)
-                .propertyValue("속성값" + j)
                 .customerGroup(group)
                 .build();
         customerPropertyRepository.save(property);
@@ -73,7 +71,7 @@ public class CustomerGroupDataInit {
         excelFileRepository.save(excelFile);
 
         List<ExcelData> excelDataList = new ArrayList<>();
-        for (int j = 1; j < 10; j++) {
+        for (int j = 1; j < 30; j++) {
             ExcelData excelData = ExcelData.testInsert()
                     .username("이름"+j)
                     .phoneNumber("010-1234-123" + j)
