@@ -37,5 +37,7 @@ out/
 .vscode/
 
 **/src/main/resources/application.yml
+**/message.properties
 **/src/test/resources/application.yml
 excelFile/**
+
