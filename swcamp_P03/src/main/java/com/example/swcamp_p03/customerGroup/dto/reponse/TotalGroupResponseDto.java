@@ -7,11 +7,11 @@ import java.util.List;
 
 @Getter
 public class TotalGroupResponseDto {
-    private Long totalGroup;
+    private int totalGroupPage;
     private List<GroupListDto> groupListList;
 
-    public TotalGroupResponseDto(Long count, List<GroupListDto> groupListList) {
-        this.totalGroup = count;
+    public TotalGroupResponseDto(int count, List<GroupListDto> groupListList) {
+        this.totalGroupPage = count;
         this.groupListList = groupListList;
     }
 }
