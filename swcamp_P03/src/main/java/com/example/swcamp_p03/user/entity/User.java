@@ -20,6 +20,10 @@ public class User {
     private String username;
     private String password;
     private String roles;
+    private String email;
+    private String company;
+    private String phoneNumber;
+    private String companyNumber;
 
     public List<String> getRoleList() {
         if (this.roles.length() > 0) {
