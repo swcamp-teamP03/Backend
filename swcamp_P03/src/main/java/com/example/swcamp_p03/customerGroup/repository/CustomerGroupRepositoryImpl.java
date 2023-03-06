@@ -62,7 +62,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
 
     @Override
     public DetailGroupResponseDto findDetailGroup(Long groupId) {
-        CustomerGroup findGroup = jpaQueryFactory.select(
+        CustomerGroup findCustomerGroup = jpaQueryFactory.select(
                         customerGroup)
                 .from(customerGroup)
                 .join(customerGroup.propertyList, customerProperty).fetchJoin()
@@ -80,7 +80,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                 .join(excelData).on(excelFile.eq(excelData.excelFile))
                 .where(customerGroup.customerGroupId.eq(groupId))
                 .fetchOne();
-        return new DetailGroupResponseDto(findGroup, excelFileDto);
+        return new DetailGroupResponseDto(findCustomerGroup, excelFileDto);
     }
 
     @Override

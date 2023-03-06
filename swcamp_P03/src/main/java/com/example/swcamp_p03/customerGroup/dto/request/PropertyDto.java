@@ -8,6 +8,5 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PropertyDto {
-    private String propertyName;
     private String propertyValue;
 }

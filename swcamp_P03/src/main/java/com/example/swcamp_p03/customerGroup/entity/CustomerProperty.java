@@ -16,7 +16,6 @@ public class CustomerProperty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerPropertyId;
-    private String propertyName;
     private String propertyValue;
 
     @Column(nullable = false)
@@ -28,7 +27,6 @@ public class CustomerProperty {
 
     @Builder(builderClassName = "register", builderMethodName = "register")
     public CustomerProperty(PropertyDto property, CustomerGroup customerGroup) {
-        this.propertyName = property != null ? property.getPropertyName() : null;
         this.propertyValue = property != null ? property.getPropertyValue() : null;
         this.customerGroup = customerGroup;
         this.createdAt = LocalDateTime.now();
