@@ -20,15 +20,15 @@ public class JwtTokenUtils {
         return JWT.create()
                 .withSubject(SUBJECT)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .withClaim(CLAIM_USERID, userDetailsImpl.getUser().getUserId())
+                .withClaim(CLAIM_USERID, userDetailsImpl.getUser().getUsername())
                 .sign(Algorithm.HMAC512(JWT_SECRET));
     }
 
 
-    public Long extractUserId(String jwtToken) {
+    public String extractUserId(String jwtToken) {
 
         return JWT.require(Algorithm.HMAC512(JWT_SECRET)).build()
                 .verify(jwtToken)
-                .getClaim(CLAIM_USERID).asLong();
+                .getClaim(CLAIM_USERID).asString();
     }
 }

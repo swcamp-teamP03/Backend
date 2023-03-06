@@ -1,15 +1,13 @@
 package com.example.swcamp_p03.customerGroup.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ExcelFile {
     @Id
@@ -20,11 +18,23 @@ public class ExcelFile {
     private String excelFileSavedPath;
     private String excelFileSize;
 
-    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToOne
-    @JoinColumn(name = "CUSTOMER_GROUP_ID")
-    private CustomerGroup customerGroup;
+    @Builder(builderClassName = "register", builderMethodName = "register")
+    public ExcelFile(String excelFileOrgName, String excelFileSavedName, String excelFileSavedPath, String excelFileSize) {
+        this.excelFileOrgName = excelFileOrgName;
+        this.excelFileSavedName = excelFileSavedName;
+        this.excelFileSavedPath = excelFileSavedPath;
+        this.excelFileSize = excelFileSize;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public void update(String excelFileOrgName, String excelFileSavedName, String excelFileSavedPath, String excelFileSize) {
+        this.excelFileOrgName = excelFileOrgName;
+        this.excelFileSavedName = excelFileSavedName;
+        this.excelFileSavedPath = excelFileSavedPath;
+        this.excelFileSize = excelFileSize;
+    }
+
 }
