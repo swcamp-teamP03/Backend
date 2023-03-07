@@ -18,7 +18,6 @@ public class CustomerPropertyHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerPropertyHistoryId;
-    private String propertyName;
     private String propertyValue;
 
     private LocalDateTime createdAt;
@@ -29,7 +28,6 @@ public class CustomerPropertyHistory {
 
     @Builder(builderClassName = "historyRegister",builderMethodName = "historyRegister")
     public CustomerPropertyHistory(CustomerProperty customerProperty, CustomerGroupHistory customerGroupHistory) {
-        this.propertyName = customerProperty.getPropertyName();
         this.propertyValue = customerProperty.getPropertyValue();
         this.customerGroupHistory = customerGroupHistory;
         this.createdAt = customerProperty.getCreatedAt();
