@@ -13,9 +13,10 @@ public class ExcelData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long excelDataId;
+    @Column(nullable = false)
     private String username;
+    @Column(nullable = false)
     private String phoneNumber;
-
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

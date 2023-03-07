@@ -1,10 +1,9 @@
 package com.example.swcamp_p03.customerGroup.dto;
 
-import com.example.swcamp_p03.customerGroup.entity.ExcelFile;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 @Getter

@@ -2,6 +2,7 @@ package com.example.swcamp_p03.customerGroup.service;
 
 import com.example.swcamp_p03.common.exception.ErrorCode;
 import com.example.swcamp_p03.common.exception.GlobalException;
+import com.example.swcamp_p03.common.valid.ValidCheck;
 import com.example.swcamp_p03.config.UserDetailsImpl;
 import com.example.swcamp_p03.customerGroup.dto.ExcelDataDto;
 import com.example.swcamp_p03.customerGroup.dto.ExcelDataHistoryDto;
@@ -52,6 +53,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +69,7 @@ public class GroupWriteService {
     private final CustomerPropertyHistoryRepository customerPropertyHistoryRepository;
     private final ExcelDataHistoryRepository excelDataHistoryRepository;
     private final ExcelFileHistoryRepository excelFileHistoryRepository;
+    private final ValidCheck validCheck;
     private final ExcelDownloadRepository excelDownLoadRepository;
 
     private final String EXCEL_DIR = System.getProperty("user.dir") + "\\excelFile\\";
@@ -118,13 +121,18 @@ public class GroupWriteService {
             String username = worksheet.getRow(i).getCell(0).getStringCellValue();
             String phoneNumber = worksheet.getRow(i).getCell(1).getStringCellValue();
             if (!username.equals("") || !phoneNumber.equals("")) {
-                ExcelDataDto excelData = ExcelDataDto.excelDataRegister()
-                        .username(username)
-                        .phoneNumber(phoneNumber)
-                        .excelFileId(excelFile.getExcelFileId())
-                        .build();
-                dataList.add(excelData);
-
+                if (!validCheck.isUsername(username)) {
+                    throw new GlobalException(ErrorCode.NOT_VALID_EXCEL_USERNAME);
+                } else if (!validCheck.isPhoneNumber(phoneNumber)) {
+                    throw new GlobalException(ErrorCode.NOT_VALID_EXCEL_PHONE_NUMBER);
+                } else {
+                    ExcelDataDto excelData = ExcelDataDto.excelDataRegister()
+                            .username(username)
+                            .phoneNumber(phoneNumber)
+                            .excelFileId(excelFile.getExcelFileId())
+                            .build();
+                    dataList.add(excelData);
+                }
             }
         }
         excelDataRepository.bulkInsert(dataList);
@@ -157,6 +165,7 @@ public class GroupWriteService {
                     .build();
             customerPropertyRepository.save(customerProperty);
         }
+
     }
 
     // group 수정
