@@ -1,5 +1,6 @@
-package com.example.swcamp_p03.copyGroup.dto.request;
+package com.example.swcamp_p03.copyGroup.dto.response;
 
+import com.example.swcamp_p03.copyGroup.dto.request.CreateCopyContent;
 import lombok.Data;
 
 import java.util.ArrayList;

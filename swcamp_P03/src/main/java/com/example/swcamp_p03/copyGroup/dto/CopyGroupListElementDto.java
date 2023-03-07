@@ -11,13 +11,11 @@ public class CopyGroupListElementDto {
     private LocalDateTime createDate;
     private Boolean like;
     private String copyName;
-    private String tag;
 
     public CopyGroupListElementDto(CopyGroup e) {
         this.copyId = e.getCopyGroupId().toString();
         this.createDate = e.getCreatedAt();
         this.like = e.getFavorite();
         this.copyName = e.getCoupGroupName();
-        this.tag = e.getTag();
     }
 }

@@ -22,7 +22,6 @@ public class CopyGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long copyGroupId;
     private String coupGroupName;
-    private String tag;
     private String brandName;
     private String productName;
     private String keyword;
@@ -30,6 +29,7 @@ public class CopyGroup {
     private Boolean favorite;
     private Integer createCount;
     private Integer copyLength;
+    private Boolean unableEdit;
 
     @CreatedDate
     @Column(nullable = false)

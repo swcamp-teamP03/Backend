@@ -1,9 +1,10 @@
 package com.example.swcamp_p03.copyGroup.controller;
 
+import com.example.swcamp_p03.common.dto.ResponseDto;
 import com.example.swcamp_p03.config.UserDetailsImpl;
 import com.example.swcamp_p03.copyGroup.dto.*;
 import com.example.swcamp_p03.copyGroup.dto.request.CreateCopyRequestDto;
-import com.example.swcamp_p03.copyGroup.dto.request.CreateCopyResponseDto;
+import com.example.swcamp_p03.copyGroup.dto.response.CreateCopyResponseDto;
 import com.example.swcamp_p03.copyGroup.dto.response.CopyGroupCreateResponseDto;
 import com.example.swcamp_p03.copyGroup.dto.response.CopyGroupListResponseDto;
 import com.example.swcamp_p03.copyGroup.dto.response.CopyReportResponseDto;
@@ -21,33 +22,33 @@ public class CopyGroupController {
     private final CopyGroupService copyGroupService;
 
     @GetMapping("/copies")
-    public CopyGroupListResponseDto getCopyGroupList(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                     @RequestParam(name = "page", defaultValue = "0") int page,
-                                                     @RequestParam(name = "size", defaultValue = "4") int size){
-        return copyGroupService.copyGroupList( userDetails.getUser(), page, size);
+    public ResponseDto<CopyGroupListResponseDto> getCopyGroupList(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                 @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                 @RequestParam(name = "size", defaultValue = "4") int size){
+        return ResponseDto.success(copyGroupService.copyGroupList( userDetails.getUser(), page, size));
     }
 
     @PostMapping("/copy")
-    public CopyGroupCreateResponseDto createCopyGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CopyGroupDto copyGroupDto){
+    public ResponseDto<CopyGroupCreateResponseDto> createCopyGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CopyGroupDto copyGroupDto){
         Long copyGroupId = copyGroupService.createCopyGroup(userDetails.getUser(), copyGroupDto);
-        return new CopyGroupCreateResponseDto(copyGroupId.toString(), "success");
+        return ResponseDto.success(new CopyGroupCreateResponseDto(copyGroupId.toString(), "success"));
     }
 
     @PutMapping("/copy/{copyGroupId}")
-    public CopyGroupDto updateCopyGroup(
+    public ResponseDto<CopyGroupDto> updateCopyGroup(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long copyGroupId,
             @RequestBody CopyGroupDto copyGroupDto) {
-        return copyGroupService.updateCopyGroup(userDetails.getUser(),copyGroupDto , copyGroupId);
+        return ResponseDto.success(copyGroupService.updateCopyGroup(userDetails.getUser(),copyGroupDto , copyGroupId));
     }
 
     @GetMapping("/copy/{copyGroupId}")
-    public CopyGroupDto getCopyGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long copyGroupId){
-        return copyGroupService.getCopyGroup(userDetails.getUser(), copyGroupId);
+    public ResponseDto<CopyGroupDto> getCopyGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long copyGroupId){
+        return ResponseDto.success(copyGroupService.getCopyGroup(userDetails.getUser(), copyGroupId));
     }
 
     @PostMapping("/gptcopy")
-    public CreateCopyResponseDto createCopy(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CreateCopyRequestDto requestDto) throws Exception{
+    public ResponseDto<CreateCopyResponseDto> createCopy(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CreateCopyRequestDto requestDto) throws Exception{
         String question = "브랜드이름 " + requestDto.getBrandName() + "은 " + requestDto.getSector() + "업종이야."
                 + requestDto.getBrandName() + "의 제품인 " + requestDto.getProductName() + "에 대해 "
                 + requestDto.getKeyword() + "를 포함해서 " + requestDto.getType() + " 문자메시지 형식으로 "
@@ -58,18 +59,12 @@ public class CopyGroupController {
             responseDto.addCopy(copyGroupService.getGptCopy(question));
         }
 
-        return responseDto;
+        return ResponseDto.success(responseDto);
     }
 
     @PostMapping("/copy/{copyGroupId}/like")
-    public CopyGroupLikeDto CopyGroupLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long copyGroupId, @RequestBody CopyGroupLikeDto requestDto){
+    public ResponseDto<CopyGroupLikeDto> CopyGroupLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long copyGroupId, @RequestBody CopyGroupLikeDto requestDto){
         copyGroupService.CopyGroupLike(userDetails.getUser(), copyGroupId, requestDto);
-        return requestDto;
+        return ResponseDto.success(requestDto);
     }
-
-    @PostMapping("/copy/{copyId}/report")
-    public CopyReportResponseDto CopyReport(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long copyId) {
-        return copyGroupService.CopyReport(userDetails.getUser(),copyId);
-    }
-
 }
