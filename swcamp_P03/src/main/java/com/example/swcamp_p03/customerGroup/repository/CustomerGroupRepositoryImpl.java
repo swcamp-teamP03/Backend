@@ -1,6 +1,8 @@
 package com.example.swcamp_p03.customerGroup.repository;
 
+import com.example.swcamp_p03.campaign.entity.QCampaign;
 import com.example.swcamp_p03.customerGroup.dto.ExcelFileDto;
+import com.example.swcamp_p03.customerGroup.dto.GroupCampaignDto;
 import com.example.swcamp_p03.customerGroup.dto.GroupListDto;
 import com.example.swcamp_p03.customerGroup.dto.reponse.DetailGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.dto.reponse.TotalGroupResponseDto;
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import static com.example.swcamp_p03.campaign.entity.QCampaign.campaign;
 import static com.example.swcamp_p03.customerGroup.entity.QCustomerGroup.customerGroup;
 import static com.example.swcamp_p03.customerGroup.entity.QCustomerProperty.customerProperty;
 import static com.example.swcamp_p03.customerGroup.entity.QExcelData.excelData;
@@ -68,6 +71,12 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                 .join(customerGroup.propertyList, customerProperty).fetchJoin()
                 .where(customerGroup.customerGroupId.eq(groupId))
                 .fetchOne();
+        List<GroupCampaignDto> campaignDtoList = jpaQueryFactory.select(Projections.constructor(GroupCampaignDto.class,
+                        campaign.campaignName,
+                        campaign.sendingDate))
+                .from(campaign)
+                .join(campaign.customerGroup, customerGroup)
+                .fetch();
 
         ExcelFileDto excelFileDto = jpaQueryFactory.select(Projections.constructor(ExcelFileDto.class,
                         excelFile.excelFileOrgName,
@@ -80,7 +89,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                 .join(excelData).on(excelFile.eq(excelData.excelFile))
                 .where(customerGroup.customerGroupId.eq(groupId))
                 .fetchOne();
-        return new DetailGroupResponseDto(findCustomerGroup, excelFileDto);
+        return new DetailGroupResponseDto(findCustomerGroup, excelFileDto, campaignDtoList);
     }
 
     @Override

@@ -26,13 +26,13 @@ public class Campaign {
     private String sendURL;
     private LocalDateTime sendingDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CUSTOMER_GROUP_ID")
     private CustomerGroup customerGroup;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COPY_GROUP_ID")
     private CopyGroup copyGroup;
 }
