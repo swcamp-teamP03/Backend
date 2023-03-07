@@ -85,8 +85,8 @@ feat: 컬렉션뷰 ViewController 에 적용
 ## 🌟 ERD 🌟
 ```mermaid
 erDiagram
-  User ||--o{ CustomerGroup : ""
-  User ||--o{ CopyGroup : ""
+	User ||--o{ CustomerGroup : ""
+  	User ||--o{ CopyGroup : ""
 	User ||--o{ Campaign : ""
 	User ||--o{ ExcelDownload : ""
 	CustomerGroup  ||--o{ GroupProperty : ""
@@ -101,22 +101,27 @@ erDiagram
 	CopyGroupHistory ||--o{ GptCopyHistory : ""
 	Campaign ||--o{ CampaignMessage : ""
 	Campaign ||--o{ SendMessages : ""
-	Campaign ||--|| CutomerGroupHistory  : ""
-	Campaign ||--|| CopyGroupHistory : ""
+	Campaign ||--|| CustomerGroup  : ""
+	Campaign ||--|| CopyGroup : ""
 
 
 	User {
 		Long userId PK
-		String username
+		String email
 		String password
+		String company
+		String username
+		String phoneNumber
+		String companyNumber
+		String callingNumber
+		String callRejectionNumber
 	}
 	CustomerGroup {
 		Long customerGroupId PK
-		Long userId FK
+    		Long userId FK
 		Long excelFileId FK
 		String groupName
 		Boolean likeCheck
-		LocalDateTime updatedAt
 		LocalDateTime createdAt
 		Boolean unableEdit
 	}
@@ -126,22 +131,21 @@ erDiagram
 		Long excelFileHistoryId FK
 		String groupName
 		Boolean likeCheck
-		LocalDateTime updatedAt
 		LocalDateTime createdAt
 		Boolean unableEdit
-	}
+ 	}
 	GroupProperty {
 		Long groupPropertyId PK
 		Long customerGroupId FK
-		String propertyName
 		String propertyValue
+		LocalDateTime createdAt
 	}
 	GroupPropertyHistory {
 		Long groupPropertyHistoryId PK
 		Long customerGroupHistoryId FK
-		String propertyName
 		String propertyValue
-	}
+		LocalDateTime createdAt
+  	}
 	ExcelFile {
 		Long excelFileId PK
 		String excelFileOrgName
@@ -162,17 +166,18 @@ erDiagram
 		Long excelDataId PK
 		Long excelFileId FK
 		String phoneNumber
+		LocalDateTime createdAt
 	}
 	ExcelDataHistory {
 		Long excelDataId PK
 		Long excelFileHistoryId FK
 		String phoneNumber
+		LocalDateTime createdAt
 	}
 	CopyGroup {
 		Long copyGroupId PK
-		Long userId FK
+   		Long userId FK
 		String copyGroupName
-		String tag
 		String brandName
 		String productName
 		String keyword
@@ -181,12 +186,13 @@ erDiagram
 		Integer createCount
 		Integer copyLength
 		Boolean unableEdit
+		LoaclDateTime updatedAt
+		LoaclDateTime createdAt
 	}
-		CopyGroupHistory {
+	CopyGroupHistory {
 		Long copyGroupHistoryId PK
 		Long copyGroupId FK
 		String copyGroupName
-		String tag
 		String brandName
 		String productName
 		String keyword
@@ -195,28 +201,35 @@ erDiagram
 		Integer createCount
 		Integer copyLength
 		Boolean unableEdit
+		LoaclDateTime createdAt
+		LoaclDateTime updatedAt
 	}
 	GptCopy {
 		Long gptCopyId PK
 		Long copyGroupId FK
 		String content
-		String state
+		Boolean pin
+		LoaclDateTime createdAt
+		LoaclDateTime updatedAt
 	}
 	GptCopyHistory {
 		Long gptCopyHistoryId PK
 		Long copyGroupHistoryId FK
 		String content
-		String state
+		Boolean pin
+		LoaclDateTime createdAt
+		LoaclDateTime updatedAt
 	}
 	Campaign {
 		Long campaignId PK
 		Long userId FK
-		Long customerGroupHistoryId FK
-		Long copyGroupHistoryId FK 
-	String messageType
+		Long customerGroupId FK
+		Long CopyGroupId FK 
+    		String messageType
 		String sendType
 		String sendURL
 		LocalDateTime sendingDate
+		LocalDateTime createdAt
 	}
 	CampaignMessage {
 		Long campaignMessageId PK
@@ -226,19 +239,20 @@ erDiagram
 	}
 	SendMessages {
 		Long sendMessageId PK
-	LocalDateTime sendDateTime
+    		LocalDateTime sendDateTime
 		String name
-		String phoneNumber
+	  String phoneNumber
 		Boolean sendCheck
 		String errorMessage
 		String uniqueUrl
-	LocalDateTime visitedTime
+    		LocalDateTime visitedTime
 		LocalDate visitedDate
 	}
 	ExcelDownload {
 		Long excelDownloadId PK
 		Long userId FK
 		String downloadReasonEx
+		LocalDateTime createdAt
 	}
 	
 	
