@@ -88,7 +88,7 @@ erDiagram
   User ||--o{ CustomerGroup : ""
   User ||--o{ CopyGroup : ""
 	User ||--o{ Campaign : ""
-	User ||--o{ UserHistory : ""
+	User ||--o{ ExcelDownload : ""
 	CustomerGroup  ||--o{ GroupProperty : ""
 	CustomerGroup ||--|| ExcelFile : ""
 	CustomerGroup ||--o{ CutomerGroupHistory : ""
@@ -103,28 +103,16 @@ erDiagram
 	Campaign ||--o{ SendMessages : ""
 	Campaign ||--|| CutomerGroupHistory  : ""
 	Campaign ||--|| CopyGroupHistory : ""
-	CampaignMessage ||--o{ SendMessages : ""
 
 
 	User {
 		Long userId PK
-		String email
-		String password
-		String company
-		String username
-		String phoneNumber
-		String companyNumber
-		
-	}
-	UserHistory{
-		Long userHistoryId Pk
-		String userId FK
 		String username
 		String password
 	}
 	CustomerGroup {
 		Long customerGroupId PK
-    Long userId FK
+		Long userId FK
 		Long excelFileId FK
 		String groupName
 		Boolean likeCheck
@@ -141,7 +129,7 @@ erDiagram
 		LocalDateTime updatedAt
 		LocalDateTime createdAt
 		Boolean unableEdit
-  }
+	}
 	GroupProperty {
 		Long groupPropertyId PK
 		Long customerGroupId FK
@@ -153,7 +141,7 @@ erDiagram
 		Long customerGroupHistoryId FK
 		String propertyName
 		String propertyValue
-  }
+	}
 	ExcelFile {
 		Long excelFileId PK
 		String excelFileOrgName
@@ -182,7 +170,7 @@ erDiagram
 	}
 	CopyGroup {
 		Long copyGroupId PK
-    Long userId FK
+		Long userId FK
 		String copyGroupName
 		String tag
 		String brandName
@@ -225,7 +213,7 @@ erDiagram
 		Long userId FK
 		Long customerGroupHistoryId FK
 		Long copyGroupHistoryId FK 
-    String messageType
+	String messageType
 		String sendType
 		String sendURL
 		LocalDateTime sendingDate
@@ -238,16 +226,19 @@ erDiagram
 	}
 	SendMessages {
 		Long sendMessageId PK
-		Long campaignMessageId FK
-		LOng campaignId FK
-    LocalDateTime sendDateTime
+	LocalDateTime sendDateTime
 		String name
-	  String phoneNumber
-		String sendCheck
+		String phoneNumber
+		Boolean sendCheck
 		String errorMessage
 		String uniqueUrl
-    LocalDateTime visitedTime
+	LocalDateTime visitedTime
 		LocalDate visitedDate
+	}
+	ExcelDownload {
+		Long excelDownloadId PK
+		Long userId FK
+		String downloadReasonEx
 	}
 	
 	
