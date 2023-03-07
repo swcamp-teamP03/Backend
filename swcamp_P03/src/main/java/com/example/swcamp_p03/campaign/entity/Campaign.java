@@ -1,6 +1,8 @@
 package com.example.swcamp_p03.campaign.entity;
 
+import com.example.swcamp_p03.copyGroup.entity.CopyGroup;
 import com.example.swcamp_p03.copyGroup.entity.history.CopyGroupHistory;
+import com.example.swcamp_p03.customerGroup.entity.CustomerGroup;
 import com.example.swcamp_p03.customerGroup.entity.history.CustomerGroupHistory;
 import com.example.swcamp_p03.user.entity.User;
 import lombok.AccessLevel;
@@ -26,9 +28,9 @@ public class Campaign {
     @JoinColumn(name = "USER_ID")
     private User user;
     @ManyToOne
-    @JoinColumn(name = "CUSTOMER_GROUP_HISTORY_ID")
-    private CustomerGroupHistory customerGroupHistory;
+    @JoinColumn(name = "CUSTOMER_GROUP_ID")
+    private CustomerGroup customerGroup;
     @ManyToOne
-    @JoinColumn(name = "COPY_GROUP_HISTORY_ID")
-    private CopyGroupHistory copyGroupHistory;
+    @JoinColumn(name = "COPY_GROUP_ID")
+    private CopyGroup copyGroup;
 }
