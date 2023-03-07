@@ -6,6 +6,7 @@ import com.example.swcamp_p03.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTabJc;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class Campaign {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long campaignId;
+    private String campaignName;
     private String messageType;
     private String sendType;
     private String sendURL;

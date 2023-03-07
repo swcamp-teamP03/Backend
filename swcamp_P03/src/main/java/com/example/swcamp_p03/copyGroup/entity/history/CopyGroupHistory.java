@@ -26,7 +26,6 @@ public class CopyGroupHistory {
     @JoinColumn(name = "COPY_GROUP_ID")
     private CopyGroup copyGroup;
     private String coupGroupName;
-    private String tag;
     private String brandName;
     private String productName;
     private String keyword;
@@ -48,7 +47,6 @@ public class CopyGroupHistory {
     public CopyGroupHistory(CopyGroup copyGroup) {
         this.copyGroup = copyGroup;
         this.coupGroupName = copyGroup.getCoupGroupName();
-        this.tag = copyGroup.getTag();
         this.brandName = copyGroup.getBrandName();
         this.productName = copyGroup.getProductName();
         this.keyword = copyGroup.getKeyword();
@@ -60,7 +58,7 @@ public class CopyGroupHistory {
         this.createdAt = copyGroup.getCreatedAt();
         List<GptCopy> gptCopyList1 = copyGroup.getGptCopyList();
         for (GptCopy gptCopy : gptCopyList1) {
-            gptCopyList.add(new GptCopyHistory(gptCopy.getContent(),gptCopy.getState(),this,gptCopy.getPin(),gptCopy.getUpdateAt()));
+            gptCopyList.add(new GptCopyHistory(gptCopy.getContent(),this,gptCopy.getPin(),gptCopy.getUpdateAt()));
         }
     }
 }

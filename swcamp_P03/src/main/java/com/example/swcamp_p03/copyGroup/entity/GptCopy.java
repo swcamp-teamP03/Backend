@@ -15,24 +15,21 @@ public class GptCopy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long gptCopyId;
     private String content;
-    private String state;
     private Boolean pin;
     private LocalDateTime updateAt;
+    private LocalDateTime createdAt;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COPY_GROUP_ID")
     private CopyGroup copyGroup;
 
-    public GptCopy(String content, String state, CopyGroup copyGroup, Boolean pin, LocalDateTime updateAt) {
+    public GptCopy(String content, CopyGroup copyGroup, Boolean pin,LocalDateTime createdAt, LocalDateTime updateAt) {
         this.content = content;
-        this.state = state;
         this.copyGroup = copyGroup;
         this.pin = pin;
+        this.createdAt = createdAt;
         this.updateAt = updateAt;
     }
 
-    public void report(){
-        state = "reported";
-    }
 }

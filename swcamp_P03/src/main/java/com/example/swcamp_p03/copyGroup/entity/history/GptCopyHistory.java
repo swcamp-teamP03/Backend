@@ -16,8 +16,8 @@ public class GptCopyHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long gptCopyHistoryId;
     private String content;
-    private String state;
     private Boolean pin;
+    private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
 
@@ -25,9 +25,8 @@ public class GptCopyHistory {
     @JoinColumn(name = "COPY_GROUP_HISTORY_ID")
     private CopyGroupHistory copyGroupHistory;
 
-    public GptCopyHistory(String content, String state, CopyGroupHistory copyGroupHistory, Boolean pin, LocalDateTime updateAt) {
+    public GptCopyHistory(String content, CopyGroupHistory copyGroupHistory, Boolean pin, LocalDateTime updateAt) {
         this.content = content;
-        this.state = state;
         this.copyGroupHistory = copyGroupHistory;
         this.pin = pin;
         this.updateAt = updateAt;

@@ -69,27 +69,27 @@ public class CopyGroupService {
 
     @Transactional
     public Long createCopyGroup(User user, CopyGroupDto createDto) {
-        if (Integer.parseInt(createDto.getCreateCount()) != createDto.getCopyList().size()) {
+        if (createDto.getCreateCount() != createDto.getCopyList().size()) {
             throw new GlobalException(ErrorCode.VALIDATION_FAIL);
         }
 
         CopyGroup copyGroup = CopyGroup.builder()
                 .coupGroupName(createDto.getCopyGroupName())
-                .tag(createDto.getTag())
                 .brandName(createDto.getBrandName())
                 .productName(createDto.getProductName())
                 .keyword(createDto.getKeyword())
                 .copyType(createDto.getType())
                 .favorite(false)
-                .createCount(Integer.parseInt(createDto.getCreateCount()))
-                .copyLength(Integer.parseInt(createDto.getCopyLength()))
+                .createCount(createDto.getCreateCount())
+                .copyLength(createDto.getCopyLength())
                 .user(user)
+                .unableEdit(false)
                 .gptCopyList(new ArrayList<>())
                 .build();
 
         List<GptCopyDto> copyList = createDto.getCopyList();
         for (GptCopyDto gptCopyDto : copyList) {
-            copyGroup.addGptCopy(new GptCopy(gptCopyDto.getContent(), gptCopyDto.getState(), copyGroup, gptCopyDto.getPin(), null));
+            copyGroup.addGptCopy(new GptCopy(gptCopyDto.getContent(), copyGroup, gptCopyDto.getPin(), LocalDateTime.now(), null));
         }
 
         return copyGroupRepository.save(copyGroup).getCopyGroupId();
@@ -97,10 +97,17 @@ public class CopyGroupService {
 
     @Transactional
     public CopyGroupDto updateCopyGroup(User user,CopyGroupDto copyGroupDto, Long copyGroupId) {
+
         CopyGroup copyGroup = copyGroupRepository.findById(copyGroupId).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
+
+        if(copyGroup.getUnableEdit()==true){
+            throw new GlobalException(ErrorCode.CANT_EDIT);
+        }
+
         copyGroupHistoryRepository.save(new CopyGroupHistory(copyGroup));
 
         List<GptCopy> gptCopyList = copyGroup.getGptCopyList();
+        GptCopy gptCopyDel = gptCopyList.get(0);
         for (GptCopy gptCopy : gptCopyList) {
             gptCopyRepository.delete(gptCopy);
         }
@@ -108,7 +115,7 @@ public class CopyGroupService {
                 copyGroupDto
                         .getCopyList()
                         .stream()
-                        .map(c-> new GptCopy(c.getContent(),c.getState(),copyGroup,c.getPin(), LocalDateTime.now()))
+                        .map(c-> new GptCopy(c.getContent(),copyGroup,c.getPin(), gptCopyDel.getCreatedAt() , LocalDateTime.now()))
                         .toList());
 
         em.flush();
@@ -168,17 +175,6 @@ public class CopyGroupService {
 
         copyGroup.clickFavorite(requestDto.getFavorite());
         return requestDto;
-    }
-
-    @Transactional
-    public CopyReportResponseDto CopyReport(User user , Long copyId){
-
-        GptCopy gptCopy = gptCopyRepository.findById(copyId).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
-        if(gptCopy.getCopyGroup().getUser().getUserId() != user.getUserId()){
-            throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
-        }
-        gptCopy.report();
-        return new CopyReportResponseDto("success");
     }
 
 }
