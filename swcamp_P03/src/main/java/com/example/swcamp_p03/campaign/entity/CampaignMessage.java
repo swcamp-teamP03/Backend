@@ -15,6 +15,7 @@ public class CampaignMessage {
     private Long campaignMessageId;
     private String message;
     private String messageSection;
+    private String sendRequestId;
 
     @ManyToOne
     @JoinColumn(name = "CAMPAIGN_ID")

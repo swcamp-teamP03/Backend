@@ -17,7 +17,8 @@ public class SendMessages {
     private Long sendMessagesId;
     private String name;
     private String phoneNumber;
-    private String sendCheck;
+    private Boolean sendCheck;
+    private String sendState;
     private String errorMessage;
     private String uniqueUrl;
     private LocalDateTime sendDateTime;

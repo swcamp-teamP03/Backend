@@ -75,7 +75,6 @@ public class CustomerGroupDetailSql extends CustomerGroupDataInit {
         private String propertyValue;
 
         public CustomerPropertyDto(CustomerProperty customerProperty) {
-            this.propertyName = customerProperty.getPropertyName();
             this.propertyValue = customerProperty.getPropertyValue();
         }
     }
