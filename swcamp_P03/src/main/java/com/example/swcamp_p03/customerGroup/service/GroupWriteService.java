@@ -25,7 +25,9 @@ import com.example.swcamp_p03.customerGroup.repository.history.CustomerGroupHist
 import com.example.swcamp_p03.customerGroup.repository.history.CustomerPropertyHistoryRepository;
 import com.example.swcamp_p03.customerGroup.repository.history.ExcelDataHistoryRepository;
 import com.example.swcamp_p03.customerGroup.repository.history.ExcelFileHistoryRepository;
+import com.example.swcamp_p03.customerGroup.entity.ExcelDownload;
 import com.example.swcamp_p03.user.entity.User;
+import com.example.swcamp_p03.customerGroup.repository.ExcelDownloadRepository;
 import com.example.swcamp_p03.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +70,7 @@ public class GroupWriteService {
     private final ExcelDataHistoryRepository excelDataHistoryRepository;
     private final ExcelFileHistoryRepository excelFileHistoryRepository;
     private final ValidCheck validCheck;
+    private final ExcelDownloadRepository excelDownLoadRepository;
 
     private final String EXCEL_DIR = System.getProperty("user.dir") + "\\excelFile\\";
 
@@ -328,10 +331,11 @@ public class GroupWriteService {
         if (matches) {
             UrlResource resource = new UrlResource("file:" + excelFile.getExcelFileSavedPath());
             String encodedFileName = UriUtils.encode(excelFile.getExcelFileOrgName(), StandardCharsets.UTF_8);
-
             // 파일 다운로드 대화상자가 뜨도록 하는 헤더를 설정해주는 것
             // Content-Disposition 헤더에 attachment; filename="업로드 파일명" 값을 준다.
             String contentDisposition = "attachment; filename=\"" + encodedFileName + "\"";
+            ExcelDownload download = new ExcelDownload(requestDto.getDownloadReason(), user);
+            excelDownLoadRepository.save(download);
             return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition).body(resource);
         } else {
             throw new GlobalException(ErrorCode.NOT_VALID_DOWNLOAD);
