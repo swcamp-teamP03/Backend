@@ -41,7 +41,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                         excelData.excelDataId.count()
                 ))
                 .from(customerGroup)
-                .leftJoin(customerGroup.excelFile, excelFile).fetchJoin()
+                .leftJoin(customerGroup.excelFile, excelFile)
                 .leftJoin(excelData).on(excelFile.eq(excelData.excelFile))
                 .where(userEq(user))
                 .offset(pageable.getOffset())

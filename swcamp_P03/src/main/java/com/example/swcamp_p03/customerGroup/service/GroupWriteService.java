@@ -174,6 +174,9 @@ public class GroupWriteService {
         CustomerGroup findGroup = customerGroupRepository.findByCustomerGroupIdAndUser(groupId, userDetails.getUser()).orElseThrow(
                 () -> new GlobalException(ErrorCode.CANT_EDIT)
         );
+        if (findGroup.getUnableEdit()) {
+            throw new GlobalException(ErrorCode.CANT_EDIT);
+        }
         // 업데이트 가장 최근 파일 불러옴
 
         MultipartFile multipartFile = requestDto.getFile();

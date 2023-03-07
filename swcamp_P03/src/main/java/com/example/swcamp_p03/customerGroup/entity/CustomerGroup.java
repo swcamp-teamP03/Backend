@@ -18,6 +18,7 @@ public class CustomerGroup {
     private Long customerGroupId;
     private String customerGroupName;
     private Boolean favorite;
+    private Boolean unableEdit;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

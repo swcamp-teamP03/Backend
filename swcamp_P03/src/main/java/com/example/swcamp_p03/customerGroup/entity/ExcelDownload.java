@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,6 +16,7 @@ public class ExcelDownload {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long excelDownloadId;
     private String downloadReason;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
@@ -23,5 +25,6 @@ public class ExcelDownload {
     public ExcelDownload(String downloadReason, User user) {
         this.downloadReason = downloadReason;
         this.user = user;
+        this.createdAt = LocalDateTime.now();
     }
 }
