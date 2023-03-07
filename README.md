@@ -85,8 +85,8 @@ feat: 컬렉션뷰 ViewController 에 적용
 ## 🌟 ERD 🌟
 ```mermaid
 erDiagram
-	User ||--o{ CustomerGroup : ""
-  	User ||--o{ CopyGroup : ""
+  User ||--o{ CustomerGroup : ""
+  User ||--o{ CopyGroup : ""
 	User ||--o{ Campaign : ""
 	User ||--o{ ExcelDownload : ""
 	CustomerGroup  ||--o{ GroupProperty : ""
@@ -101,9 +101,9 @@ erDiagram
 	CopyGroupHistory ||--o{ GptCopyHistory : ""
 	Campaign ||--o{ CampaignMessage : ""
 	Campaign ||--o{ SendMessages : ""
-	Campaign ||--|| CustomerGroup  : ""
-	Campaign ||--|| CopyGroup : ""
-
+	CustomerGroup ||--o{ Campaign : ""
+	CopyGroup ||--o{ Campaign : ""
+	CampaignMessage ||--o{ SendMessages : ""
 
 	User {
 		Long userId PK
@@ -118,7 +118,7 @@ erDiagram
 	}
 	CustomerGroup {
 		Long customerGroupId PK
-    		Long userId FK
+    Long userId FK
 		Long excelFileId FK
 		String groupName
 		Boolean likeCheck
@@ -133,7 +133,7 @@ erDiagram
 		Boolean likeCheck
 		LocalDateTime createdAt
 		Boolean unableEdit
- 	}
+  }
 	GroupProperty {
 		Long groupPropertyId PK
 		Long customerGroupId FK
@@ -145,7 +145,7 @@ erDiagram
 		Long customerGroupHistoryId FK
 		String propertyValue
 		LocalDateTime createdAt
-  	}
+  }
 	ExcelFile {
 		Long excelFileId PK
 		String excelFileOrgName
@@ -176,7 +176,7 @@ erDiagram
 	}
 	CopyGroup {
 		Long copyGroupId PK
-   		Long userId FK
+    Long userId FK
 		String copyGroupName
 		String brandName
 		String productName
@@ -225,7 +225,7 @@ erDiagram
 		Long userId FK
 		Long customerGroupId FK
 		Long CopyGroupId FK 
-    		String messageType
+    String messageType
 		String sendType
 		String sendURL
 		LocalDateTime sendingDate
@@ -239,13 +239,15 @@ erDiagram
 	}
 	SendMessages {
 		Long sendMessageId PK
-    		LocalDateTime sendDateTime
+		Long campaginId FK
+		Long campaignMessageId FK 
+    LocalDateTime sendDateTime
 		String name
 	  String phoneNumber
 		Boolean sendCheck
 		String errorMessage
 		String uniqueUrl
-    		LocalDateTime visitedTime
+    LocalDateTime visitedTime
 		LocalDate visitedDate
 	}
 	ExcelDownload {
