@@ -58,6 +58,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                         customerGroup.count()
                 )
                 .from(customerGroup)
+                .where(customerGroup.user.eq(user))
                 .fetchOne();
         PageImpl<GroupListDto> groupListDtos = new PageImpl<>(result, pageable, count);
         return new TotalGroupResponseDto(groupListDtos.getTotalPages(), groupListDtos.getContent());
@@ -73,7 +74,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                 .fetchOne();
         List<GroupCampaignDto> campaignDtoList = jpaQueryFactory.select(Projections.constructor(GroupCampaignDto.class,
                         campaign.campaignName,
-                        campaign.sendingDate))
+                        campaign.createdAt))
                 .from(campaign)
                 .join(campaign.customerGroup, customerGroup)
                 .fetch();
@@ -114,6 +115,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                         customerGroup.count()
                 )
                 .from(customerGroup)
+                .where(customerGroup.user.eq(searchDto.getUser()))
                 .fetchOne();
         PageImpl<GroupListDto> groupListDtos = new PageImpl<>(result, searchDto.getPageable(), count);
         return new TotalGroupResponseDto(groupListDtos.getTotalPages(), groupListDtos.getContent());
