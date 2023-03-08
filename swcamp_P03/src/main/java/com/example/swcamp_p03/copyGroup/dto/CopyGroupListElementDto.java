@@ -20,9 +20,9 @@ public class CopyGroupListElementDto {
 //        this.copyName = e.getCoupGroupName();
 //    }
 
-    public CopyGroupListElementDto(Long copyId, String createDate, Boolean like, String copyName) {
+    public CopyGroupListElementDto(Long copyId, LocalDateTime createDate, Boolean like, String copyName) {
         this.copyId = copyId;
-        this.createDate = createDate;
+        this.createDate = createDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         this.like = like;
         this.copyName = copyName;
     }
