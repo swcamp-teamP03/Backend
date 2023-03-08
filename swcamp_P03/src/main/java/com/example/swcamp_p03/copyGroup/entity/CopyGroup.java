@@ -58,4 +58,8 @@ public class CopyGroup {
             gptCopyList.add(gptCopy);
         }
     }
+
+    public void makeUnableEdit(){
+        unableEdit = true;
+    }
 }

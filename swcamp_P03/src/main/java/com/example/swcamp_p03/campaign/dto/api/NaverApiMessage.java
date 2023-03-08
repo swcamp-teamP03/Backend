@@ -1,4 +1,4 @@
-package com.example.swcamp_p03.campaign.dto;
+package com.example.swcamp_p03.campaign.dto.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

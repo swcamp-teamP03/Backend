@@ -5,9 +5,8 @@ import com.example.swcamp_p03.copyGroup.entity.history.CopyGroupHistory;
 import com.example.swcamp_p03.customerGroup.entity.CustomerGroup;
 import com.example.swcamp_p03.customerGroup.entity.history.CustomerGroupHistory;
 import com.example.swcamp_p03.user.entity.User;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.procedure.spi.ParameterRegistrationImplementor;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTabJc;
 
 import javax.persistence.*;
@@ -16,6 +15,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class Campaign {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +28,7 @@ public class Campaign {
     private LocalDateTime sendingDate;
     private LocalDateTime createdAt;
     private Boolean favorite;
+    private String apiKey;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
@@ -37,4 +39,8 @@ public class Campaign {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COPY_GROUP_ID")
     private CopyGroup copyGroup;
+
+    public void addApiKey(String apiKey){
+        this.apiKey = apiKey;
+    }
 }

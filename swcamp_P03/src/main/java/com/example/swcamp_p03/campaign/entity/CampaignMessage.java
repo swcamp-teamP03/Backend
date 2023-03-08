@@ -1,14 +1,14 @@
 package com.example.swcamp_p03.campaign.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class CampaignMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +20,8 @@ public class CampaignMessage {
     @ManyToOne
     @JoinColumn(name = "CAMPAIGN_ID")
     private Campaign campaign;
+
+    public void addSendRequestId(String sendRequestId){
+        this.sendRequestId = sendRequestId;
+    }
 }

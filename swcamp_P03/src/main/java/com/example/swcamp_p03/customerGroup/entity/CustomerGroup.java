@@ -47,4 +47,8 @@ public class CustomerGroup {
         this.customerGroupName = customerGroupName;
     }
 
+    public void makeUnableEdit(){
+        unableEdit = true;
+    }
+
 }

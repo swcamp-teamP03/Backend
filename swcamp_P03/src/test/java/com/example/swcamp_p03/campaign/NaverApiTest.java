@@ -1,10 +1,9 @@
 package com.example.swcamp_p03.campaign;
 
-import com.example.swcamp_p03.campaign.dto.NaverApiMessage;
-import com.example.swcamp_p03.campaign.dto.NaverApiRequestDto;
+import com.example.swcamp_p03.campaign.dto.api.NaverApiMessage;
+import com.example.swcamp_p03.campaign.dto.api.NaverApiRequestDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +13,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @SpringBootTest
