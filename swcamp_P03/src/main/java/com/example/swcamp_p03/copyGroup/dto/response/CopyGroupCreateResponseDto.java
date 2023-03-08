@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CopyGroupCreateResponseDto {
-    private String copyId;
+    private Long copyId;
     private String result;
 }

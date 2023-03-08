@@ -9,14 +9,14 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class GptCopyDto {
-    private String copyId;
+    private Long copyId;
     private String content;
     private Boolean pin;
     private LocalDateTime createDate;
 
 
     public GptCopyDto(GptCopy gptCopy) {
-        copyId = gptCopy.getGptCopyId().toString();
+        copyId = gptCopy.getGptCopyId();
         content = gptCopy.getContent();
         createDate = gptCopy.getCreatedAt();
         pin = gptCopy.getPin();

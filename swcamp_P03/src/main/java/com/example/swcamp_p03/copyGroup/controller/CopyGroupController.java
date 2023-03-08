@@ -31,7 +31,7 @@ public class CopyGroupController {
     @PostMapping("/copy")
     public ResponseDto<CopyGroupCreateResponseDto> createCopyGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CopyGroupDto copyGroupDto){
         Long copyGroupId = copyGroupService.createCopyGroup(userDetails.getUser(), copyGroupDto);
-        return ResponseDto.success(new CopyGroupCreateResponseDto(copyGroupId.toString(), "success"));
+        return ResponseDto.success(new CopyGroupCreateResponseDto(copyGroupId, "success"));
     }
 
     @PutMapping("/copy/{copyGroupId}")
@@ -55,7 +55,7 @@ public class CopyGroupController {
                 + requestDto.getCopyLength() + "글자에 맞춰 써줘.";
 
         CreateCopyResponseDto responseDto = new CreateCopyResponseDto();
-        for(int i = 0; i<Integer.parseInt(requestDto.getCreateCount()); i++){
+        for(int i = 0; i< requestDto.getCreateCount(); i++){
             responseDto.addCopy(copyGroupService.getGptCopy(question));
         }
 
