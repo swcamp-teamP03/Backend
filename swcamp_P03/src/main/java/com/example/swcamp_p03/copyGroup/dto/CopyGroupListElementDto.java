@@ -7,13 +7,13 @@ import java.time.LocalDateTime;
 
 @Getter
 public class CopyGroupListElementDto {
-    private String copyId;
+    private Long copyId;
     private LocalDateTime createDate;
     private Boolean like;
     private String copyName;
 
     public CopyGroupListElementDto(CopyGroup e) {
-        this.copyId = e.getCopyGroupId().toString();
+        this.copyId = e.getCopyGroupId();
         this.createDate = e.getCreatedAt();
         this.like = e.getFavorite();
         this.copyName = e.getCoupGroupName();

@@ -7,11 +7,11 @@ import java.util.List;
 
 @Getter
 public class CopyGroupListResponseDto {
-    private String totalCopy;
+    private int totalCopy;
     private List<CopyGroupListElementDto> GroupList;
 
     public CopyGroupListResponseDto(int totalCopy, List<CopyGroupListElementDto> copyList) {
-        this.totalCopy = String.valueOf(totalCopy);
+        this.totalCopy = totalCopy;
         this.GroupList = copyList;
     }
 }
