@@ -1,6 +1,7 @@
 package com.example.swcamp_p03.campaign.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +18,8 @@ public class SendMessages {
     private Long sendMessagesId;
     private String name;
     private String phoneNumber;
-    private String sendCheck;
+    private Boolean sendCheck;
+    private String sendState;
     private String errorMessage;
     private String uniqueUrl;
     private LocalDateTime sendDateTime;
@@ -31,4 +33,13 @@ public class SendMessages {
     @ManyToOne
     @JoinColumn(name = "CAMPAIGN_ID")
     private Campaign campaign;
+
+    @Builder(builderClassName = "testInsert",builderMethodName = "testInsert")
+    public SendMessages(String name, Boolean sendCheck, LocalDateTime sendDateTime, CampaignMessage campaignMessage, Campaign campaign) {
+        this.name = name;
+        this.sendCheck = sendCheck;
+        this.sendDateTime = sendDateTime;
+        this.campaignMessage = campaignMessage;
+        this.campaign = campaign;
+    }
 }
