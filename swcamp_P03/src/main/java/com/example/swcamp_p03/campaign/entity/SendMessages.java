@@ -33,4 +33,9 @@ public class SendMessages {
     @ManyToOne
     @JoinColumn(name = "CAMPAIGN_ID")
     private Campaign campaign;
+
+    public void updateData(String sendState,String errorMessage){
+        this.sendState = sendState;
+        this.errorMessage = errorMessage;
+    }
 }

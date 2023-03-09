@@ -11,4 +11,6 @@ import java.util.Optional;
 
 public interface SendMessagesRepository extends JpaRepository<SendMessages,Long> {
     Optional<SendMessages> findByUniqueUrl(String uniqueUrl);
+    List<SendMessages> findAllByCampaign(Campaign campaign);
+
 }

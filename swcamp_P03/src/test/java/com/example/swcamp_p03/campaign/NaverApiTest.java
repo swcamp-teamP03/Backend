@@ -1,6 +1,7 @@
 package com.example.swcamp_p03.campaign;
 
 import com.example.swcamp_p03.campaign.dto.api.NaverApiMessage;
+import com.example.swcamp_p03.campaign.dto.api.NaverApiMessageResultDto;
 import com.example.swcamp_p03.campaign.dto.api.NaverApiRequestDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootTest
 @Transactional
@@ -42,7 +44,7 @@ public class NaverApiTest {
 //        headers.add("Content-type", "application/json; charset=utf-8");
 //        headers.add("x-ncp-apigw-timestamp", timestamp);
 //        headers.add("x-ncp-iam-access-key", messageSource.getMessage("key.naverAccess",null,null));
-//        headers.add("x-ncp-apigw-signature-v2", makeSignature(timestamp, uri));
+//        headers.add("x-ncp-apigw-signature-v2", makeSignature(timestamp, uri, "POST"));
 
         // Body 생성
         ArrayList<NaverApiMessage> messages = new ArrayList<>();
@@ -71,6 +73,8 @@ public class NaverApiTest {
                 String.class
         );
 
+
+
 //        System.out.println("bodyJson = " + body);
 
         // HTTP 응답 (JSON)
@@ -88,6 +92,51 @@ public class NaverApiTest {
 //        System.out.println("jsonNode = " + jsonNode);
 //        System.out.println("answer = " + returnVal);
 //        responseBody = {"statusCode":"202","statusName":"success","requestId":"VORSSA-1678195573358-3988-57284298-VYpgGaRD","requestTime":"2023-03-07T22:26:13.358"}
+    }
+
+    @Test
+    public void getNaverApiRequestResultTest() throws Exception {
+        String timestamp = Long.toString(System.currentTimeMillis());
+        String requestId = "VORSSA-1678340434941-1843-57284298-SZzDXTJp";
+
+        String url = "https://sens.apigw.ntruss.com/sms/v2/services/" + messageSource.getMessage("key.naverserviceId", null, null) + "/messages?requestId=" + requestId;
+        String uri = "/sms/v2/services/" + messageSource.getMessage("key.naverserviceId", null, null) + "/messages?requestId=" + requestId;
+
+        // HTTP Header 생성
+        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Content-type", "application/json; charset=utf-8");
+        headers.add("x-ncp-apigw-timestamp", timestamp);
+        headers.add("x-ncp-iam-access-key", messageSource.getMessage("key.naverAccess",null,null));
+        headers.add("x-ncp-apigw-signature-v2", makeSignature(timestamp, uri, "GET"));
+
+        // HTTP 요청 보내기
+        HttpEntity<String> Request =new HttpEntity<>("",headers);
+        System.out.println("Request = " + Request);
+        RestTemplate rt = new RestTemplate();
+        ResponseEntity<String> response = rt.exchange(
+                url,
+                HttpMethod.GET,
+                Request,
+                String.class
+        );
+
+        // HTTP 응답 (JSON)
+        String responseBody = response.getBody();
+//        System.out.println("responseBody = " + responseBody);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+
+
+        //데이터 파싱
+        System.out.println("jsonNode = " + jsonNode);
+        int itemCount = jsonNode.get("itemCount").asInt();
+        System.out.println("itemCount = " + itemCount);
+
+        for(int i=0;i<itemCount;i++){
+            NaverApiMessageResultDto messages = objectMapper.readValue(jsonNode.get("messages").get(i).toString(), NaverApiMessageResultDto.class);
+            System.out.println("messages = " + messages);
+        }
     }
 
     @Test
@@ -111,15 +160,15 @@ public class NaverApiTest {
         System.out.println("dto = " + mapper.writeValueAsString(dto));
 
         long timestamp = System.currentTimeMillis();
-        String signature = makeSignature(Long.toString(timestamp), "/sms/v2/services/" + messageSource.getMessage("key.naverserviceId", null, null) + "/messages");
+        String signature = makeSignature(Long.toString(timestamp), "/sms/v2/services/" + messageSource.getMessage("key.naverserviceId", null, null) + "/messages", "GET");
         System.out.println("signature = " + signature);
         System.out.println("timestamp = " + timestamp);
     }
 
-    public String makeSignature(String timestamp, String url) throws Exception{
+    public String makeSignature(String timestamp, String url, String method) throws Exception{
         String space = " ";					// one space
         String newLine = "\n";					// new line
-        String method = "POST";					// method
+//        String method = "POST";					// method
 //        String url = ;	// url (include query string)
 //        String timestamp = Instant.now();			// current timestamp (epoch)
         String accessKey = messageSource.getMessage("key.naverAccess",null,null);			// access key id (from portal or Sub Account)
