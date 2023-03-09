@@ -92,7 +92,7 @@ public class CampaignController {
     }
 
     @GetMapping("/campaigns/{campaignId}")
-    public ResponseDto<CampaignDetailDto> getDetailCampaign(@PathVariable Long campaignId) {
+    public ResponseDto<CampaignDetailDto> getDetailCampaign(@PathVariable Long campaignId) throws Exception {
         return campaignReadService.getDetailCampaign(campaignId);
     }
 
