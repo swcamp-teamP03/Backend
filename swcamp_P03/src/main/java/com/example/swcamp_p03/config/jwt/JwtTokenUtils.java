@@ -13,22 +13,22 @@ import static com.example.swcamp_p03.config.jwt.JwtProperties.*;
 @Component
 public class JwtTokenUtils {
 
-//    @Value("${jwt.secretKey}")
-    private String JWT_SECRET = "aaaaa";
+    @Value("${jwt.secretKey}")
+    private String JWT_SECRET;
 
     public String generateJwtToken(UserDetailsImpl userDetailsImpl) {
         return JWT.create()
                 .withSubject(SUBJECT)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .withClaim(CLAIM_USERID, userDetailsImpl.getUser().getUsername())
+                .withClaim(CLAIM_USER_EMAIL, userDetailsImpl.getUser().getEmail())
                 .sign(Algorithm.HMAC512(JWT_SECRET));
     }
 
 
-    public String extractUserId(String jwtToken) {
+    public String extractUserEmail(String jwtToken) {
 
         return JWT.require(Algorithm.HMAC512(JWT_SECRET)).build()
                 .verify(jwtToken)
-                .getClaim(CLAIM_USERID).asString();
+                .getClaim(CLAIM_USER_EMAIL).asString();
     }
 }

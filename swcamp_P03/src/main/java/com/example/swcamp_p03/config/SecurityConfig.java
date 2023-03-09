@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity
@@ -23,6 +24,8 @@ public class SecurityConfig {
 
     private final JwtTokenUtils jwtTokenUtils;
     private final UserRepository userRepository;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
+    private final CharacterEncodingFilter filter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,16 +33,24 @@ public class SecurityConfig {
                 http.getSharedObject(AuthenticationConfiguration.class));
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(
                 authenticationManager, jwtTokenUtils);
+        jwtAuthenticationFilter.setUsernameParameter("email");
+
+        filter.setEncoding("UTF-8");
+        filter.setForceEncoding(true);
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(corsFilter())
                 .formLogin().disable()
                 .httpBasic().disable()
+                .addFilter(corsFilter())
+                .addFilterBefore(exceptionHandlerFilter, JwtAuthenticationFilter.class)
                 .addFilter(jwtAuthenticationFilter)
                 .addFilter(
                         new JwtAuthorizationFilter(authenticationManager, userRepository, jwtTokenUtils))
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+        http
                 .authorizeRequests()
                 .antMatchers("/sign").permitAll()
                 .anyRequest().authenticated();

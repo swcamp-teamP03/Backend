@@ -12,7 +12,11 @@ public enum ErrorCode {
     NOT_EXCEL_FILE(HttpStatus.BAD_REQUEST, "CUSTOMER_GROUP_02","엑셀 파일이 아닙니다."),
     NOT_VALID_DOWNLOAD(HttpStatus.BAD_REQUEST,"CUSTOMER_GROUP_03","비밀번호가 일치 하지 않아 다운로드 할 수 없습니다."),
     NOT_VALID_EXCEL_USERNAME(HttpStatus.BAD_REQUEST,"CUSTOMER_GROUP_04","이름이 유효하지 않습니다."),
-    NOT_VALID_EXCEL_PHONE_NUMBER(HttpStatus.BAD_REQUEST,"CUSTOMER_GROUP_05","전화번호가 유효하지 않습니다.")
+    NOT_VALID_EXCEL_PHONE_NUMBER(HttpStatus.BAD_REQUEST,"CUSTOMER_GROUP_05","전화번호가 유효하지 않습니다."),
+    EXIST_EMAIL(HttpStatus.BAD_REQUEST, "USER_01", "존재하는 이메일 입니다."),
+    TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "USER-02", "토큰 유효시간이 지났습니다."),
+    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "USER-03", "유효하지 않는 토큰입니다."),
+    INVALID_USER(HttpStatus.BAD_REQUEST, "USER-04","아이디 또는 비밀번호가 유효하지 않습니다."),
     ;
 
     ErrorCode(HttpStatus httpStatus, String code, String message) {
