@@ -5,10 +5,7 @@ import com.example.swcamp_p03.copyGroup.entity.history.CopyGroupHistory;
 import com.example.swcamp_p03.customerGroup.entity.CustomerGroup;
 import com.example.swcamp_p03.customerGroup.entity.history.CustomerGroupHistory;
 import com.example.swcamp_p03.user.entity.User;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTabJc;
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Campaign {
     @Id
@@ -50,4 +48,5 @@ public class Campaign {
         this.favorite = favorite;
         this.user = user;
     }
+
 }
