@@ -26,6 +26,7 @@ public class Campaign {
     private LocalDateTime sendingDate;
     private LocalDateTime createdAt;
     private Boolean favorite;
+    private String apiKey;
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)

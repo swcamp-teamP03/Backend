@@ -11,6 +11,7 @@ import com.example.swcamp_p03.copyGroup.entity.history.CopyGroupHistory;
 import com.example.swcamp_p03.copyGroup.repository.CopyGroupRepository;
 import com.example.swcamp_p03.copyGroup.repository.GptCopyRepository;
 import com.example.swcamp_p03.copyGroup.repository.history.CopyGroupHistoryRepository;
+import com.example.swcamp_p03.customerGroup.dto.SearchDto;
 import com.example.swcamp_p03.user.entity.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,20 +45,13 @@ public class CopyGroupService {
     private final CopyGroupHistoryRepository copyGroupHistoryRepository;
     private final EntityManager em;
 
-
-    public CopyGroupListResponseDto copyGroupList( User user, int page, int size){
-        Pageable pageable = PageRequest.of(page, size);
-        List<CopyGroupListElementDto> list = copyGroupRepository
-                .findAllByUser(user,pageable)
-                    .stream()
-                    .map(e -> new CopyGroupListElementDto(e))
-                    .toList();
-        return new CopyGroupListResponseDto(list.size(),list);
+    public CopyGroupListResponseDto copyGroupList(User user, Pageable pageable) {
+        return copyGroupRepository.findTotalCopyGroup(user, pageable);
     }
 
-    public CopyGroupDto getCopyGroup( User user, Long copyGroupId){
+    public CopyGroupDto getCopyGroup(User user, Long copyGroupId) {
         CopyGroup copyGroup = copyGroupRepository.findById(copyGroupId).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
-        if(user.getUserId() != copyGroup.getUser().getUserId()){
+        if (user.getUserId() != copyGroup.getUser().getUserId()) {
             throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
         }
         CopyGroupDto responseDto = new CopyGroupDto(copyGroup);
@@ -96,11 +90,11 @@ public class CopyGroupService {
     }
 
     @Transactional
-    public CopyGroupDto updateCopyGroup(User user,CopyGroupDto copyGroupDto, Long copyGroupId) {
+    public CopyGroupDto updateCopyGroup(User user, CopyGroupDto copyGroupDto, Long copyGroupId) {
 
         CopyGroup copyGroup = copyGroupRepository.findById(copyGroupId).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
 
-        if(copyGroup.getUnableEdit()==true){
+        if (copyGroup.getUnableEdit() == true) {
             throw new GlobalException(ErrorCode.CANT_EDIT);
         }
 
@@ -115,7 +109,7 @@ public class CopyGroupService {
                 copyGroupDto
                         .getCopyList()
                         .stream()
-                        .map(c-> new GptCopy(c.getContent(),copyGroup,c.getPin(), gptCopyDel.getCreatedAt() , LocalDateTime.now()))
+                        .map(c -> new GptCopy(c.getContent(), copyGroup, c.getPin(), gptCopyDel.getCreatedAt(), LocalDateTime.now()))
                         .toList());
 
         em.flush();
@@ -127,7 +121,7 @@ public class CopyGroupService {
         return responseDto;
     }
 
-    public String getGptCopy(String question) throws Exception{
+    public String getGptCopy(String question) throws Exception {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/json");
@@ -138,13 +132,13 @@ public class CopyGroupService {
                 "  \"model\": \"text-davinci-003\",\r\n" +
                 "    \"prompt\": \"" + question + "\",\r\n" +
                 "    \"max_tokens\": 2000,\r\n" +
-                "    \"user\": \"1\"\r\n"+
+                "    \"user\": \"1\"\r\n" +
                 "}";
 
         log.trace("bodyJson = {}", bodyJson);
 
         // HTTP 요청 보내기
-        HttpEntity<String> kakaoTokenRequest =new HttpEntity<>(bodyJson,headers);
+        HttpEntity<String> kakaoTokenRequest = new HttpEntity<>(bodyJson, headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
                 "https://api.openai.com/v1/completions",
@@ -157,7 +151,7 @@ public class CopyGroupService {
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
-        String answer  = jsonNode.get("choices").get(0).get("text").asText();
+        String answer = jsonNode.get("choices").get(0).get("text").asText();
 
 
         log.trace("jsonNode = {}", jsonNode);
@@ -167,9 +161,9 @@ public class CopyGroupService {
     }
 
     @Transactional
-    public CopyGroupLikeDto CopyGroupLike(User user , Long copyGroupId, CopyGroupLikeDto requestDto) {
+    public CopyGroupLikeDto CopyGroupLike(User user, Long copyGroupId, CopyGroupLikeDto requestDto) {
         CopyGroup copyGroup = copyGroupRepository.findById(copyGroupId).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
-        if(user.getUserId()!=copyGroup.getUser().getUserId()){
+        if (user.getUserId() != copyGroup.getUser().getUserId()) {
             throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
         }
 
@@ -177,4 +171,7 @@ public class CopyGroupService {
         return requestDto;
     }
 
+    public CopyGroupListResponseDto getSearch(SearchDto searchDto) {
+        return copyGroupRepository.findSearch(searchDto);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.swcamp_p03.campaign.controller;
 
 import com.example.swcamp_p03.campaign.dto.request.CommentRequestDto;
+import com.example.swcamp_p03.campaign.dto.response.CampaignDetailDto;
 import com.example.swcamp_p03.campaign.dto.response.TotalCampaignResponseDto;
 import com.example.swcamp_p03.campaign.service.CampaignReadService;
 import com.example.swcamp_p03.campaign.service.CampaignWriteService;
@@ -15,6 +16,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 
 import java.time.LocalDate;
 
@@ -56,5 +62,9 @@ public class CampaignController {
     @PostMapping("/campaigns/{campaignId}/comment")
     public void writeComment(@PathVariable Long campaignId, @RequestBody CommentRequestDto requestDto) {
         campaignWriteService.writeComment(campaignId,requestDto);
+
+    @GetMapping("/campaigns/{campaignId}")
+    public ResponseDto<CampaignDetailDto> getDetailGroup(@PathVariable Long campaignId) {
+        return campaignReadService.getDetailCampaign(campaignId);
     }
 }

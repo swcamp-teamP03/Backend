@@ -7,7 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CopyGroupRepository extends JpaRepository<CopyGroup,Long> {
-    List<CopyGroup> findAllByUser(User user, Pageable pageable);
-    List<CopyGroup> findAllByFavorite(Boolean favorite, Pageable pageable);
+public interface CopyGroupRepository extends JpaRepository<CopyGroup,Long>,CopyGroupRepositoryCustom {
 }
