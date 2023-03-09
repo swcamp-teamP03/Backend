@@ -42,6 +42,7 @@ public class SecurityConfig {
                         new JwtAuthorizationFilter(authenticationManager, userRepository, jwtTokenUtils))
                 .authorizeRequests()
                 .antMatchers("/sign").permitAll()
+                .antMatchers("/*").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();

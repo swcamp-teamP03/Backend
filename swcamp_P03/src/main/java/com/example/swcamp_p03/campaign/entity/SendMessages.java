@@ -44,6 +44,11 @@ public class SendMessages {
         this.sendState = sendState;
         this.errorMessage = errorMessage;
     }
+
+    public void visitUrl(){
+        visitedTime = LocalDateTime.now();
+        visitedDate = LocalDate.now();
+    }
     
     @Builder(builderClassName = "testInsert",builderMethodName = "testInsert")
     public SendMessages(String name, Boolean sendCheck, LocalDateTime sendDateTime, CampaignMessage campaignMessage, Campaign campaign) {
