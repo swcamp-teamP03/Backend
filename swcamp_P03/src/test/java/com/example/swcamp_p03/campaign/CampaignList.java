@@ -38,28 +38,24 @@ public class CampaignList {
 
     @Test
     void test() {
-//        int page = 1;
-//        int size = 5;
-//        Pageable pageable = PageRequest.of(page, size);
-//        List<Tuple> fetch = jpaQueryFactory.select(
-//                        campaign.favorite,
-//                        campaign.campaignName,
-//                        campaign.messageType,
-//                        campaign.createdAt,
-//                        campaign.sendingDate,
-//                        sendMessages.campaign.count(),
-//                        sendMessages.visitedTime.count()
-//
-//                )
-//                .from(campaign)
-//                .leftJoin(sendMessages).on(campaign.eq(sendMessages.campaign))
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .groupBy(campaign)
-//                .fetch();
-//        System.out.println("fetch = " + fetch);
-        LocalDate now = LocalDate.now();
-        LocalDate to = LocalDate.of(2023, 4, 1);
-        System.out.println(now.compareTo(to));
+        int page = 1;
+        int size = 5;
+        Pageable pageable = PageRequest.of(page, size);
+        List<Tuple> fetch = jpaQueryFactory.select(
+                        campaign.favorite,
+                        campaign.campaignName,
+                        campaign.messageType,
+                        campaign.createdAt,
+                        campaign.sendingDate,
+                        sendMessages.campaign.count(),
+                        sendMessages.visitedTime.count()
+                )
+                .from(campaign)
+                .leftJoin(sendMessages).on(campaign.eq(sendMessages.campaign))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .groupBy(campaign)
+                .fetch();
+        System.out.println("fetch = " + fetch);
     }
 }
