@@ -53,6 +53,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests()
                 .antMatchers("/sign").permitAll()
+                .antMatchers("/*").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();

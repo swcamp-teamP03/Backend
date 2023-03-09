@@ -62,6 +62,18 @@ public class CampaignService {
     private final ExcelDataRepository excelDataRepository;
 
     @Transactional
+    public String visitUrl(String uniqueUrl){
+        log.info("uniqueUrl : {}", uniqueUrl);
+        SendMessages sendMessages = sendMessagesRepository.findByUniqueUrl(uniqueUrl).orElse(null);
+        if(sendMessages == null){
+            log.info("sendMessages = {}", sendMessages);
+            return messageSource.getMessage("frontUrl", null, null);
+        }
+        sendMessages.visitUrl();
+        return sendMessages.getCampaign().getSendURL();
+    }
+
+    @Transactional
     public SendMessageResponseDto getSendMessages(User user, Long campaignId) throws Exception{
         Campaign campaign = campaignRepository.findById(campaignId).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
         if(campaign.getUser().getUserId() != user.getUserId()){
