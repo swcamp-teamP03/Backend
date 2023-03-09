@@ -253,12 +253,20 @@ public class GroupWriteService {
             for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
                 String username = worksheet.getRow(i).getCell(0).getStringCellValue();
                 String phoneNumber = worksheet.getRow(i).getCell(1).getStringCellValue();
-                ExcelDataDto excelData = ExcelDataDto.excelDataRegister()
-                        .username(username)
-                        .phoneNumber(phoneNumber)
-                        .excelFileId(excelFile.getExcelFileId())
-                        .build();
-                dataList.add(excelData);
+                if (!username.equals("") || !phoneNumber.equals("")) {
+                    if (!validCheck.isUsername(username)) {
+                        throw new GlobalException(ErrorCode.NOT_VALID_EXCEL_USERNAME);
+                    } else if (!validCheck.isPhoneNumber(phoneNumber)) {
+                        throw new GlobalException(ErrorCode.NOT_VALID_EXCEL_PHONE_NUMBER);
+                    } else {
+                        ExcelDataDto excelData = ExcelDataDto.excelDataRegister()
+                                .username(username)
+                                .phoneNumber(phoneNumber)
+                                .excelFileId(excelFile.getExcelFileId())
+                                .build();
+                        dataList.add(excelData);
+                    }
+                }
             }
             excelDataRepository.bulkInsert(dataList);
 
