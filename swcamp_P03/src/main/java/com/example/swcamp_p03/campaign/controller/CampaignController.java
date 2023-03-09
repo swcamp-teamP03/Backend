@@ -61,10 +61,11 @@ public class CampaignController {
 
     @PostMapping("/campaigns/{campaignId}/comment")
     public void writeComment(@PathVariable Long campaignId, @RequestBody CommentRequestDto requestDto) {
-        campaignWriteService.writeComment(campaignId,requestDto);
+        campaignWriteService.writeComment(campaignId, requestDto);
+    }
 
     @GetMapping("/campaigns/{campaignId}")
-    public ResponseDto<CampaignDetailDto> getDetailGroup(@PathVariable Long campaignId) {
+    public ResponseDto<CampaignDetailDto> getDetailCampaign(@PathVariable Long campaignId) {
         return campaignReadService.getDetailCampaign(campaignId);
     }
 }
