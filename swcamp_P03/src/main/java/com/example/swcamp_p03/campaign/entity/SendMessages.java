@@ -1,9 +1,11 @@
 package com.example.swcamp_p03.campaign.entity;
 
+import lombok.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class SendMessages {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +25,7 @@ public class SendMessages {
     private Boolean sendCheck;
     private String sendState;
     private String errorMessage;
+    @Column(unique = true)
     private String uniqueUrl;
     private LocalDateTime sendDateTime;
     private LocalDateTime visitedTime;
@@ -34,6 +39,12 @@ public class SendMessages {
     @JoinColumn(name = "CAMPAIGN_ID")
     private Campaign campaign;
 
+
+    public void updateData(String sendState,String errorMessage){
+        this.sendState = sendState;
+        this.errorMessage = errorMessage;
+    }
+    
     @Builder(builderClassName = "testInsert",builderMethodName = "testInsert")
     public SendMessages(String name, Boolean sendCheck, LocalDateTime sendDateTime, CampaignMessage campaignMessage, Campaign campaign) {
         this.name = name;
