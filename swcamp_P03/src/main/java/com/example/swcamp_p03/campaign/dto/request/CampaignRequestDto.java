@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class CampaignRequestDto {
+    private String campaignName;
     private Long customerGroupId;
     private Long copyGroupId;
     private String messageType;

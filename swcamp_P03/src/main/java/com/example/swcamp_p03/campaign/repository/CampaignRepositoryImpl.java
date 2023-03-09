@@ -39,8 +39,8 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
     public TotalCampaignResponseDto findTotalCampaign(User user, Pageable pageable) {
         List<CampaignDto> result = jpaQueryFactory.select(Projections.constructor(CampaignDto.class,
                                 campaign.favorite,
-                                campaign.campaignName,
                                 campaign.messageType,
+                                campaign.campaignName,
                                 campaign.createdAt,
                                 campaign.sendingDate,
                                 sendMessages.visitedTime.count(),

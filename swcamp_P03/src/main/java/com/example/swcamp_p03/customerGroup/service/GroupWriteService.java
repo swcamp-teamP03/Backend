@@ -72,7 +72,7 @@ public class GroupWriteService {
     private final ValidCheck validCheck;
     private final ExcelDownloadRepository excelDownLoadRepository;
 
-    private final String EXCEL_DIR = System.getProperty("user.dir") + "\\excelFile\\";
+    private final String EXCEL_DIR = System.getProperty("user.dir") + "/excelFile/";
 
     // group 작성
     public void groupWrite(UserDetailsImpl userDetails, GroupWriteRequestDto requestDto) throws IOException {

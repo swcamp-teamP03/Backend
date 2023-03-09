@@ -41,6 +41,7 @@ public class CustomerGroup {
         this.createdAt = LocalDateTime.now();
         this.user = user;
         this.excelFile = excelFile;
+        this.unableEdit = false;
     }
 
     public void update(String customerGroupName) {

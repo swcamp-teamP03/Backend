@@ -118,6 +118,7 @@ public class CampaignService {
         }
 
         Campaign campaign = Campaign.builder()
+                .campaignName(requestDto.getCampaignName())
                 .createdAt(LocalDateTime.now())
                 .user(user)
                 .customerGroup(customerGroup)
