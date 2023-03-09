@@ -1,12 +1,11 @@
 package com.example.swcamp_p03.config.jwt;
 
 import com.example.swcamp_p03.config.UserDetailsImpl;
-import com.example.swcamp_p03.user.dto.RequestLogin;
+import com.example.swcamp_p03.user.dto.request.RequestLogin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -34,7 +33,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         log.info("로그인 시도중");
         try{
             RequestLogin user = new ObjectMapper().readValue(request.getInputStream(), RequestLogin.class);
-            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
             // UserDetailsService로 넘어감
             // authentication -> ProviderManager 구현체
             Authentication authentication = authenticationManager.authenticate(authRequest);
@@ -50,7 +49,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authResult.getPrincipal();
         String jwtToken = jwtTokenUtils.generateJwtToken(userDetailsImpl);
         response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwtToken);
-        log.info("로그인 완료 후 토큰 생성: " + jwtToken);
     }
 
     @Override

@@ -327,7 +327,7 @@ public class GroupWriteService {
 
     // 다운로드
     public ResponseEntity<Resource> fileDownload(Long groupId, UserDetailsImpl userDetails, FileDownloadRequestDto requestDto) throws MalformedURLException {
-        User user = userRepository.findByUsername(userDetails.getUsername()).get();
+        User user = userRepository.findByEmail(userDetails.getUser().getEmail()).get();
         CustomerGroup customerGroup = customerGroupRepository.findById(groupId).get();
         ExcelFile excelFile = customerGroup.getExcelFile();
         boolean matches = bCryptPasswordEncoder.matches(requestDto.getPassword(), user.getPassword());
