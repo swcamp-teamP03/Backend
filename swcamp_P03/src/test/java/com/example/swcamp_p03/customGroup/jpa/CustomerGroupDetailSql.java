@@ -59,7 +59,6 @@ public class CustomerGroupDetailSql extends CustomerGroupDataInit {
         private List<CustomerPropertyDto> customerProperties;
         private ExcelFileDto excelFileDto;
 
-
         public ResponseDto(CustomerGroup customerGroup,ExcelFileDto excelFileDto) {
             this.groupName = customerGroup.getCustomerGroupName();
             this.customerProperties = customerGroup.getPropertyList().stream()

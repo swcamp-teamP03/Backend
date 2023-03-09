@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
@@ -29,6 +30,7 @@ public class Campaign {
     private LocalDateTime createdAt;
     private Boolean favorite;
     private String apiKey;
+    private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
@@ -42,5 +44,15 @@ public class Campaign {
 
     public void addApiKey(String apiKey){
         this.apiKey = apiKey;
+    }
+
+    @Builder(builderClassName = "testInsert",builderMethodName = "testInsert")
+    public Campaign(String campaignName, String messageType, String sendType, LocalDateTime createdAt, LocalDateTime sendingDate, boolean favorite, User user) {
+        this.campaignName = campaignName;
+        this.messageType = messageType;
+        this.createdAt = createdAt;
+        this.sendingDate = sendingDate;
+        this.favorite = favorite;
+        this.user = user;
     }
 }

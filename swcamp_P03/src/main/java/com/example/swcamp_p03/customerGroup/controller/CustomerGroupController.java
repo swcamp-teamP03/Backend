@@ -45,7 +45,7 @@ public class CustomerGroupController {
     public ResponseDto<TotalGroupResponseDto> getSearch(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                         @RequestParam("keyword") String keyword,
                                                         @RequestParam(value = "startDate",required = false,  defaultValue = "1900-01-01")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                        @RequestParam(value = "endDate",required = false,  defaultValue = "1900-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate endDate,
+                                                        @RequestParam(value = "endDate",required = false,  defaultValue = "2300-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                                         Pageable pageable
     ) {
         SearchDto searchDto = SearchDto.builder()

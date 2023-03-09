@@ -1,6 +1,11 @@
 package com.example.swcamp_p03.campaign.entity;
 
 import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -34,8 +39,18 @@ public class SendMessages {
     @JoinColumn(name = "CAMPAIGN_ID")
     private Campaign campaign;
 
+
     public void updateData(String sendState,String errorMessage){
         this.sendState = sendState;
         this.errorMessage = errorMessage;
+    }
+    
+    @Builder(builderClassName = "testInsert",builderMethodName = "testInsert")
+    public SendMessages(String name, Boolean sendCheck, LocalDateTime sendDateTime, CampaignMessage campaignMessage, Campaign campaign) {
+        this.name = name;
+        this.sendCheck = sendCheck;
+        this.sendDateTime = sendDateTime;
+        this.campaignMessage = campaignMessage;
+        this.campaign = campaign;
     }
 }

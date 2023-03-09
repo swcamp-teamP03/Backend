@@ -9,7 +9,7 @@ public class CreateCopyRequestDto {
     private String productName;
     private String keyword;
     private String type;
-    private String createCount;
-    private String copyLength;
+    private int createCount;
+    private int copyLength;
     private String sector;
 }
