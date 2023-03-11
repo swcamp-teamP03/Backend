@@ -61,7 +61,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                 .where(customerGroup.user.eq(user))
                 .fetchOne();
         PageImpl<GroupListDto> groupListDtos = new PageImpl<>(result, pageable, count);
-        return new TotalGroupResponseDto(groupListDtos.getTotalPages(), groupListDtos.getContent());
+        return new TotalGroupResponseDto(count, groupListDtos);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                 .where(customerGroup.user.eq(searchDto.getUser()))
                 .fetchOne();
         PageImpl<GroupListDto> groupListDtos = new PageImpl<>(result, searchDto.getPageable(), count);
-        return new TotalGroupResponseDto(groupListDtos.getTotalPages(), groupListDtos.getContent());
+        return new TotalGroupResponseDto(count,groupListDtos);
     }
 
     private OrderSpecifier<?> groupSort(Pageable pageable) {

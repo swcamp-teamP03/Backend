@@ -62,7 +62,7 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                 .fetchOne();
 
         PageImpl<CampaignDto> campaignDtos = new PageImpl<>(result, pageable, count);
-        return new TotalCampaignResponseDto(campaignDtos);
+        return new TotalCampaignResponseDto(count,campaignDtos);
 
     }
 
@@ -93,7 +93,7 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                 .where(userEq(searchDto.getUser()))
                 .fetchOne();
         PageImpl<CampaignDto> campaignDtos = new PageImpl<>(result, searchDto.getPageable(), count);
-        return new TotalCampaignResponseDto(campaignDtos);
+        return new TotalCampaignResponseDto(count, campaignDtos);
 
     }
 
