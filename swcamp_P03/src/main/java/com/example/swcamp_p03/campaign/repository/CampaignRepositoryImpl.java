@@ -3,7 +3,7 @@ package com.example.swcamp_p03.campaign.repository;
 import com.example.swcamp_p03.campaign.dto.*;
 import com.example.swcamp_p03.campaign.dto.response.CampaignDetailDto;
 import com.example.swcamp_p03.campaign.dto.response.TotalCampaignResponseDto;
-import com.example.swcamp_p03.customerGroup.dto.SearchDto;
+import com.example.swcamp_p03.common.dto.SearchDto;
 import com.example.swcamp_p03.user.entity.User;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -58,11 +58,11 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
 
         Long count = jpaQueryFactory.select(campaign.count())
                 .from(campaign)
-                .where(campaign.user.eq(user))
+                .where(userEq(user))
                 .fetchOne();
 
         PageImpl<CampaignDto> campaignDtos = new PageImpl<>(result, pageable, count);
-        return new TotalCampaignResponseDto(count,campaignDtos);
+        return new TotalCampaignResponseDto(count, campaignDtos);
 
     }
 
@@ -181,6 +181,8 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
                 if (order.getProperty().equals("createdAt")) {
                     return new OrderSpecifier<>(direction, campaign.createdAt);
+                } else if (order.getProperty().equals("sendingDate")) {
+                    return new OrderSpecifier<>(direction, campaign.sendingDate);
                 }
             }
         }
