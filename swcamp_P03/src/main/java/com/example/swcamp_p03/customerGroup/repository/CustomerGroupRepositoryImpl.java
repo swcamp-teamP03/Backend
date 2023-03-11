@@ -1,13 +1,12 @@
 package com.example.swcamp_p03.customerGroup.repository;
 
-import com.example.swcamp_p03.campaign.entity.QCampaign;
 import com.example.swcamp_p03.customerGroup.dto.ExcelFileDto;
 import com.example.swcamp_p03.customerGroup.dto.GroupCampaignDto;
 import com.example.swcamp_p03.customerGroup.dto.GroupListDto;
 import com.example.swcamp_p03.customerGroup.dto.reponse.DetailGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.dto.reponse.TotalGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.entity.CustomerGroup;
-import com.example.swcamp_p03.customerGroup.dto.SearchDto;
+import com.example.swcamp_p03.common.dto.SearchDto;
 import com.example.swcamp_p03.user.entity.User;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -58,7 +57,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                         customerGroup.count()
                 )
                 .from(customerGroup)
-                .where(customerGroup.user.eq(user))
+                .where(userEq(user))
                 .fetchOne();
         PageImpl<GroupListDto> groupListDtos = new PageImpl<>(result, pageable, count);
         return new TotalGroupResponseDto(count, groupListDtos);
@@ -115,7 +114,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                         customerGroup.count()
                 )
                 .from(customerGroup)
-                .where(customerGroup.user.eq(searchDto.getUser()))
+                .where(userEq(searchDto.getUser()))
                 .fetchOne();
         PageImpl<GroupListDto> groupListDtos = new PageImpl<>(result, searchDto.getPageable(), count);
         return new TotalGroupResponseDto(count,groupListDtos);
