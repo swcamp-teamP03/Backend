@@ -15,6 +15,8 @@ public class CopyGroupDto {
     private String productName;
     private String keyword;
     private String type;
+    private String sector;
+
     private int createCount;
     private int copyLength;
     private List<GptCopyDto> copyList = new ArrayList<>();
@@ -25,6 +27,7 @@ public class CopyGroupDto {
         this.productName = copyGroup.getProductName();
         this.keyword = copyGroup.getKeyword();
         this.type = copyGroup.getCopyType();
+        this.sector = copyGroup.getSector();
         this.createCount = copyGroup.getCreateCount();
         this.copyLength = copyGroup.getCopyLength();
     }

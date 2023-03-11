@@ -26,6 +26,7 @@ public class CopyGroup {
     private String productName;
     private String keyword;
     private String copyType;
+    private String sector;
     private Boolean favorite;
     private Integer createCount;
     private Integer copyLength;

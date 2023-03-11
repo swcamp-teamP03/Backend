@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 public class CopyGroupListElementDto {
     private Long copyId;
     private String createDate;
-    private Boolean like;
+    private Boolean favorite;
     private String copyName;
 
 //    public CopyGroupListElementDto(CopyGroup e) {
@@ -23,7 +23,7 @@ public class CopyGroupListElementDto {
     public CopyGroupListElementDto(Long copyId, LocalDateTime createDate, Boolean like, String copyName) {
         this.copyId = copyId;
         this.createDate = createDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        this.like = like;
+        this.favorite = like;
         this.copyName = copyName;
     }
 }

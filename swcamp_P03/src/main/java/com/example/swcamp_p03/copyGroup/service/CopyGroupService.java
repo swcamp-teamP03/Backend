@@ -74,6 +74,7 @@ public class CopyGroupService {
                 .keyword(createDto.getKeyword())
                 .copyType(createDto.getType())
                 .favorite(false)
+                .sector(createDto.getSector())
                 .createCount(createDto.getCreateCount())
                 .copyLength(createDto.getCopyLength())
                 .user(user)
