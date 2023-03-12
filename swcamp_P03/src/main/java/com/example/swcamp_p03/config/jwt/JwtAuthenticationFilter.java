@@ -1,10 +1,12 @@
 package com.example.swcamp_p03.config.jwt;
 
+import com.example.swcamp_p03.common.dto.ResponseLogin;
 import com.example.swcamp_p03.config.UserDetailsImpl;
 import com.example.swcamp_p03.user.dto.request.RequestLogin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,7 +50,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse response, FilterChain chain, Authentication authResult) {
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authResult.getPrincipal();
         String jwtToken = jwtTokenUtils.generateJwtToken(userDetailsImpl);
+
+        ObjectMapper objectMapper = new ObjectMapper();
         response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwtToken);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        ResponseLogin loginSuccess = ResponseLogin.builder()
+                .success(true)
+                .message("Login Success")
+                .token(jwtToken)
+                .build();
+        try {
+            response.getWriter().write(objectMapper.writeValueAsString(loginSuccess));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
