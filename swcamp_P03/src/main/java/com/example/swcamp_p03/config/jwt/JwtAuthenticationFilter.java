@@ -53,9 +53,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String jwtToken = jwtTokenUtils.generateJwtToken(userDetailsImpl);
 
         Cookie setCookie = new Cookie("accessToken", jwtToken);
+        setCookie.setHttpOnly(true);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwtToken);
+//        response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwtToken);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.addCookie(setCookie);
         ResponseLogin loginSuccess = ResponseLogin.builder()
