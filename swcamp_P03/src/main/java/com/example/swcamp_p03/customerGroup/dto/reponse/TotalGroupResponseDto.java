@@ -10,11 +10,11 @@ import java.util.List;
 public class TotalGroupResponseDto {
     private Long totalGroupCount;
     private int totalGroupPage;
-    private List<GroupListDto> groupListList;
+    private List<GroupListDto> groupList;
 
     public TotalGroupResponseDto(Long totalGroupCount, PageImpl<GroupListDto> groupListList) {
         this.totalGroupCount = totalGroupCount;
         this.totalGroupPage = groupListList.getTotalPages();
-        this.groupListList = groupListList.getContent();
+        this.groupList = groupListList.getContent();
     }
 }
