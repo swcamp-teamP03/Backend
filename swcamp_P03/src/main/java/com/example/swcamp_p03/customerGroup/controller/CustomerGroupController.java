@@ -60,6 +60,7 @@ public class CustomerGroupController {
 
     @PostMapping("/groups")
     public void groupWrite(@AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute GroupWriteRequestDto requestDto) throws IOException {
+        System.out.println(requestDto);
         groupWriteService.groupWrite(userDetails, requestDto);
     }
 
