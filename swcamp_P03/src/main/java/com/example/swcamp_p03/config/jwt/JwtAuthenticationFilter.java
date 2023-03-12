@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -52,13 +53,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authResult.getPrincipal();
         String jwtToken = jwtTokenUtils.generateJwtToken(userDetailsImpl);
 
-        Cookie setCookie = new Cookie("accessToken", jwtToken);
-        setCookie.setHttpOnly(true);
+//        Cookie setCookie = new Cookie("accessToken", jwtToken);
+//        setCookie.setHttpOnly(true);
+        ResponseCookie cookie = ResponseCookie.from("accessToken", jwtToken)
+                .sameSite("None")
+                .httpOnly(true)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
 
         ObjectMapper objectMapper = new ObjectMapper();
 //        response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwtToken);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.addCookie(setCookie);
         ResponseLogin loginSuccess = ResponseLogin.builder()
                 .success(true)
                 .message("Login Success")
