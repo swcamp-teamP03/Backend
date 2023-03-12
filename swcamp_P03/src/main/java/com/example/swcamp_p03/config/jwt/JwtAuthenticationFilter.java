@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -51,9 +52,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authResult.getPrincipal();
         String jwtToken = jwtTokenUtils.generateJwtToken(userDetailsImpl);
 
+        Cookie setCookie = new Cookie("accessToken", jwtToken);
+
         ObjectMapper objectMapper = new ObjectMapper();
         response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwtToken);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.addCookie(setCookie);
         ResponseLogin loginSuccess = ResponseLogin.builder()
                 .success(true)
                 .message("Login Success")
