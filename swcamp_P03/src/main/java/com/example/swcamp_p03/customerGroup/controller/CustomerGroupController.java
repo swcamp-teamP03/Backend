@@ -60,13 +60,12 @@ public class CustomerGroupController {
 
     @PostMapping("/groups")
     public void groupWrite(@AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute GroupWriteRequestDto requestDto) throws IOException {
-        System.out.println(requestDto);
-        groupWriteService.groupWrite(userDetails, requestDto);
+        groupWriteService.writeGroup(userDetails, requestDto);
     }
 
     @PutMapping("/groups/{groupId}")
     public void groupUpdate(@PathVariable Long groupId, @AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute GroupWriteRequestDto requestDto) throws IOException {
-        groupWriteService.groupUpdate(groupId, requestDto, userDetails);
+        groupWriteService.updateGroup(groupId, requestDto, userDetails);
     }
 
     @PostMapping("/groups/{groupId}/file/download")
