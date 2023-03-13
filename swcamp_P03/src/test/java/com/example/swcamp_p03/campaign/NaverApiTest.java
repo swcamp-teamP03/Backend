@@ -32,7 +32,7 @@ public class NaverApiTest {
     @Autowired
     private ObjectMapper mapper;
 
-    @Test
+//    @Test
     public void naverApiTest() throws Exception {
 
         String timestamp = Long.toString(System.currentTimeMillis());
@@ -94,7 +94,7 @@ public class NaverApiTest {
 //        responseBody = {"statusCode":"202","statusName":"success","requestId":"VORSSA-1678195573358-3988-57284298-VYpgGaRD","requestTime":"2023-03-07T22:26:13.358"}
     }
 
-    @Test
+//    @Test
     public void getNaverApiRequestResultTest() throws Exception {
         String timestamp = Long.toString(System.currentTimeMillis());
         String requestId = "VORSSA-1678340434941-1843-57284298-SZzDXTJp";
