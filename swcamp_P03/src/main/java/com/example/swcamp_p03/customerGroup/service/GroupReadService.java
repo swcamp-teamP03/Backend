@@ -15,13 +15,11 @@ import org.springframework.stereotype.Service;
 public class GroupReadService {
     private final CustomerGroupRepository customerGroupRepository;
 
-    // group list
     public ResponseDto<TotalGroupResponseDto> getTotalGroup(UserDetailsImpl userDetails, Pageable pageable) {
         TotalGroupResponseDto totalGroup = customerGroupRepository.findTotalGroup(userDetails.getUser(), pageable);
         return ResponseDto.success(totalGroup);
     }
 
-    // group detail
     public ResponseDto<DetailGroupResponseDto> getDetailGroup(Long groupId) {
         DetailGroupResponseDto detailGroup = customerGroupRepository.findDetailGroup(groupId);
         return ResponseDto.success(detailGroup);

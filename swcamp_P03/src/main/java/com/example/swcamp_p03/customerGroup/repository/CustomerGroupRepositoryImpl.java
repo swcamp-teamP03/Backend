@@ -1,5 +1,6 @@
 package com.example.swcamp_p03.customerGroup.repository;
 
+import com.example.swcamp_p03.campaign.entity.QCampaign;
 import com.example.swcamp_p03.customerGroup.dto.ExcelFileDto;
 import com.example.swcamp_p03.customerGroup.dto.GroupCampaignDto;
 import com.example.swcamp_p03.customerGroup.dto.GroupListDto;
@@ -57,7 +58,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                         customerGroup.count()
                 )
                 .from(customerGroup)
-                .where(userEq(user))
+                .where(customerGroup.user.eq(user))
                 .fetchOne();
         PageImpl<GroupListDto> groupListDtos = new PageImpl<>(result, pageable, count);
         return new TotalGroupResponseDto(count, groupListDtos);
@@ -114,7 +115,7 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                         customerGroup.count()
                 )
                 .from(customerGroup)
-                .where(userEq(searchDto.getUser()))
+                .where(customerGroup.user.eq(searchDto.getUser()))
                 .fetchOne();
         PageImpl<GroupListDto> groupListDtos = new PageImpl<>(result, searchDto.getPageable(), count);
         return new TotalGroupResponseDto(count,groupListDtos);

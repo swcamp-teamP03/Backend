@@ -1,10 +1,13 @@
 package com.example.swcamp_p03.config.jwt;
 
+import com.example.swcamp_p03.common.dto.ResponseLogin;
 import com.example.swcamp_p03.config.UserDetailsImpl;
 import com.example.swcamp_p03.user.dto.request.RequestLogin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -48,7 +52,28 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse response, FilterChain chain, Authentication authResult) {
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authResult.getPrincipal();
         String jwtToken = jwtTokenUtils.generateJwtToken(userDetailsImpl);
-        response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwtToken);
+
+//        Cookie setCookie = new Cookie("accessToken", jwtToken);
+//        setCookie.setHttpOnly(true);
+        ResponseCookie cookie = ResponseCookie.from("accessToken", jwtToken)
+                .sameSite("None")
+                .httpOnly(true)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+//        response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwtToken);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        ResponseLogin loginSuccess = ResponseLogin.builder()
+                .success(true)
+                .message("Login Success")
+                .token(jwtToken)
+                .build();
+        try {
+            response.getWriter().write(objectMapper.writeValueAsString(loginSuccess));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

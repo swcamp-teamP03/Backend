@@ -18,3 +18,4 @@ public class GroupWriteRequestDto {
     private String fileOrgName;
     private MultipartFile file;
 }
+
