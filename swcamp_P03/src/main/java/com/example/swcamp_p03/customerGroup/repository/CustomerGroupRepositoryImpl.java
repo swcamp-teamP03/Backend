@@ -1,13 +1,12 @@
 package com.example.swcamp_p03.customerGroup.repository;
 
-import com.example.swcamp_p03.campaign.entity.QCampaign;
 import com.example.swcamp_p03.customerGroup.dto.ExcelFileDto;
 import com.example.swcamp_p03.customerGroup.dto.GroupCampaignDto;
 import com.example.swcamp_p03.customerGroup.dto.GroupListDto;
+import com.example.swcamp_p03.customerGroup.dto.SearchDto;
 import com.example.swcamp_p03.customerGroup.dto.reponse.DetailGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.dto.reponse.TotalGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.entity.CustomerGroup;
-import com.example.swcamp_p03.customerGroup.dto.SearchDto;
 import com.example.swcamp_p03.user.entity.User;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
