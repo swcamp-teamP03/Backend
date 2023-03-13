@@ -28,7 +28,7 @@
 team-24(master)
   |
   └── dev
-				|
+	|
         ├── feat-기능이름1
 	      │── feat-기능이름2
         │── feat-기능이름3   
