@@ -21,6 +21,7 @@ import com.example.swcamp_p03.user.entity.User;
 import com.example.swcamp_p03.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -132,6 +133,7 @@ public class CampaignServiceCreateTest {
     }
 
     @Test
+    @DisplayName("AbTest 사용한 캠페인 생성")
     void CampaignCreateUseAbtestSuccessTest(){
         //given
         CampaignRequestDto requestDto = new CampaignRequestDto();
@@ -192,7 +194,64 @@ public class CampaignServiceCreateTest {
         assertEquals(findCampaign.getSendURL(), requestDto.getSendURL(),"getSendURL 확인");
         assertEquals(findCampaign.getMessageType(), requestDto.getMessageType(),"getMessageType 확인");
         assertNotNull(findCampaign.getSendingDate(), "getSendingDate 는 null 일수 없습니다");
+    }
 
+    @Test
+    @DisplayName("AbTest 없이 캠페인 생성")
+    void CampaignCreateWithoutAbtestSuccessTest(){
+        //given
+        CampaignRequestDto requestDto = new CampaignRequestDto();
+        requestDto.setCampaignName("testCampaignName");
+        requestDto.setCustomerGroupId(customerGroup.getCustomerGroupId());
+        requestDto.setCopyGroupId(copyGroup.getCopyGroupId());
+        requestDto.setMessageType("LMS");
+        requestDto.setSendType("ad");
+        requestDto.setSendURL("https://www.youtube.com/");
+        requestDto.setSendingDate(null);
+        requestDto.setMessageA("테스트 내용 A");
+        requestDto.setMessageB("");
+
+        //when
+        Long campaign;
+        try {
+            campaign = campaignService.createCampaign(user, requestDto, false);
+        } catch (Exception e){
+            e.printStackTrace();
+            fail("테스트 실패 : 예외 발생");
+            return;
+        }
+
+        //then
+        Campaign findCampaign = campaignRepository.findById(campaign).orElseThrow();
+        List<SendMessages> sendMessages = sendMessagesRepository.findAllByCampaign(findCampaign);
+        List<CampaignMessage> campaignMessages = campaignMessageRepository.findAllByCampaign(findCampaign);
+
+        assertEquals(sendMessages.size(), ExcelDataList.size(),"생성된 SendMessages 개수 확인");
+        assertEquals(campaignMessages.size(), 1,"생성된 campaignMessages 개수 확인 (1)");
+
+        assertEquals(campaignMessages.get(0).getMessage(), requestDto.getMessageA(),"messageA 확인");
+
+        assertNotNull(sendMessages.get(0).getPhoneNumber(), "getPhoneNumber 는 null 일수 없습니다");
+        assertNotNull(sendMessages.get(0).getCampaignMessage(), "getPhoneNumber 는 null 일수 없습니다");
+        assertNotNull(sendMessages.get(0).getUniqueUrl(), "getPhoneNumber 는 null 일수 없습니다");
+        assertNull(sendMessages.get(0).getErrorMessage(), "getErrorMessage 는 null 이어야 합니다.");
+        assertNull(sendMessages.get(0).getVisitedDate(), "getVisitedDate 는 null 이어야 합니다.");
+        assertNull(sendMessages.get(0).getVisitedTime(), "getVisitedTime 는 null 이어야 합니다.");
+
+        assertEquals(sendMessages.get(0).getCampaign().getCampaignId(), campaign,"campaignID 확인");
+
+        CampaignMessage message = sendMessages.get(0).getCampaignMessage();
+        if(message.getCampaignMessageId() != campaignMessages.get(0).getCampaignMessageId()
+                && message.getCampaignMessageId() != campaignMessages.get(1).getCampaignMessageId()){
+            fail("CampaignMessage 저장이 잘못되었습니다.");
+        }
+
+        assertEquals(findCampaign.getCampaignName(), requestDto.getCampaignName(),"getCampaignName 확인");
+        assertEquals(findCampaign.getCopyGroup().getCopyGroupId(), requestDto.getCopyGroupId(),"getCopyGroupId 확인");
+        assertEquals(findCampaign.getCustomerGroup().getCustomerGroupId(), requestDto.getCustomerGroupId(),"getCustomerGroupId 확인");
+        assertEquals(findCampaign.getSendURL(), requestDto.getSendURL(),"getSendURL 확인");
+        assertEquals(findCampaign.getMessageType(), requestDto.getMessageType(),"getMessageType 확인");
+        assertNotNull(findCampaign.getSendingDate(), "getSendingDate 는 null 일수 없습니다");
 
     }
 }
