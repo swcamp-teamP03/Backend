@@ -96,6 +96,10 @@ public class CampaignService {
 
     @Transactional
     public Long createCampaign(User user, CampaignRequestDto requestDto) throws Exception{
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime parse = LocalDateTime.parse(requestDto.getSendingDate());
+        requestDto.setSendingDate(parse.format(dateTimeFormatter));
+
         if(requestDto.getSendType().equals("ad")){
             requestDto.setMessageA("(광고)" + requestDto.getMessageA());
             if(!(requestDto.getMessageB()==null||requestDto.getMessageB().equals(""))){
@@ -111,7 +115,6 @@ public class CampaignService {
                 .findById(requestDto.getCopyGroupId()).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
         copyGroup.makeUnableEdit();
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime sendingDate = LocalDateTime.now();
         if(requestDto.getSendingDate() != null){
             sendingDate = LocalDateTime.parse(requestDto.getSendingDate(), dateTimeFormatter);
