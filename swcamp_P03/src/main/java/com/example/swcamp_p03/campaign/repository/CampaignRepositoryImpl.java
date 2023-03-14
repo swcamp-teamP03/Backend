@@ -38,6 +38,7 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
     @Override
     public TotalCampaignResponseDto findTotalCampaign(User user, Pageable pageable) {
         List<CampaignDto> result = jpaQueryFactory.select(Projections.constructor(CampaignDto.class,
+                                campaign.campaignId,
                                 campaign.favorite,
                                 campaign.messageType,
                                 campaign.campaignName,
@@ -62,13 +63,14 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                 .fetchOne();
 
         PageImpl<CampaignDto> campaignDtos = new PageImpl<>(result, pageable, count);
-        return new TotalCampaignResponseDto(count,campaignDtos);
+        return new TotalCampaignResponseDto(count, campaignDtos);
 
     }
 
     @Override
     public TotalCampaignResponseDto findSearch(SearchDto searchDto) {
         List<CampaignDto> result = jpaQueryFactory.select(Projections.constructor(CampaignDto.class,
+                                campaign.campaignId,
                                 campaign.favorite,
                                 campaign.campaignName,
                                 campaign.messageType,
@@ -100,6 +102,7 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
     @Override
     public CampaignDetailDto findByCampaign(Long campaignId) {
         return jpaQueryFactory.select(Projections.constructor(CampaignDetailDto.class,
+                        campaign.campaignId,
                         campaign.createdAt,
                         campaign.sendingDate,
                         sendMessages.campaign.count(),

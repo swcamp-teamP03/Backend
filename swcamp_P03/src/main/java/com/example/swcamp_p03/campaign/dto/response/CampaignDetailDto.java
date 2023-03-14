@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class CampaignDetailDto {
+    public Long campaignId;
     public String campaignCreatedAt;
     public String sendingDateTime;
     public Long messageCount;
@@ -28,7 +29,8 @@ public class CampaignDetailDto {
     public MessageBDto messageB;
     public String comment;
 
-    public CampaignDetailDto(LocalDateTime campaignCreatedAt, LocalDateTime sendingDateTime, Long messageCount, String messageType, String groupName, String excelOrgFileName, String copyGroupName, String comment) {
+    public CampaignDetailDto(Long campaignId, LocalDateTime campaignCreatedAt, LocalDateTime sendingDateTime, Long messageCount, String messageType, String groupName, String excelOrgFileName, String copyGroupName, String comment) {
+        this.campaignId = campaignId;
         this.campaignCreatedAt = campaignCreatedAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         this.sendingDateTime = sendingDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm"));
         this.messageCount = messageCount;
