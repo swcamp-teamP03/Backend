@@ -76,6 +76,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true); // 내서버가 응답을 할 때 json을 자바스크립트에서 처리할 수 있게 할지를 설정하는 것
         config.addAllowedOrigin("http://localhost:3090"); // 모든 ip에 응답을 허용하겠다.
+        config.addAllowedOrigin("http://copyt-sw.s3-website.ap-northeast-2.amazonaws.com"); // 모든 ip에 응답을 허용하겠다.
         config.addExposedHeader("*");
         config.addAllowedHeader("*"); // 모든 header에 응답을 허용하겠다.
         config.addAllowedMethod("*"); // 모든 api 메소드 요청을 허용하겠다.
