@@ -103,6 +103,7 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
     public CampaignDetailDto findByCampaign(Long campaignId) {
         return jpaQueryFactory.select(Projections.constructor(CampaignDetailDto.class,
                         campaign.campaignId,
+                        campaign.campaignName,
                         campaign.createdAt,
                         campaign.sendingDate,
                         sendMessages.campaign.count(),
