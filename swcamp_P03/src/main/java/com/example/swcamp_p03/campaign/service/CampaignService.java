@@ -180,7 +180,7 @@ public class CampaignService {
 
             if(sendMessage){
                 //send massage
-                String requestId = naverApiLmsSend(apiMessagesList, requestDto.getSendingDate(), "AD");
+                String requestId = naverApiLmsSend(apiMessagesList, requestDto.getSendingDate(), requestDto.getSendType());
                 campaignMessageA.addSendRequestId(requestId);
                 campaign.addApiKey(requestId);
             }
@@ -204,7 +204,7 @@ public class CampaignService {
 
             if(sendMessage) {
                 //send massage
-                String requestId = naverApiLmsSend(naverApiMessages, requestDto.getSendingDate(), "COMM");
+                String requestId = naverApiLmsSend(naverApiMessages, requestDto.getSendingDate(), requestDto.getSendType());
                 campaign.addApiKey(requestId);
                 campaignMessageA.addSendRequestId(requestId);
                 campaignMessageB.addSendRequestId(requestId);
