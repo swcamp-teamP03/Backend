@@ -40,7 +40,7 @@ public class CustomerGroupHistory {
         this.favorite = customerGroup.getFavorite();
         this.customerGroup = customerGroup;
         this.excelFileHistory = excelFileHistory;
-        this.createdAt = customerGroup.getCreatedAt();
+//        this.createdAt = customerGroup.getCreatedAt();
     }
 
 }

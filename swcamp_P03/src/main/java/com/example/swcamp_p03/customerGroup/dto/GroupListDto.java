@@ -20,6 +20,6 @@ public class GroupListDto {
         this.groupName = customerGroup.getCustomerGroupName();
         this.customerCnt = customerCnt;
         this.favorite = customerGroup.getFavorite();
-        this.date = customerGroup.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//        this.date = customerGroup.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 }

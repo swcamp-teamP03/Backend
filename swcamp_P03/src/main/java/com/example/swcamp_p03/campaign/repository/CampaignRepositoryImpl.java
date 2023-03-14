@@ -27,7 +27,6 @@ import static com.example.swcamp_p03.campaign.entity.QCampaignMessage.campaignMe
 import static com.example.swcamp_p03.campaign.entity.QSendMessages.sendMessages;
 import static com.example.swcamp_p03.copyGroup.entity.QCopyGroup.copyGroup;
 import static com.example.swcamp_p03.customerGroup.entity.QCustomerGroup.customerGroup;
-import static com.example.swcamp_p03.customerGroup.entity.QCustomerProperty.customerProperty;
 import static com.example.swcamp_p03.customerGroup.entity.QExcelFile.excelFile;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -113,21 +112,13 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                 .join(sendMessages).on(campaign.eq(sendMessages.campaign))
                 .join(campaign.customerGroup, customerGroup)
                 .join(campaign.copyGroup, copyGroup)
-                .join(customerGroup.excelFile, excelFile)
                 .where(campaign.campaignId.eq(campaignId))
                 .fetchOne();
     }
 
     @Override
     public List<CustomerPropertyDto> findByCustomerGroupToProperties(Long campaignId) {
-        return jpaQueryFactory.select(Projections.constructor(CustomerPropertyDto.class,
-                        customerProperty.propertyValue
-                ))
-                .from(campaign)
-                .join(campaign.customerGroup, customerGroup)
-                .join(customerGroup.propertyList, customerProperty)
-                .where(campaign.campaignId.eq(campaignId))
-                .fetch();
+        return null;
     }
 
     @Override

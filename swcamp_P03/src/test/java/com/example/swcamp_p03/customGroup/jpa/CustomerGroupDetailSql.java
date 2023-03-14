@@ -2,16 +2,10 @@ package com.example.swcamp_p03.customGroup.jpa;
 
 import com.example.swcamp_p03.customGroup.dataInit.CustomerGroupDataInit;
 import com.example.swcamp_p03.customerGroup.entity.CustomerGroup;
-import com.example.swcamp_p03.customerGroup.entity.CustomerProperty;
-import com.example.swcamp_p03.customerGroup.entity.ExcelFile;
-import com.example.swcamp_p03.customerGroup.repository.ExcelDataRepository;
-import com.example.swcamp_p03.customerGroup.repository.ExcelFileRepository;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

@@ -27,12 +27,13 @@ public class CustomerGroup {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EXCEL_FILE_ID")
+    @Embedded
     private ExcelFile excelFile;
 
-    @OneToMany(mappedBy = "customerGroup")
-    private List<CustomerProperty> propertyList = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "PROPERTY",
+            joinColumns = @JoinColumn(name = "PROPERTY_ID"))
+    private List<String> properties = new ArrayList<>();
 
     @Builder(builderClassName = "register",builderMethodName = "register")
     public CustomerGroup(String customerGroupName, Boolean favorite, User user, ExcelFile excelFile) {

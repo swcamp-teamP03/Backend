@@ -5,29 +5,20 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
+@Embeddable
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ExcelData {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long excelDataId;
     @Column(nullable = false)
     private String username;
     @Column(nullable = false)
     private String phoneNumber;
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EXCEL_FILE_ID")
-    private ExcelFile excelFile;
 
     @Builder(builderClassName = "testInsert", builderMethodName = "testInsert")
     public ExcelData(String username, String phoneNumber, ExcelFile excelFile) {
         this.username = username;
         this.phoneNumber = phoneNumber;
-        this.excelFile = excelFile;
     }
 }

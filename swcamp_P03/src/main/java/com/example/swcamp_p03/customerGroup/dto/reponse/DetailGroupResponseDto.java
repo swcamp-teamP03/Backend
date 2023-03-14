@@ -23,10 +23,7 @@ public class DetailGroupResponseDto {
 
     public DetailGroupResponseDto(CustomerGroup customerGroup, ExcelFileDto excelFile, List<GroupCampaignDto> campaignDtoList) {
         this.groupName = customerGroup.getCustomerGroupName();
-        this.createdAt = customerGroup.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        this.customerProperties = customerGroup.getPropertyList().stream()
-                .map(GroupPropertyDto::new)
-                .collect(Collectors.toList());
+//        this.createdAt = customerGroup.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         this.excelFile = excelFile;
         this.campaigns = campaignDtoList;
     }

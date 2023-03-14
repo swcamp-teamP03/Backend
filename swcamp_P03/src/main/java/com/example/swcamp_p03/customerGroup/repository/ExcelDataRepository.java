@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ExcelDataRepository extends JpaRepository<ExcelData, Long>, ExcelDataRepositoryCustom {
+//public interface ExcelDataRepository extends JpaRepository<ExcelData, Long>, ExcelDataRepositoryCustom {
 
-    void deleteByExcelFile(ExcelFile excelFile);
-
-    List<ExcelData> findAllByExcelFile(ExcelFile excelFile);
-}
+//    void deleteByExcelFile(ExcelFile excelFile);
+//
+//    List<ExcelData> findAllByExcelFile(ExcelFile excelFile);
+//}

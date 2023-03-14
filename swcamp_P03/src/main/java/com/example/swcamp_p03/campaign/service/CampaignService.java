@@ -20,7 +20,6 @@ import com.example.swcamp_p03.customerGroup.entity.CustomerGroup;
 import com.example.swcamp_p03.customerGroup.entity.ExcelData;
 import com.example.swcamp_p03.customerGroup.entity.ExcelFile;
 import com.example.swcamp_p03.customerGroup.repository.CustomerGroupRepository;
-import com.example.swcamp_p03.customerGroup.repository.ExcelDataRepository;
 import com.example.swcamp_p03.user.entity.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,7 +58,6 @@ public class CampaignService {
     private final CopyGroupRepository copyGroupRepository;
     private final CampaignMessageRepository campaignMessageRepository;
     private final SendMessagesRepository sendMessagesRepository;
-    private final ExcelDataRepository excelDataRepository;
 
     @Transactional
     public String visitUrl(String uniqueUrl){
@@ -145,7 +143,8 @@ public class CampaignService {
             ArrayList<NaverApiMessage> apiMessagesList = new ArrayList<>();
             String suffix = " [무료 수신거부] " + messageSource.getMessage("key.denial", null, null);
             ExcelFile excelFile = customerGroup.getExcelFile();
-            List<ExcelData> excelFileList = excelDataRepository.findAllByExcelFile(excelFile);
+//            List<ExcelData> excelFileList = excelDataRepository.findAllByExcelFile(excelFile);
+            List<ExcelData> excelFileList = null;
 
             for(int i=0;i<excelFileList.size(); i++) {
                 ExcelData excelData = excelFileList.get(i);
@@ -193,8 +192,10 @@ public class CampaignService {
 
 
             ExcelFile excelFile = customerGroup.getExcelFile();
-            ArrayList<NaverApiMessage> naverApiMessages =
-                    splitMessageList(excelDataRepository.findAllByExcelFile(excelFile), campaignMessageA, campaignMessageB, campaign, requestDto);
+//            ArrayList<NaverApiMessage> naverApiMessages =
+//                    splitMessageList(excelDataRepository.findAllByExcelFile(excelFile), campaignMessageA, campaignMessageB, campaign, requestDto);
+            ArrayList<NaverApiMessage> naverApiMessages = null;
+
 
             //send massage
             String requestId = naverApiLmsSend(naverApiMessages, requestDto.getSendingDate(), "COMM");

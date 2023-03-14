@@ -30,6 +30,6 @@ public class ExcelFileHistory {
         this.excelFileSavedName = excelFile != null ? excelFile.getExcelFileSavedName() : null;
         this.excelFileSavedPath = excelFile != null ? excelFile.getExcelFileSavedPath() : null;
         this.excelFileSize = excelFile != null ? excelFile.getExcelFileSize() : null;
-        this.createdAt = excelFile != null ? excelFile.getCreatedAt() : null;
+        this.createdAt = excelFile != null ? excelFile.getExcelCreatedAt() : null;
     }
 }

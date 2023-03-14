@@ -26,7 +26,6 @@ import java.util.List;
 
 import static com.example.swcamp_p03.campaign.entity.QCampaign.campaign;
 import static com.example.swcamp_p03.customerGroup.entity.QCustomerGroup.customerGroup;
-import static com.example.swcamp_p03.customerGroup.entity.QCustomerProperty.customerProperty;
 import static com.example.swcamp_p03.customerGroup.entity.QExcelData.excelData;
 import static com.example.swcamp_p03.customerGroup.entity.QExcelFile.excelFile;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -43,8 +42,6 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                         excelData.excelDataId.count()
                 ))
                 .from(customerGroup)
-                .leftJoin(customerGroup.excelFile, excelFile)
-                .leftJoin(excelData).on(excelFile.eq(excelData.excelFile))
                 .where(userEq(user))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -68,7 +65,6 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
         CustomerGroup findCustomerGroup = jpaQueryFactory.select(
                         customerGroup)
                 .from(customerGroup)
-                .join(customerGroup.propertyList, customerProperty).fetchJoin()
                 .where(customerGroup.customerGroupId.eq(groupId))
                 .fetchOne();
         List<GroupCampaignDto> campaignDtoList = jpaQueryFactory.select(Projections.constructor(GroupCampaignDto.class,
@@ -85,8 +81,6 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                         excelData.count()
                 ))
                 .from(customerGroup)
-                .join(customerGroup.excelFile, excelFile)
-                .join(excelData).on(excelFile.eq(excelData.excelFile))
                 .where(customerGroup.customerGroupId.eq(groupId))
                 .fetchOne();
         return new DetailGroupResponseDto(findCustomerGroup, excelFileDto, campaignDtoList);
@@ -99,8 +93,6 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                         excelData.excelDataId.count()
                 ))
                 .from(customerGroup)
-                .leftJoin(customerGroup.excelFile, excelFile).fetchJoin()
-                .leftJoin(excelData).on(excelFile.eq(excelData.excelFile))
                 .where(userEq(searchDto.getUser()),
                         containKeyword(searchDto.getSearch()),
                         periodDate(searchDto.getStartDate(), searchDto.getEndDate()))

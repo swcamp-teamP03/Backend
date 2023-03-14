@@ -5,7 +5,7 @@ import com.example.swcamp_p03.customerGroup.entity.ExcelData;
 
 import java.util.List;
 
-public interface ExcelDataRepositoryCustom {
-    void bulkInsert(List<ExcelDataDto> excelDataList);
-}
+//public interface ExcelDataRepositoryCustom {
+//    void bulkInsert(List<ExcelDataDto> excelDataList);
+//}
 

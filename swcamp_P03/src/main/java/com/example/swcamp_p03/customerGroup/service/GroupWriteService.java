@@ -52,9 +52,8 @@ import java.util.UUID;
 @Slf4j
 public class GroupWriteService {
     private final CustomerGroupRepository customerGroupRepository;
-    private final CustomerPropertyRepository customerPropertyRepository;
-    private final ExcelFileRepository excelFileRepository;
-    private final ExcelDataRepository excelDataRepository;
+//    private final ExcelFileRepository excelFileRepository;
+//    private final ExcelDataRepository excelDataRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CustomerGroupHistoryRepository customerGroupHistoryRepository;
     private final CustomerPropertyHistoryRepository customerPropertyHistoryRepository;
@@ -97,7 +96,7 @@ public class GroupWriteService {
                 .excelFileSavedPath(savedPath)
                 .excelFileSize(fileSize)
                 .build();
-        excelFileRepository.save(excelFile);
+//        excelFileRepository.save(excelFile);
 
         //2. 엑셀파일인 경우 절대경로에 파일 업로드
         if (extension != null && !extension.equals("xlsx") && !extension.equals("xls")) {
@@ -152,7 +151,7 @@ public class GroupWriteService {
             String fileSize = requestDto.getFile().getSize() / 1000 + "KB";
 
             //1. 엑셀 데이터 비우기
-            excelDataRepository.deleteByExcelFile(excelFile);
+//            excelDataRepository.deleteByExcelFile(excelFile);
 
             //2. 절대경로에 있는 엑셀파일 삭제하기
             Path filePath = Paths.get(excelFile.getExcelFileSavedPath());
@@ -173,7 +172,6 @@ public class GroupWriteService {
             excelParsingAndSave(excelFile, workbook);
 
             //6. property 삭제
-            customerPropertyRepository.deleteAll(findGroup.getPropertyList());
 
             //7. property 저장
             saveGroupProperties(requestDto, findGroup);
@@ -186,7 +184,6 @@ public class GroupWriteService {
             saveCustomerGroupHistoryAndGroupPropertiesHistory(findGroup, historyExcelFile);
 
             //1. property 삭제
-            customerPropertyRepository.deleteAll(findGroup.getPropertyList());
 
             //2. property 저장
             saveGroupProperties(requestDto, findGroup);
@@ -223,24 +220,6 @@ public class GroupWriteService {
     }
 
     private void saveGroupProperties(GroupWriteRequestDto requestDto, CustomerGroup customerGroup) {
-        List<PropertyDto> properties = requestDto.getProperties();
-        if (properties != null) {
-            List<CustomerProperty> customerProperties = new ArrayList<>();
-            for (PropertyDto property : properties) {
-                CustomerProperty customerProperty = CustomerProperty.register()
-                        .property(property)
-                        .customerGroup(customerGroup)
-                        .build();
-                customerProperties.add(customerProperty);
-            }
-            customerPropertyRepository.saveAll(customerProperties);
-        } else {
-            CustomerProperty customerProperty = CustomerProperty.register()
-                    .property(null)
-                    .customerGroup(customerGroup)
-                    .build();
-            customerPropertyRepository.save(customerProperty);
-        }
     }
 
     private void saveCustomerGroupHistoryAndGroupPropertiesHistory(CustomerGroup findGroup, ExcelFileHistory historyExcelFile) {
@@ -249,17 +228,6 @@ public class GroupWriteService {
     }
 
     private void saveAllCustomerGroupPropertiesHistory(CustomerGroup findGroup, CustomerGroupHistory historyCustomerGroup) {
-        List<CustomerProperty> propertyList = findGroup.getPropertyList();
-        List<CustomerPropertyHistory> historyCustomerProperties = new ArrayList<>();
-        for (CustomerProperty customerProperty : propertyList) {
-            historyCustomerProperties.add(
-                    CustomerPropertyHistory.historyRegister()
-                            .customerProperty(customerProperty)
-                            .customerGroupHistory(historyCustomerGroup)
-                            .build()
-            );
-        }
-        customerPropertyHistoryRepository.saveAll(historyCustomerProperties);
     }
 
     private CustomerGroupHistory saveCustomerGroupHistory(CustomerGroup findGroup, ExcelFileHistory historyExcelFile) {
@@ -279,17 +247,17 @@ public class GroupWriteService {
                     .build();
             excelDataHistoryRepository.save(historyExcelData);
         } else {
-            List<ExcelData> allByExcelFile = excelDataRepository.findAllByExcelFile(excelFile);
-            List<ExcelDataHistoryDto> historyExcelDataList = new ArrayList<>();
-            for (ExcelData excelData : allByExcelFile) {
-                historyExcelDataList.add(
-                        ExcelDataHistoryDto.historyRegister()
-                                .excelData(excelData)
-                                .excelFileHistoryId(historyExcelFile.getExcelFileHistoryId())
-                                .build()
-                );
-            }
-            excelDataHistoryRepository.bulkInsert(historyExcelDataList);
+//            List<ExcelData> allByExcelFile = excelDataRepository.findAllByExcelFile(excelFile);
+//            List<ExcelDataHistoryDto> historyExcelDataList = new ArrayList<>();
+//            for (ExcelData excelData : allByExcelFile) {
+//                historyExcelDataList.add(
+//                        ExcelDataHistoryDto.historyRegister()
+//                                .excelData(excelData)
+//                                .excelFileHistoryId(historyExcelFile.getExcelFileHistoryId())
+//                                .build()
+//                );
+//            }
+//            excelDataHistoryRepository.bulkInsert(historyExcelDataList);
         }
     }
 
@@ -316,12 +284,11 @@ public class GroupWriteService {
                     ExcelDataDto excelData = ExcelDataDto.excelDataRegister()
                             .username(username)
                             .phoneNumber(phoneNumber)
-                            .excelFileId(excelFile.getExcelFileId())
                             .build();
                     dataList.add(excelData);
                 }
             }
         }
-        excelDataRepository.bulkInsert(dataList);
+//        excelDataRepository.bulkInsert(dataList);
     }
 }

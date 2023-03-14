@@ -18,6 +18,5 @@ public class ExcelDataHistoryDto {
         this.username = excelData != null ? excelData.getUsername() : null;
         this.phoneNumber = excelData != null ? excelData.getPhoneNumber() : null;
         this.excelFileHistoryId = excelFileHistoryId;
-        this.createdAt = excelData != null ? excelData.getCreatedAt() : null;
     }
 }
