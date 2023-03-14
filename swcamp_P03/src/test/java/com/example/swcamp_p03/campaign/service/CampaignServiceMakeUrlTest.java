@@ -1,5 +1,6 @@
 package com.example.swcamp_p03.campaign.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
@@ -14,6 +15,7 @@ class CampaignServiceMakeUrlTest {
             String s = campaignService.makeUrl();
             boolean result = Pattern.matches(pattern, s);
             System.out.println("makeUrl = " + s + " [validate : " + result + "]");
+            Assertions.assertTrue(result);
         }
     }
 
