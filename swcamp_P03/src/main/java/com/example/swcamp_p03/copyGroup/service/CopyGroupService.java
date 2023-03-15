@@ -63,9 +63,6 @@ public class CopyGroupService {
 
     @Transactional
     public Long createCopyGroup(User user, CopyGroupDto createDto) {
-        if (createDto.getCreateCount() != createDto.getCopyList().size()) {
-            throw new GlobalException(ErrorCode.VALIDATION_FAIL);
-        }
 
         CopyGroup copyGroup = CopyGroup.builder()
                 .coupGroupName(createDto.getCopyGroupName())

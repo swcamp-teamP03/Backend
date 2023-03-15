@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Setter
 public class CampaignDto {
+    private Long campaignId;
     private boolean favorite;
     private String messageType;
     private String campaignName;
@@ -17,7 +18,8 @@ public class CampaignDto {
     private String sendState;
     private Double clickRate;
 
-    public CampaignDto(boolean favorite, String messageType, String campaignName, LocalDateTime createdAt, LocalDateTime sendingDate, Long clickCount, Long totalClickCount) {
+    public CampaignDto(Long campaignId,boolean favorite, String messageType, String campaignName, LocalDateTime createdAt, LocalDateTime sendingDate, Long clickCount, Long totalClickCount) {
+        this.campaignId = campaignId;
         this.favorite = favorite;
         this.messageType = messageType;
         this.campaignName = campaignName;

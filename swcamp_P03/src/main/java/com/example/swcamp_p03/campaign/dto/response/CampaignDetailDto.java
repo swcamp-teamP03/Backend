@@ -14,21 +14,25 @@ import java.util.List;
 @Getter
 @Setter
 public class CampaignDetailDto {
-    public String campaignCreatedAt;
-    public String sendingDateTime;
-    public Long messageCount;
-    public String messageType;
-    public String groupName;
-    public Long customerCount;
-    public List<CustomerPropertyDto> customerProperties;
-    public String excelOrgFileName;
-    public String copyGroupName;
-    public List<CopyWriteABDto> copyWriteAB;
-    public MessageADto messageA;
-    public MessageBDto messageB;
-    public String comment;
+    private Long campaignId;
+    private String campaignName;
+    private String campaignCreatedAt;
+    private String sendingDateTime;
+    private Long messageCount;
+    private String messageType;
+    private String groupName;
+    private Long customerCount;
+    private List<CustomerPropertyDto> customerProperties;
+    private String excelOrgFileName;
+    private String copyGroupName;
+    private List<CopyWriteABDto> copyWriteAB;
+    private MessageADto messageA;
+    private MessageBDto messageB;
+    private String comment;
 
-    public CampaignDetailDto(LocalDateTime campaignCreatedAt, LocalDateTime sendingDateTime, Long messageCount, String messageType, String groupName, String excelOrgFileName, String copyGroupName, String comment) {
+    public CampaignDetailDto(Long campaignId,String campaignName, LocalDateTime campaignCreatedAt, LocalDateTime sendingDateTime, Long messageCount, String messageType, String groupName, String excelOrgFileName, String copyGroupName, String comment) {
+        this.campaignId = campaignId;
+        this.campaignName = campaignName;
         this.campaignCreatedAt = campaignCreatedAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         this.sendingDateTime = sendingDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm"));
         this.messageCount = messageCount;

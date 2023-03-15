@@ -135,7 +135,7 @@ public class GroupWriteService {
         MultipartFile multipartFile = requestDto.getFile();
 
         //파일 업로드 존재 여부
-        if (!multipartFile.isEmpty()) {
+        if (multipartFile != null) {
             //파일 업로드 O --> 파일 수정, 데이터 수정, property 수정, group 수정
 
             ExcelFile excelFile = findGroup.getExcelFile();

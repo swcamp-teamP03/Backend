@@ -72,10 +72,12 @@ public class CustomerGroupRepositoryImpl implements CustomerGroupRepositoryCusto
                 .where(customerGroup.customerGroupId.eq(groupId))
                 .fetchOne();
         List<GroupCampaignDto> campaignDtoList = jpaQueryFactory.select(Projections.constructor(GroupCampaignDto.class,
+                        campaign.campaignId,
                         campaign.campaignName,
                         campaign.createdAt))
                 .from(campaign)
                 .join(campaign.customerGroup, customerGroup)
+                .where(customerGroup.customerGroupId.eq(groupId))
                 .fetch();
 
         ExcelFileDto excelFileDto = jpaQueryFactory.select(Projections.constructor(ExcelFileDto.class,

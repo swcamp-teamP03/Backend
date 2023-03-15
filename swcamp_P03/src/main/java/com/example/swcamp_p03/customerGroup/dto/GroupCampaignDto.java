@@ -8,10 +8,12 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 public class GroupCampaignDto {
+    private Long campaignId;
     private String campaignName;
     private String createdAt;
 
-    public GroupCampaignDto(String campaignName, LocalDateTime createdAt) {
+    public GroupCampaignDto(Long campaignId, String campaignName, LocalDateTime createdAt) {
+        this.campaignId = campaignId;
         this.campaignName = campaignName;
         this.createdAt = createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
