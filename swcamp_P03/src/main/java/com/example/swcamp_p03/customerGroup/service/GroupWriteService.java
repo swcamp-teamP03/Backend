@@ -208,7 +208,9 @@ public class GroupWriteService {
             String contentDisposition = "attachment; filename=\"" + encodedFileName + "\"";
             ExcelDownload download = new ExcelDownload(requestDto.getDownloadReason(), userDetails.getUser());
             excelDownLoadRepository.save(download);
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition).body(resource);
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                    .header(HttpHeaders.CONTENT_TYPE,"application/vnd.ms-excel")
+                    .body(resource);
         } else {
             throw new GlobalException(ErrorCode.NOT_VALID_DOWNLOAD);
         }
