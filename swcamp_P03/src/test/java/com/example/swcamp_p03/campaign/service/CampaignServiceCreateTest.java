@@ -7,6 +7,7 @@ import com.example.swcamp_p03.campaign.entity.SendMessages;
 import com.example.swcamp_p03.campaign.repository.CampaignMessageRepository;
 import com.example.swcamp_p03.campaign.repository.CampaignRepository;
 import com.example.swcamp_p03.campaign.repository.SendMessagesRepository;
+import com.example.swcamp_p03.common.exception.GlobalException;
 import com.example.swcamp_p03.copyGroup.entity.CopyGroup;
 import com.example.swcamp_p03.copyGroup.repository.CopyGroupRepository;
 import com.example.swcamp_p03.customerGroup.dto.ExcelDataDto;
@@ -253,5 +254,114 @@ public class CampaignServiceCreateTest {
         assertEquals(findCampaign.getMessageType(), requestDto.getMessageType(),"getMessageType 확인");
         assertNotNull(findCampaign.getSendingDate(), "getSendingDate 는 null 일수 없습니다");
 
+    }
+    @Test
+    @DisplayName("AbTest 없이 캠페인 생성에서 잘못된 카피그룹 사용")
+    void CampaignCreateWithoutAbtestSuccessWrongCopyGroupFailTestTest(){
+        //given
+        Long copyGroupId = 1L;
+        Optional<CopyGroup> byId = copyGroupRepository.findById(copyGroupId);
+        while(!byId.isEmpty()){
+            byId = copyGroupRepository.findById(copyGroupId);
+            copyGroupId++;
+        }
+        System.out.println("copyGroupId = " + copyGroupId);
+
+        CampaignRequestDto requestDto = new CampaignRequestDto();
+        requestDto.setCampaignName("testCampaignName");
+        requestDto.setCustomerGroupId(customerGroup.getCustomerGroupId());
+        requestDto.setCopyGroupId(copyGroupId);
+        requestDto.setMessageType("LMS");
+        requestDto.setSendType("ad");
+        requestDto.setSendURL("https://www.youtube.com/");
+        requestDto.setSendingDate(null);
+        requestDto.setMessageA("테스트 내용 A");
+        requestDto.setMessageB("");
+
+        //when
+        //then
+        assertThrows(GlobalException.class,()-> campaignService.createCampaign(user, requestDto, false));
+    }
+    @Test
+    @DisplayName("AbTest 없이 캠페인 생성에서 잘못된 고객그룹 사용")
+    void CampaignCreateWithoutAbtestSuccessWrongCustomerGroupFailTestTest(){
+        //given
+        Long customerGroupId = 1L;
+        Optional<CustomerGroup> byId = customerGroupRepository.findById(customerGroupId);
+        while(!byId.isEmpty()){
+            byId = customerGroupRepository.findById(customerGroupId);
+            customerGroupId++;
+        }
+        System.out.println("customerGroupId = " + customerGroupId);
+
+        CampaignRequestDto requestDto = new CampaignRequestDto();
+        requestDto.setCampaignName("testCampaignName");
+        requestDto.setCustomerGroupId(customerGroupId);
+        requestDto.setCopyGroupId(copyGroup.getCopyGroupId());
+        requestDto.setMessageType("LMS");
+        requestDto.setSendType("ad");
+        requestDto.setSendURL("https://www.youtube.com/");
+        requestDto.setSendingDate(null);
+        requestDto.setMessageA("테스트 내용 A");
+        requestDto.setMessageB("");
+
+        //when
+        //then
+        assertThrows(GlobalException.class,()-> campaignService.createCampaign(user, requestDto, false));
+    }
+    @Test
+    @DisplayName("AbTest 사용한 캠페인 생성에서 잘못된 카피그룹 사용")
+    void CampaignCreateUseAbtestWithWrongCopyGroupFailTest() throws Exception{
+        //given
+        Long copyGroupId = 1L;
+        Optional<CopyGroup> byId = copyGroupRepository.findById(copyGroupId);
+        while(!byId.isEmpty()){
+            byId = copyGroupRepository.findById(copyGroupId);
+            copyGroupId++;
+        }
+        System.out.println("copyGroupId = " + copyGroupId);
+
+        CampaignRequestDto requestDto = new CampaignRequestDto();
+        requestDto.setCampaignName("testCampaignName");
+        requestDto.setCustomerGroupId(customerGroup.getCustomerGroupId());
+        requestDto.setCopyGroupId(copyGroupId);
+        requestDto.setMessageType("LMS");
+        requestDto.setSendType("ad");
+        requestDto.setSendURL("https://www.youtube.com/");
+        requestDto.setSendingDate(null);
+        requestDto.setMessageA("테스트 내용 A");
+        requestDto.setMessageB("테스트 내용 B");
+
+        //when
+        //then
+        assertThrows(GlobalException.class,()-> campaignService.createCampaign(user, requestDto, false));
+    }
+
+    @Test
+    @DisplayName("AbTest 사용한 캠페인 생성에서 잘못된 고객그룹 사용")
+    void CampaignCreateUseAbtestWithWrongCustomerGroupFailTest() throws Exception{
+        //given
+        Long customerGroupId = 1L;
+        Optional<CustomerGroup> byId = customerGroupRepository.findById(customerGroupId);
+        while(!byId.isEmpty()){
+            byId = customerGroupRepository.findById(customerGroupId);
+            customerGroupId++;
+        }
+        System.out.println("customerGroupId = " + customerGroupId);
+
+        CampaignRequestDto requestDto = new CampaignRequestDto();
+        requestDto.setCampaignName("testCampaignName");
+        requestDto.setCustomerGroupId(customerGroupId);
+        requestDto.setCopyGroupId(copyGroup.getCopyGroupId());
+        requestDto.setMessageType("LMS");
+        requestDto.setSendType("ad");
+        requestDto.setSendURL("https://www.youtube.com/");
+        requestDto.setSendingDate(null);
+        requestDto.setMessageA("테스트 내용 A");
+        requestDto.setMessageB("테스트 내용 B");
+
+        //when
+        //then
+        assertThrows(GlobalException.class,()-> campaignService.createCampaign(user, requestDto, false));
     }
 }
