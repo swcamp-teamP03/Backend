@@ -65,8 +65,8 @@ public class CampaignService {
     public String visitUrl(String uniqueUrl){
         log.info("uniqueUrl : {}", uniqueUrl);
         SendMessages sendMessages = sendMessagesRepository.findByUniqueUrl(uniqueUrl).orElse(null);
+        log.info("sendMessages = {}", sendMessages);
         if(sendMessages == null){
-            log.info("sendMessages = {}", sendMessages);
             return messageSource.getMessage("frontUrl", null, null);
         }
         sendMessages.visitUrl();
@@ -93,9 +93,14 @@ public class CampaignService {
                 .toList();
         return new SendMessageResponseDto(allByCampaign.size(), list);
     }
-
     @Transactional
     public Long createCampaign(User user, CampaignRequestDto requestDto) throws Exception{
+        return createCampaign(user,requestDto, true);
+    }
+
+    @Transactional
+    public Long createCampaign(User user, CampaignRequestDto requestDto , Boolean sendMessage) throws Exception{
+
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime parse = LocalDateTime.parse(requestDto.getSendingDate());
         requestDto.setSendingDate(parse.format(dateTimeFormatter));
@@ -177,10 +182,12 @@ public class CampaignService {
                         campaignMessageA.getMessage() + " " + messageSource.getMessage("url", null, null) + sendMessages.getUniqueUrl() + suffix));
             }
 
-            //send massage
-            String requestId = naverApiLmsSend(apiMessagesList, requestDto.getSendingDate(), "AD");
-            campaignMessageA.addSendRequestId(requestId);
-            campaign.addApiKey(requestId);
+            if(sendMessage){
+                //send massage
+                String requestId = naverApiLmsSend(apiMessagesList, requestDto.getSendingDate(), requestDto.getSendType());
+                campaignMessageA.addSendRequestId(requestId);
+                campaign.addApiKey(requestId);
+            }
 
         }else{ // AB 테스트 사용 O
             log.info("AB 테스트 사용 O");
@@ -199,11 +206,13 @@ public class CampaignService {
             ArrayList<NaverApiMessage> naverApiMessages =
                     splitMessageList(excelDataRepository.findAllByExcelFile(excelFile), campaignMessageA, campaignMessageB, campaign, requestDto);
 
-            //send massage
-            String requestId = naverApiLmsSend(naverApiMessages, requestDto.getSendingDate(), "COMM");
-            campaign.addApiKey(requestId);
-            campaignMessageA.addSendRequestId(requestId);
-            campaignMessageB.addSendRequestId(requestId);
+            if(sendMessage) {
+                //send massage
+                String requestId = naverApiLmsSend(naverApiMessages, requestDto.getSendingDate(), requestDto.getSendType());
+                campaign.addApiKey(requestId);
+                campaignMessageA.addSendRequestId(requestId);
+                campaignMessageB.addSendRequestId(requestId);
+            }
         }
         return campaign.getCampaignId();
     }
