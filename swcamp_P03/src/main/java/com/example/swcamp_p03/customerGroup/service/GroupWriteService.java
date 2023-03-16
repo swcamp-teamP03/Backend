@@ -22,6 +22,8 @@ import com.example.swcamp_p03.customerGroup.repository.history.ExcelFileHistoryR
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -107,7 +109,12 @@ public class GroupWriteService {
         file.transferTo(new File(savedPath));
 
         //3. 엑셀파일 파싱해서 데이터로 저장
-        Workbook workbook = new XSSFWorkbook(fileInputStream);
+        Workbook workbook = null;
+        if (extension.equals("xlsx")) {
+            workbook = new XSSFWorkbook(fileInputStream);
+        } else if (extension.equals("xls")) {
+            workbook = new HSSFWorkbook(fileInputStream);
+        }
         excelParsingAndSave(excelFile, workbook);
 
         //4. group 저장
@@ -169,7 +176,12 @@ public class GroupWriteService {
             multipartFile.transferTo(new File(savedPath));
 
             //5. 엑셀 파일 파싱하고 엑셀 데이터 저장하기 -> 수정된 엑셀 데이터 히스토리 저장
-            Workbook workbook = new XSSFWorkbook(fileInputStream);
+            Workbook workbook = null;
+            if (extension.equals("xlsx")) {
+                workbook = new XSSFWorkbook(fileInputStream);
+            } else if (extension.equals("xls")) {
+                workbook = new HSSFWorkbook(fileInputStream);
+            }
             excelParsingAndSave(excelFile, workbook);
 
             //6. property 삭제
@@ -208,7 +220,9 @@ public class GroupWriteService {
             String contentDisposition = "attachment; filename=\"" + encodedFileName + "\"";
             ExcelDownload download = new ExcelDownload(requestDto.getDownloadReason(), userDetails.getUser());
             excelDownLoadRepository.save(download);
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition).body(resource);
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                    .header(HttpHeaders.CONTENT_TYPE,"application/vnd.ms-excel")
+                    .body(resource);
         } else {
             throw new GlobalException(ErrorCode.NOT_VALID_DOWNLOAD);
         }
@@ -305,8 +319,12 @@ public class GroupWriteService {
         List<ExcelDataDto> dataList = new ArrayList<>();
         Sheet worksheet = workbook.getSheetAt(0);
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
-            String username = worksheet.getRow(i).getCell(0).getStringCellValue();
-            String phoneNumber = worksheet.getRow(i).getCell(1).getStringCellValue();
+            Row row = worksheet.getRow(i);
+            if (i > row.getLastCellNum()) {
+                break;
+            }
+            String username = row.getCell(0).getStringCellValue();
+            String phoneNumber = row.getCell(1).getStringCellValue();
             if (!username.equals("") || !phoneNumber.equals("")) {
                 if (Boolean.FALSE.equals(validCheck.isUsername(username))) {
                     throw new GlobalException(ErrorCode.NOT_VALID_EXCEL_USERNAME);
