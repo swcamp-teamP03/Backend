@@ -84,7 +84,14 @@ public class CampaignService {
         List<SendMessages> allByCampaign = sendMessagesRepository.findAllByCampaign(campaign);
         List<SendMessageElementDto> list = allByCampaign
                 .stream()
-                .map((e)-> new SendMessageElementDto(e.getSendMessagesId(),e.getCampaignMessage().getMessageSection() ,e.getSendDateTime(),e.getName(), e.getPhoneNumber(),e.getSendState(),e.getErrorMessage()))
+                .map((e)-> new SendMessageElementDto(
+                        e.getSendMessagesId(),
+                        e.getCampaignMessage().getMessageSection() ,
+                        e.getSendDateTime(),
+                        e.getName().substring(0,2) + "*",
+                        e.getPhoneNumber().substring(0,9) + "****",
+                        e.getSendState(),
+                        e.getErrorMessage()))
                 .toList();
         return new SendMessageResponseDto(allByCampaign.size(), list);
     }
