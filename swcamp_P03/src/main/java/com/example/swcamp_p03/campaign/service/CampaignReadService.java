@@ -10,6 +10,8 @@ import com.example.swcamp_p03.campaign.entity.Campaign;
 import com.example.swcamp_p03.campaign.repository.CampaignRepository;
 import com.example.swcamp_p03.common.dto.ResponseDto;
 import com.example.swcamp_p03.common.dto.SearchDto;
+import com.example.swcamp_p03.common.exception.ErrorCode;
+import com.example.swcamp_p03.common.exception.GlobalException;
 import com.example.swcamp_p03.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ public class CampaignReadService {
     private final CampaignService campaignService;
 
     public ResponseDto<TotalCampaignResponseDto> getTotalCampaign(User user, Pageable pageable) {
+        campaignRepository.updateClickRate(user);
         TotalCampaignResponseDto totalCampaign = campaignRepository.findTotalCampaign(user, pageable);
         return ResponseDto.success(totalCampaign);
     }
@@ -34,7 +37,9 @@ public class CampaignReadService {
     }
 
     public ResponseDto<CampaignDetailDto> getDetailCampaign(Long campaignId) throws Exception {
-        Campaign findCampaign = campaignRepository.findById(campaignId).get();
+        Campaign findCampaign = campaignRepository.findById(campaignId).orElseThrow(
+                () -> new GlobalException(ErrorCode.VALIDATION_FAIL)
+        );
         try {
             campaignService.updateSendMessages(findCampaign);
         } catch (Exception e) {

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface CampaignRepositoryCustom {
+    void updateClickRate(User user);
     TotalCampaignResponseDto findTotalCampaign(User user, Pageable pageable);
 
     TotalCampaignResponseDto findSearch(SearchDto searchDto);
