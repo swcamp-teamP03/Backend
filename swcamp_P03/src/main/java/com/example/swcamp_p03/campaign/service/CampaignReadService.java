@@ -35,7 +35,11 @@ public class CampaignReadService {
 
     public ResponseDto<CampaignDetailDto> getDetailCampaign(Long campaignId) throws Exception {
         Campaign findCampaign = campaignRepository.findById(campaignId).get();
-        campaignService.updateSendMessages(findCampaign);
+        try {
+            campaignService.updateSendMessages(findCampaign);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         CampaignDetailDto campaign = campaignRepository.findByCampaign(campaignId);
         List<CustomerPropertyDto> properties = campaignRepository.findByCustomerGroupToProperties(campaignId);
         List<CopyWriteABDto> copyWriteAB = campaignRepository.findByCopyGroupToCopyWrites(campaignId);

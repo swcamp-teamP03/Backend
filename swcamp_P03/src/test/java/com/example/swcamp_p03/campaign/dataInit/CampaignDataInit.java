@@ -27,7 +27,7 @@ public class CampaignDataInit {
 
     @BeforeEach
     void before() {
-        User user = User.builder()
+        User user = User.register()
                 .username("name")
                 .password("password")
                 .roles("user")
