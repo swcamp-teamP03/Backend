@@ -109,7 +109,7 @@ public class CampaignService {
             requestDto.setSendingDate(parse.format(dateTimeFormatter));
         }
 
-        if(requestDto.getSendType().equals("ad")){
+        if(requestDto.getSendType().equals("ad") || requestDto.getSendType().equals("AD")){
             requestDto.setMessageA("(광고)" + requestDto.getMessageA());
             if(!(requestDto.getMessageB()==null||requestDto.getMessageB().equals(""))){
                 requestDto.setMessageB("(광고)" + requestDto.getMessageB());
@@ -155,7 +155,10 @@ public class CampaignService {
         if(requestDto.getMessageB()==null||requestDto.getMessageB().equals("")){
             log.info("AB 테스트 사용 X");
             ArrayList<NaverApiMessage> apiMessagesList = new ArrayList<>();
-            String suffix = " [무료 수신거부] " + messageSource.getMessage("key.denial", null, null);
+            String suffix = "";
+            if(requestDto.getSendType().equals("ad") || requestDto.getSendType().equals("AD") ){
+                suffix = " [무료 수신거부] " + messageSource.getMessage("key.denial", null, null);
+            }
             ExcelFile excelFile = customerGroup.getExcelFile();
             List<ExcelData> excelFileList = excelDataRepository.findAllByExcelFile(excelFile);
 
@@ -182,7 +185,7 @@ public class CampaignService {
                         .sendState("발송대기")
                         .build();
                 sendMessages = sendMessagesRepository.save(sendMessages);
-                apiMessagesList.add(new NaverApiMessage(excelData.getPhoneNumber().replace("-", ""), "(광고)메세지",
+                apiMessagesList.add(new NaverApiMessage(excelData.getPhoneNumber().replace("-", ""), "메세지",
                         campaignMessageA.getMessage() + " " + messageSource.getMessage("url", null, null) + sendMessages.getUniqueUrl() + suffix));
             }
 
@@ -224,7 +227,10 @@ public class CampaignService {
     private ArrayList<NaverApiMessage> splitMessageList(
             List<ExcelData> excelDataList, CampaignMessage messageA, CampaignMessage messageB, Campaign campaign, CampaignRequestDto requestDto){
         ArrayList<NaverApiMessage> apiMessagesList = new ArrayList<>();
-        String suffix = " [무료 수신거부] " + messageSource.getMessage("key.denial", null, null);
+        String suffix = "";
+        if(requestDto.getSendType().equals("ad") || requestDto.getSendType().equals("AD")){
+            suffix = " [무료 수신거부] " + messageSource.getMessage("key.denial", null, null);
+        }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime sendingDate = LocalDateTime.now();
         if(requestDto.getSendingDate() != null){
@@ -254,7 +260,7 @@ public class CampaignService {
                     .sendState("발송대기")
                     .build();
             sendMessages = sendMessagesRepository.save(sendMessages);
-            apiMessagesList.add(new NaverApiMessage( excelData.getPhoneNumber().replace("-", ""), "(광고)메세지" ,
+            apiMessagesList.add(new NaverApiMessage( excelData.getPhoneNumber().replace("-", ""), "메세지" ,
                     messageA.getMessage() + " " + messageSource.getMessage("url",null,null) + sendMessages.getUniqueUrl() + suffix));
         }
         for (int i = excelDataList.size() / 2; i < excelDataList.size(); i++) {
@@ -280,7 +286,7 @@ public class CampaignService {
                     .sendState("발송대기")
                     .build();
             sendMessages = sendMessagesRepository.save(sendMessages);
-            apiMessagesList.add(new NaverApiMessage( excelData.getPhoneNumber().replace("-", ""), "(광고)메세지" ,
+            apiMessagesList.add(new NaverApiMessage( excelData.getPhoneNumber().replace("-", ""),  "메세지",
                     messageB.getMessage() + " " + messageSource.getMessage("url",null,null) + sendMessages.getUniqueUrl() + suffix));
         }
 
