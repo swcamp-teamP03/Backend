@@ -79,13 +79,8 @@ public class CampaignService {
         if(campaign.getUser().getUserId() != user.getUserId()){
             throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
         }
-        try{
-            updateSendMessages(campaign);
+        updateSendMessages(campaign);
             // 조회 성공 표시
-        } catch (Exception e){
-            System.out.println("e = " + e.getMessage());
-            e.printStackTrace();
-        }
         List<SendMessages> allByCampaign = sendMessagesRepository.findAllByCampaign(campaign);
         List<SendMessageElementDto> list = allByCampaign
                 .stream()
@@ -102,8 +97,10 @@ public class CampaignService {
     public Long createCampaign(User user, CampaignRequestDto requestDto , Boolean sendMessage) throws Exception{
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime parse = LocalDateTime.parse(requestDto.getSendingDate());
-        requestDto.setSendingDate(parse.format(dateTimeFormatter));
+        if(requestDto.getSendingDate()!=null){
+            LocalDateTime parse = LocalDateTime.parse(requestDto.getSendingDate());
+            requestDto.setSendingDate(parse.format(dateTimeFormatter));
+        }
 
         if(requestDto.getSendType().equals("ad")){
             requestDto.setMessageA("(광고)" + requestDto.getMessageA());
@@ -335,7 +332,7 @@ public class CampaignService {
 //        System.out.println("answer = " + returnVal);
     }
 
-    public String makeSignature(String timestamp, String url, String method) throws Exception{
+    public String makeSignature(String timestamp, String url, String method) {
         String space = " ";					// one space
         String newLine = "\n";					// new line
 //        String method = "POST";					// method
@@ -354,12 +351,19 @@ public class CampaignService {
                 .append(accessKey)
                 .toString();
 
-        SecretKeySpec signingKey = new SecretKeySpec(secretKey.getBytes("UTF-8"), "HmacSHA256");
-        Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(signingKey);
+        String encodeBase64String;
+        try{
+            SecretKeySpec signingKey = new SecretKeySpec(secretKey.getBytes("UTF-8"), "HmacSHA256");
+            Mac mac = Mac.getInstance("HmacSHA256");
+            mac.init(signingKey);
 
-        byte[] rawHmac = mac.doFinal(message.getBytes("UTF-8"));
-        String encodeBase64String = Base64.encodeBase64String(rawHmac);
+            byte[] rawHmac = mac.doFinal(message.getBytes("UTF-8"));
+            encodeBase64String = Base64.encodeBase64String(rawHmac);
+        } catch (Exception e){
+            log.warn("makeSignature : 예외발생 [url : {}][method : {}]",url,method);
+            e.printStackTrace();
+            return null;
+        }
 
         return encodeBase64String;
     }
@@ -383,7 +387,7 @@ public class CampaignService {
     }
 
     @Transactional
-    public void updateSendMessages(Campaign campaign) throws Exception{
+    public void updateSendMessages(Campaign campaign){
         String timestamp = Long.toString(System.currentTimeMillis());
         String requestId = campaign.getApiKey();
 
@@ -413,7 +417,15 @@ public class CampaignService {
 //        System.out.println("responseBody = " + responseBody);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        JsonNode jsonNode;
+        try{
+            jsonNode = objectMapper.readTree(responseBody);
+        } catch (Exception e){
+            e.printStackTrace();
+            String message = e.getMessage();
+            log.warn("네이버 API responseBody json 파싱예외 발생 (Exception message : {}) (campaign : {})", message, campaign.toString());
+            return;
+        }
 
         //SendMessages 조회
         List<SendMessages> sendMessagesList = sendMessagesRepository.findAllByCampaign(campaign);
@@ -423,26 +435,33 @@ public class CampaignService {
         int itemCount = jsonNode.get("itemCount").asInt();
         log.info("updateSendMessages : execute [{}] update", itemCount);
 
-        for(int i=0;i<itemCount;i++){
-            NaverApiMessageResultDto messages = objectMapper.readValue(jsonNode.get("messages").get(i).toString(), NaverApiMessageResultDto.class);
-            log.info("input NaverApiMessageResultDto : {}", messages);
-            for (SendMessages sendMessages : sendMessagesList) {
-                String status;
-                if(messages.getStatusCode()!=null && messages.getStatusCode().equals("0")){
-                    status = "발송성공";
-                }else if(messages.getStatus().equals("READY")) {
-                    status = "발송대기";
-                }else if(messages.getStatus().equals("PROCESSING")) {
-                    status = "발송중";
-                }else{
-                    status = "발송실패";
-                }
+        try{
+            for(int i=0;i<itemCount;i++){
+                NaverApiMessageResultDto messages = objectMapper.readValue(jsonNode.get("messages").get(i).toString(), NaverApiMessageResultDto.class);
+                log.info("input NaverApiMessageResultDto : {}", messages);
+                for (SendMessages sendMessages : sendMessagesList) {
+                    String status;
+                    if(messages.getStatusCode()!=null && messages.getStatusCode().equals("0")){
+                        status = "발송성공";
+                    }else if(messages.getStatus().equals("READY")) {
+                        status = "발송대기";
+                    }else if(messages.getStatus().equals("PROCESSING")) {
+                        status = "발송중";
+                    }else{
+                        status = "발송실패";
+                    }
 
-                if(sendMessages.getPhoneNumber().replace("-", "").equals(messages.getTo())){
-                    log.info("updateData to [{}] data : sendState = {} , errorMessage = {}",sendMessages.getPhoneNumber(),status, messages.getStatusMessage());
-                    sendMessages.updateData(status ,messages.getStatusMessage());
+                    if(sendMessages.getPhoneNumber().replace("-", "").equals(messages.getTo())){
+                        log.info("updateData to [{}] data : sendState = {} , errorMessage = {}",sendMessages.getPhoneNumber(),status, messages.getStatusMessage());
+                        sendMessages.updateData(status ,messages.getStatusMessage());
+                    }
                 }
             }
+        } catch (Exception e){
+            e.printStackTrace();
+            String message = e.getMessage();
+            log.warn("updateSendMessages 중 예외 발생 : (Exception message : {})", message);
+            throw new GlobalException(ErrorCode.UPDATE_SEND_MESSAGE_FAIL);
         }
     }
 }
