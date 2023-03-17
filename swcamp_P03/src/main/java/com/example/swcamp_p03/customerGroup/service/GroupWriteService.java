@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -221,7 +222,7 @@ public class GroupWriteService {
             ExcelDownload download = new ExcelDownload(requestDto.getDownloadReason(), userDetails.getUser());
             excelDownLoadRepository.save(download);
             return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-                    .header(HttpHeaders.CONTENT_TYPE,"application/vnd.ms-excel")
+                    .header(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel")
                     .body(resource);
         } else {
             throw new GlobalException(ErrorCode.NOT_VALID_DOWNLOAD);
@@ -320,20 +321,22 @@ public class GroupWriteService {
         Sheet worksheet = workbook.getSheetAt(0);
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
             Row row = worksheet.getRow(i);
-            String username = row.getCell(0).getStringCellValue();
-            String phoneNumber = row.getCell(1).getStringCellValue();
-            if (!username.equals("") || !phoneNumber.equals("")) {
-                if (Boolean.FALSE.equals(validCheck.isUsername(username))) {
-                    throw new GlobalException(ErrorCode.NOT_VALID_EXCEL_USERNAME);
-                } else if (Boolean.FALSE.equals(validCheck.isPhoneNumber(phoneNumber))) {
-                    throw new GlobalException(ErrorCode.NOT_VALID_EXCEL_PHONE_NUMBER);
-                } else {
-                    ExcelDataDto excelData = ExcelDataDto.excelDataRegister()
-                            .username(username)
-                            .phoneNumber(phoneNumber)
-                            .excelFileId(excelFile.getExcelFileId())
-                            .build();
-                    dataList.add(excelData);
+            if (row.getCell(0) != null && row.getCell(1) != null) {
+                String username = row.getCell(0).getStringCellValue();
+                String phoneNumber = row.getCell(1).getStringCellValue();
+                if (!username.equals("") || !phoneNumber.equals("")) {
+                    if (Boolean.FALSE.equals(validCheck.isUsername(username))) {
+                        throw new GlobalException(ErrorCode.NOT_VALID_EXCEL_USERNAME);
+                    } else if (Boolean.FALSE.equals(validCheck.isPhoneNumber(phoneNumber))) {
+                        throw new GlobalException(ErrorCode.NOT_VALID_EXCEL_PHONE_NUMBER);
+                    } else {
+                        ExcelDataDto excelData = ExcelDataDto.excelDataRegister()
+                                .username(username)
+                                .phoneNumber(phoneNumber)
+                                .excelFileId(excelFile.getExcelFileId())
+                                .build();
+                        dataList.add(excelData);
+                    }
                 }
             }
         }
