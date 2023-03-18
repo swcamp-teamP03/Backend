@@ -103,19 +103,10 @@ public class GroupWriteService {
         excelFileRepository.save(excelFile);
 
         //2. 엑셀파일인 경우 절대경로에 파일 업로드
-        if (extension != null && !extension.equals("xlsx") && !extension.equals("xls")) {
-            throw new GlobalException(ErrorCode.NOT_EXCEL_FILE);
-        }
-        InputStream fileInputStream = file.getInputStream();
-        file.transferTo(new File(savedPath));
+        InputStream fileInputStream = excelUpload(file, extension, savedPath);
 
         //3. 엑셀파일 파싱해서 데이터로 저장
-        Workbook workbook = null;
-        if (extension.equals("xlsx")) {
-            workbook = new XSSFWorkbook(fileInputStream);
-        } else if (extension.equals("xls")) {
-            workbook = new HSSFWorkbook(fileInputStream);
-        }
+        Workbook workbook = getWorkbookXlsxOrXls(extension, fileInputStream);
         excelParsingAndSave(excelFile, workbook);
 
         //4. group 저장
@@ -166,23 +157,14 @@ public class GroupWriteService {
             Path filePath = Paths.get(excelFile.getExcelFileSavedPath());
             Files.deleteIfExists(filePath);
 
-            //3. 엑셀 파일 수정 --> 엑셀 파일 히스토리 저장
+            //3. 엑셀 파일 수정
             excelFile.update(orgName, savedName, savedPath, fileSize);
 
             //4. 엑셀 파일인 경우만 업로드하고 절대경로에 저장
-            if (!extension.equals("xlsx") && !extension.equals("xls")) {
-                throw new IOException("엑셀파일만 업로드 해주세요");
-            }
-            InputStream fileInputStream = multipartFile.getInputStream();
-            multipartFile.transferTo(new File(savedPath));
+            InputStream fileInputStream = excelUpload(multipartFile, extension, savedPath);
 
-            //5. 엑셀 파일 파싱하고 엑셀 데이터 저장하기 -> 수정된 엑셀 데이터 히스토리 저장
-            Workbook workbook = null;
-            if (extension.equals("xlsx")) {
-                workbook = new XSSFWorkbook(fileInputStream);
-            } else if (extension.equals("xls")) {
-                workbook = new HSSFWorkbook(fileInputStream);
-            }
+            //5. 엑셀 파일 파싱하고 엑셀 데이터 저장하기
+            Workbook workbook = getWorkbookXlsxOrXls(extension, fileInputStream);
             excelParsingAndSave(excelFile, workbook);
 
             //6. property 삭제
@@ -207,26 +189,29 @@ public class GroupWriteService {
         findGroup.update(requestDto.getGroupName());
     }
 
-    public ResponseEntity<Resource> fileDownload(Long groupId, UserDetailsImpl userDetails, FileDownloadRequestDto requestDto) throws MalformedURLException {
+    public void fileDownloadReason(Long groupId, UserDetailsImpl userDetails, FileDownloadRequestDto requestDto) {
+        boolean matches = bCryptPasswordEncoder.matches(requestDto.getPassword(), userDetails.getPassword());
+        if (matches) {
+            ExcelDownload download = new ExcelDownload(requestDto.getDownloadReason(), userDetails.getUser());
+            excelDownLoadRepository.save(download);
+        } else {
+            throw new GlobalException(ErrorCode.NOT_VALID_DOWNLOAD);
+        }
+    }
+
+    public ResponseEntity<Resource> fileDownload(Long groupId) throws MalformedURLException {
         CustomerGroup customerGroup = customerGroupRepository.findById(groupId).orElseThrow(
                 () -> new GlobalException(ErrorCode.DATA_NOT_FOUND)
         );
         ExcelFile excelFile = customerGroup.getExcelFile();
-        boolean matches = bCryptPasswordEncoder.matches(requestDto.getPassword(), userDetails.getPassword());
-        if (matches) {
-            UrlResource resource = new UrlResource("file:" + excelFile.getExcelFileSavedPath());
-            String encodedFileName = UriUtils.encode(excelFile.getExcelFileOrgName(), StandardCharsets.UTF_8);
-            // 파일 다운로드 대화상자가 뜨도록 하는 헤더를 설정해주는 것
-            // Content-Disposition 헤더에 attachment; filename="업로드 파일명" 값을 준다.
-            String contentDisposition = "attachment; filename=\"" + encodedFileName + "\"";
-            ExcelDownload download = new ExcelDownload(requestDto.getDownloadReason(), userDetails.getUser());
-            excelDownLoadRepository.save(download);
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-                    .header(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel")
-                    .body(resource);
-        } else {
-            throw new GlobalException(ErrorCode.NOT_VALID_DOWNLOAD);
-        }
+        UrlResource resource = new UrlResource("file:" + excelFile.getExcelFileSavedPath());
+        String encodedFileName = UriUtils.encode(excelFile.getExcelFileOrgName(), StandardCharsets.UTF_8);
+        // 파일 다운로드 대화상자가 뜨도록 하는 헤더를 설정해주는 것
+        // Content-Disposition 헤더에 attachment; filename="업로드 파일명" 값을 준다.
+        String contentDisposition = "attachment; filename=\"" + encodedFileName + "\"";
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .header(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel")
+                .body(resource);
     }
 
     @Transactional
@@ -235,6 +220,25 @@ public class GroupWriteService {
                 () -> new GlobalException(ErrorCode.DATA_NOT_FOUND)
         );
         customerGroup.setFavorite(!customerGroup.getFavorite());
+    }
+
+    private static InputStream excelUpload(MultipartFile file, String extension, String savedPath) throws IOException {
+        if (extension == null || (!extension.equals("xlsx") && !extension.equals("xls"))) {
+            throw new GlobalException(ErrorCode.NOT_EXCEL_FILE);
+        }
+        InputStream fileInputStream = file.getInputStream();
+        file.transferTo(new File(savedPath));
+        return fileInputStream;
+    }
+
+    private static Workbook getWorkbookXlsxOrXls(String extension, InputStream fileInputStream) throws IOException {
+        Workbook workbook = null;
+        if (extension.equals("xlsx")) {
+            workbook = new XSSFWorkbook(fileInputStream);
+        } else {
+            workbook = new HSSFWorkbook(fileInputStream);
+        }
+        return workbook;
     }
 
     private void saveGroupProperties(GroupWriteRequestDto requestDto, CustomerGroup customerGroup) {
