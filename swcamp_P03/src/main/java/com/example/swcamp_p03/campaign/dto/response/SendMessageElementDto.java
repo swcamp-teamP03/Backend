@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class SendMessageElementDto {
 
     private Long sendMessageId;
+    private String sendCopy;
     private LocalDateTime sendDate;
     private String name;
     private String phone;
