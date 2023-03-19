@@ -1,4 +1,4 @@
-package com.example.swcamp_p03.customerGroup.dto;
+package com.example.swcamp_p03.common.dto;
 
 import com.example.swcamp_p03.user.entity.User;
 import lombok.Builder;

@@ -18,7 +18,7 @@ public class CampaignDto {
     private String sendState;
     private Double clickRate;
 
-    public CampaignDto(Long campaignId,boolean favorite, String messageType, String campaignName, LocalDateTime createdAt, LocalDateTime sendingDate, Long clickCount, Long totalClickCount) {
+    public CampaignDto(Long campaignId,boolean favorite, String messageType, String campaignName, LocalDateTime createdAt, LocalDateTime sendingDate, Double clickRate) {
         this.campaignId = campaignId;
         this.favorite = favorite;
         this.messageType = messageType;
@@ -26,8 +26,6 @@ public class CampaignDto {
         this.createdAt = createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         this.sendingDate = sendingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm"));
         this.sendState = sendingDate.isBefore(LocalDateTime.now()) ? "발송완료" : "발송대기";
-        double clickThroughRate = clickCount / (double) totalClickCount;
-        double clickRate = Math.round(clickThroughRate * 10000) / 100.0;
         this.clickRate = clickRate;
     }
 }

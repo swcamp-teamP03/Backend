@@ -4,7 +4,7 @@ import com.example.swcamp_p03.common.dto.ResponseDto;
 import com.example.swcamp_p03.config.UserDetailsImpl;
 import com.example.swcamp_p03.customerGroup.dto.reponse.DetailGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.dto.reponse.TotalGroupResponseDto;
-import com.example.swcamp_p03.customerGroup.dto.SearchDto;
+import com.example.swcamp_p03.common.dto.SearchDto;
 import com.example.swcamp_p03.customerGroup.repository.CustomerGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

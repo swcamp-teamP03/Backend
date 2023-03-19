@@ -24,13 +24,13 @@ public class Campaign {
     private Long campaignId;
     private String campaignName;
     private String messageType;
-//    private String sendState;
     private String sendURL;
     private LocalDateTime sendingDate;
     private LocalDateTime createdAt;
     private Boolean favorite;
     private String apiKey;
     private String comment;
+    private Double clickRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")

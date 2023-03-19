@@ -2,7 +2,7 @@ package com.example.swcamp_p03.copyGroup.repository;
 
 import com.example.swcamp_p03.copyGroup.dto.CopyGroupListElementDto;
 import com.example.swcamp_p03.copyGroup.dto.response.CopyGroupListResponseDto;
-import com.example.swcamp_p03.customerGroup.dto.SearchDto;
+import com.example.swcamp_p03.common.dto.SearchDto;
 import com.example.swcamp_p03.user.entity.User;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -77,7 +77,6 @@ public class CopyGroupRepositoryImpl implements CopyGroupRepositoryCustom {
                 .fetchOne();
         PageImpl<CopyGroupListElementDto> copyGroupList = new PageImpl<>(result, searchDto.getPageable(), count);
         return new CopyGroupListResponseDto(count, copyGroupList);
-
     }
 
     private OrderSpecifier<?> groupSort(Pageable pageable) {

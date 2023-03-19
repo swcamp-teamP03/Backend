@@ -3,10 +3,12 @@ package com.example.swcamp_p03.campaign.repository;
 import com.example.swcamp_p03.campaign.dto.*;
 import com.example.swcamp_p03.campaign.dto.response.CampaignDetailDto;
 import com.example.swcamp_p03.campaign.dto.response.TotalCampaignResponseDto;
-import com.example.swcamp_p03.customerGroup.dto.SearchDto;
+import com.example.swcamp_p03.campaign.entity.Campaign;
+import com.example.swcamp_p03.common.dto.SearchDto;
 import com.example.swcamp_p03.user.entity.User;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -16,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,6 +38,28 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @RequiredArgsConstructor
 public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
+    private final EntityManager em;
+
+    @Override
+    @Transactional
+    public void updateClickRate(User user) {
+        List<CampaignRateDto> campaignRateDto = jpaQueryFactory.select(Projections.constructor(CampaignRateDto.class,
+                        sendMessages.visitedTime.count(),
+                        sendMessages.campaign.count()))
+                .from(campaign)
+                .leftJoin(sendMessages).on(campaign.eq(sendMessages.campaign))
+                .where(userEq(user))
+                .groupBy(campaign)
+                .fetch();
+
+        List<Campaign> campaigns = jpaQueryFactory.selectFrom(campaign)
+                .where(userEq(user))
+                .fetch();
+
+        for (int i = 0; i < campaigns.size(); i++) {
+            campaigns.get(i).setClickRate(campaignRateDto.get(i).getClickRate());
+        }
+    }
 
     @Override
     public TotalCampaignResponseDto findTotalCampaign(User user, Pageable pageable) {
@@ -44,12 +70,10 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                                 campaign.campaignName,
                                 campaign.createdAt,
                                 campaign.sendingDate,
-                                sendMessages.visitedTime.count(),
-                                sendMessages.campaign.count()
+                                campaign.clickRate
                         )
                 )
                 .from(campaign)
-                .leftJoin(sendMessages).on(campaign.eq(sendMessages.campaign))
                 .where(userEq(user))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -59,7 +83,7 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
 
         Long count = jpaQueryFactory.select(campaign.count())
                 .from(campaign)
-                .where(campaign.user.eq(user))
+                .where(userEq(user))
                 .fetchOne();
 
         PageImpl<CampaignDto> campaignDtos = new PageImpl<>(result, pageable, count);
@@ -76,8 +100,7 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                                 campaign.messageType,
                                 campaign.createdAt,
                                 campaign.sendingDate,
-                                sendMessages.visitedTime.count(),
-                                sendMessages.campaign.count()
+                                campaign.clickRate
                         )
                 )
                 .from(campaign)
@@ -118,7 +141,7 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                 .join(campaign.customerGroup, customerGroup)
                 .join(campaign.copyGroup, copyGroup)
                 .join(customerGroup.excelFile, excelFile)
-                .where(campaign.campaignId.eq(campaignId))
+                .where(campaignIdEq(campaignId))
                 .fetchOne();
     }
 
@@ -130,7 +153,7 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                 .from(campaign)
                 .join(campaign.customerGroup, customerGroup)
                 .join(customerGroup.propertyList, customerProperty)
-                .where(campaign.campaignId.eq(campaignId))
+                .where(campaignIdEq(campaignId))
                 .fetch();
     }
 
@@ -141,7 +164,7 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                         campaignMessage.message))
                 .from(campaign)
                 .join(campaignMessage).on(campaign.eq(campaignMessage.campaign))
-                .where(campaign.campaignId.eq(campaignId))
+                .where(campaignIdEq(campaignId))
                 .fetch();
     }
 
@@ -152,13 +175,13 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                                 .from(campaign)
                                 .join(sendMessages).on(campaign.eq(sendMessages.campaign))
                                 .join(campaignMessage).on(campaign.eq(campaignMessage.campaign))
-                                .where(campaign.campaignId.eq(campaignId), campaignMessage.messageSection.eq("A"), sendMessages.campaignMessage.eq(campaignMessage)),
+                                .where(campaignIdEq(campaignId), campaignMessage.messageSection.eq("A"), sendMessages.campaignMessage.eq(campaignMessage)),
                         sendMessages.visitedTime.count(),
                         sendMessages.count()))
                 .from(campaign)
                 .join(sendMessages).on(campaign.eq(sendMessages.campaign))
                 .join(campaignMessage).on(campaign.eq(campaignMessage.campaign))
-                .where(campaign.campaignId.eq(campaignId), campaignMessage.messageSection.eq("A"), sendMessages.campaignMessage.eq(campaignMessage), sendMessages.sendState.eq("발송성공"))
+                .where(campaignIdEq(campaignId), campaignMessage.messageSection.eq("A"), sendMessages.campaignMessage.eq(campaignMessage), sendMessages.sendState.eq("발송성공"))
                 .fetchOne();
     }
 
@@ -169,13 +192,13 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                                 .from(campaign)
                                 .join(sendMessages).on(campaign.eq(sendMessages.campaign))
                                 .join(campaignMessage).on(campaign.eq(campaignMessage.campaign))
-                                .where(campaign.campaignId.eq(campaignId), campaignMessage.messageSection.eq("B"), sendMessages.campaignMessage.eq(campaignMessage)),
+                                .where(campaignIdEq(campaignId), campaignMessage.messageSection.eq("B"), sendMessages.campaignMessage.eq(campaignMessage)),
                         sendMessages.visitedTime.count(),
                         sendMessages.count()))
                 .from(campaign)
                 .join(sendMessages).on(campaign.eq(sendMessages.campaign))
                 .join(campaignMessage).on(campaign.eq(campaignMessage.campaign))
-                .where(campaign.campaignId.eq(campaignId), campaignMessage.messageSection.eq("B"), sendMessages.campaignMessage.eq(campaignMessage), sendMessages.sendState.eq("발송성공"))
+                .where(campaignIdEq(campaignId), campaignMessage.messageSection.eq("B"), sendMessages.campaignMessage.eq(campaignMessage), sendMessages.sendState.eq("발송성공"))
                 .fetchOne();
     }
 
@@ -185,10 +208,18 @@ public class CampaignRepositoryImpl implements CampaignRepositoryCustom {
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
                 if (order.getProperty().equals("createdAt")) {
                     return new OrderSpecifier<>(direction, campaign.createdAt);
+                } else if (order.getProperty().equals("sendingDate")) {
+                    return new OrderSpecifier<>(direction, campaign.sendingDate);
+                } else if (order.getProperty().equals("clickRate")) {
+                    return new OrderSpecifier<>(direction, campaign.clickRate);
                 }
             }
         }
         return null;
+    }
+
+    private BooleanExpression campaignIdEq(Long campaignId) {
+        return isEmpty(campaignId) ? null : campaign.campaignId.eq(campaignId);
     }
 
     private BooleanExpression userEq(User user) {

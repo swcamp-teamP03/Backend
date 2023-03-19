@@ -6,7 +6,7 @@ import com.example.swcamp_p03.customerGroup.dto.reponse.DetailGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.dto.reponse.TotalGroupResponseDto;
 import com.example.swcamp_p03.customerGroup.dto.request.FileDownloadRequestDto;
 import com.example.swcamp_p03.customerGroup.dto.request.GroupWriteRequestDto;
-import com.example.swcamp_p03.customerGroup.dto.SearchDto;
+import com.example.swcamp_p03.common.dto.SearchDto;
 import com.example.swcamp_p03.customerGroup.service.GroupReadService;
 import com.example.swcamp_p03.customerGroup.service.GroupWriteService;
 import lombok.RequiredArgsConstructor;
