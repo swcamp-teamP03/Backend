@@ -14,7 +14,7 @@ public class AdUrlLinkController {
 
     private final CampaignService campaignService;
 
-    @GetMapping("/{uniqueUrl}")
+    @GetMapping("/redirect/{uniqueUrl}")
     public String adUrlLink(@PathVariable String uniqueUrl){
         String url = campaignService.visitUrl(uniqueUrl);
         if(url.contains("http://")||url.contains("https://")){

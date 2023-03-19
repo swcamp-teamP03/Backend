@@ -79,18 +79,26 @@ public class CampaignService {
         if(campaign.getUser().getUserId() != user.getUserId()){
             throw new GlobalException(ErrorCode.DATA_NOT_FOUND);
         }
-        try{
-            updateSendMessages(campaign);
+        updateSendMessages(campaign);
             // 조회 성공 표시
-        } catch (Exception e){
-            System.out.println("e = " + e.getMessage());
-            e.printStackTrace();
-        }
         List<SendMessages> allByCampaign = sendMessagesRepository.findAllByCampaign(campaign);
         List<SendMessageElementDto> list = allByCampaign
                 .stream()
-                .map((e)-> new SendMessageElementDto(e.getSendMessagesId(),e.getSendDateTime(),e.getName(), e.getPhoneNumber(),e.getSendState(),e.getErrorMessage()))
+                .map((e)-> new SendMessageElementDto(
+//                        e.getSendMessagesId(),
+                        0L,
+                        e.getCampaignMessage().getMessageSection() ,
+                        e.getSendDateTime(),
+                        e.getName().substring(0,2) + "*",
+                        e.getPhoneNumber().substring(0,9) + "****",
+                        e.getSendState(),
+                        e.getErrorMessage()))
                 .toList();
+        int i = 1;
+        for (SendMessageElementDto sendMessageElementDto : list) {
+            sendMessageElementDto.setSendMessageId((long)i);
+            i++;
+        }
         return new SendMessageResponseDto(allByCampaign.size(), list);
     }
     @Transactional
@@ -101,11 +109,18 @@ public class CampaignService {
     @Transactional
     public Long createCampaign(User user, CampaignRequestDto requestDto , Boolean sendMessage) throws Exception{
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime parse = LocalDateTime.parse(requestDto.getSendingDate());
-        requestDto.setSendingDate(parse.format(dateTimeFormatter));
+        if(requestDto.getSendingDate()!=null && checkTime15M(LocalDateTime.parse(requestDto.getSendingDate()))){
+            log.info("checkTime15M (calling setSendingDate(LocalDateTime.now().toString())) : 발송예약은 현재시간으로부터 15분 후부터 가능(따라서 즉시발송으로 변경)");
+            requestDto.setSendingDate(LocalDateTime.now().toString());
+        }
 
-        if(requestDto.getSendType().equals("ad")){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        if(requestDto.getSendingDate()!=null){
+            LocalDateTime parse = LocalDateTime.parse(requestDto.getSendingDate());
+            requestDto.setSendingDate(parse.format(dateTimeFormatter));
+        }
+
+        if(requestDto.getSendType().equals("ad") || requestDto.getSendType().equals("AD")){
             requestDto.setMessageA("(광고)" + requestDto.getMessageA());
             if(!(requestDto.getMessageB()==null||requestDto.getMessageB().equals(""))){
                 requestDto.setMessageB("(광고)" + requestDto.getMessageB());
@@ -151,7 +166,10 @@ public class CampaignService {
         if(requestDto.getMessageB()==null||requestDto.getMessageB().equals("")){
             log.info("AB 테스트 사용 X");
             ArrayList<NaverApiMessage> apiMessagesList = new ArrayList<>();
-            String suffix = " [무료 수신거부] " + messageSource.getMessage("key.denial", null, null);
+            String suffix = "";
+            if(requestDto.getSendType().equals("ad") || requestDto.getSendType().equals("AD") ){
+                suffix = " [무료 수신거부] " + messageSource.getMessage("key.denial", null, null);
+            }
             ExcelFile excelFile = customerGroup.getExcelFile();
             List<ExcelData> excelFileList = excelDataRepository.findAllByExcelFile(excelFile);
 
@@ -178,7 +196,7 @@ public class CampaignService {
                         .sendState("발송대기")
                         .build();
                 sendMessages = sendMessagesRepository.save(sendMessages);
-                apiMessagesList.add(new NaverApiMessage(excelData.getPhoneNumber().replace("-", ""), "(광고)메세지",
+                apiMessagesList.add(new NaverApiMessage(excelData.getPhoneNumber().replace("-", ""), "메세지",
                         campaignMessageA.getMessage() + " " + messageSource.getMessage("url", null, null) + sendMessages.getUniqueUrl() + suffix));
             }
 
@@ -220,7 +238,10 @@ public class CampaignService {
     private ArrayList<NaverApiMessage> splitMessageList(
             List<ExcelData> excelDataList, CampaignMessage messageA, CampaignMessage messageB, Campaign campaign, CampaignRequestDto requestDto){
         ArrayList<NaverApiMessage> apiMessagesList = new ArrayList<>();
-        String suffix = " [무료 수신거부] " + messageSource.getMessage("key.denial", null, null);
+        String suffix = "";
+        if(requestDto.getSendType().equals("ad") || requestDto.getSendType().equals("AD")){
+            suffix = " [무료 수신거부] " + messageSource.getMessage("key.denial", null, null);
+        }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime sendingDate = LocalDateTime.now();
         if(requestDto.getSendingDate() != null){
@@ -250,7 +271,7 @@ public class CampaignService {
                     .sendState("발송대기")
                     .build();
             sendMessages = sendMessagesRepository.save(sendMessages);
-            apiMessagesList.add(new NaverApiMessage( excelData.getPhoneNumber().replace("-", ""), "(광고)메세지" ,
+            apiMessagesList.add(new NaverApiMessage( excelData.getPhoneNumber().replace("-", ""), "메세지" ,
                     messageA.getMessage() + " " + messageSource.getMessage("url",null,null) + sendMessages.getUniqueUrl() + suffix));
         }
         for (int i = excelDataList.size() / 2; i < excelDataList.size(); i++) {
@@ -276,7 +297,7 @@ public class CampaignService {
                     .sendState("발송대기")
                     .build();
             sendMessages = sendMessagesRepository.save(sendMessages);
-            apiMessagesList.add(new NaverApiMessage( excelData.getPhoneNumber().replace("-", ""), "(광고)메세지" ,
+            apiMessagesList.add(new NaverApiMessage( excelData.getPhoneNumber().replace("-", ""),  "메세지",
                     messageB.getMessage() + " " + messageSource.getMessage("url",null,null) + sendMessages.getUniqueUrl() + suffix));
         }
 
@@ -335,7 +356,7 @@ public class CampaignService {
 //        System.out.println("answer = " + returnVal);
     }
 
-    public String makeSignature(String timestamp, String url, String method) throws Exception{
+    public String makeSignature(String timestamp, String url, String method) {
         String space = " ";					// one space
         String newLine = "\n";					// new line
 //        String method = "POST";					// method
@@ -354,12 +375,19 @@ public class CampaignService {
                 .append(accessKey)
                 .toString();
 
-        SecretKeySpec signingKey = new SecretKeySpec(secretKey.getBytes("UTF-8"), "HmacSHA256");
-        Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(signingKey);
+        String encodeBase64String;
+        try{
+            SecretKeySpec signingKey = new SecretKeySpec(secretKey.getBytes("UTF-8"), "HmacSHA256");
+            Mac mac = Mac.getInstance("HmacSHA256");
+            mac.init(signingKey);
 
-        byte[] rawHmac = mac.doFinal(message.getBytes("UTF-8"));
-        String encodeBase64String = Base64.encodeBase64String(rawHmac);
+            byte[] rawHmac = mac.doFinal(message.getBytes("UTF-8"));
+            encodeBase64String = Base64.encodeBase64String(rawHmac);
+        } catch (Exception e){
+            log.warn("makeSignature : 예외발생 [url : {}][method : {}]",url,method);
+            e.printStackTrace();
+            return null;
+        }
 
         return encodeBase64String;
     }
@@ -382,8 +410,13 @@ public class CampaignService {
         return url.toString();
     }
 
+    private Boolean checkTime15M(LocalDateTime target) {
+        LocalDateTime compare = LocalDateTime.now().plusMinutes(16);
+        return compare.isAfter(target);
+    }
+
     @Transactional
-    public void updateSendMessages(Campaign campaign) throws Exception{
+    public void updateSendMessages(Campaign campaign){
         String timestamp = Long.toString(System.currentTimeMillis());
         String requestId = campaign.getApiKey();
 
@@ -413,7 +446,15 @@ public class CampaignService {
 //        System.out.println("responseBody = " + responseBody);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        JsonNode jsonNode;
+        try{
+            jsonNode = objectMapper.readTree(responseBody);
+        } catch (Exception e){
+            e.printStackTrace();
+            String message = e.getMessage();
+            log.warn("네이버 API responseBody json 파싱예외 발생 (Exception message : {}) (campaign : {})", message, campaign.toString());
+            return;
+        }
 
         //SendMessages 조회
         List<SendMessages> sendMessagesList = sendMessagesRepository.findAllByCampaign(campaign);
@@ -423,26 +464,33 @@ public class CampaignService {
         int itemCount = jsonNode.get("itemCount").asInt();
         log.info("updateSendMessages : execute [{}] update", itemCount);
 
-        for(int i=0;i<itemCount;i++){
-            NaverApiMessageResultDto messages = objectMapper.readValue(jsonNode.get("messages").get(i).toString(), NaverApiMessageResultDto.class);
-            log.info("input NaverApiMessageResultDto : {}", messages);
-            for (SendMessages sendMessages : sendMessagesList) {
-                String status;
-                if(messages.getStatusCode()!=null && messages.getStatusCode().equals("0")){
-                    status = "발송성공";
-                }else if(messages.getStatus().equals("READY")) {
-                    status = "발송대기";
-                }else if(messages.getStatus().equals("PROCESSING")) {
-                    status = "발송중";
-                }else{
-                    status = "발송실패";
-                }
+        try{
+            for(int i=0;i<itemCount;i++){
+                NaverApiMessageResultDto messages = objectMapper.readValue(jsonNode.get("messages").get(i).toString(), NaverApiMessageResultDto.class);
+                log.info("input NaverApiMessageResultDto : {}", messages);
+                for (SendMessages sendMessages : sendMessagesList) {
+                    String status;
+                    if(messages.getStatusCode()!=null && messages.getStatusCode().equals("0")){
+                        status = "발송성공";
+                    }else if(messages.getStatus().equals("READY")) {
+                        status = "발송대기";
+                    }else if(messages.getStatus().equals("PROCESSING")) {
+                        status = "발송중";
+                    }else{
+                        status = "발송실패";
+                    }
 
-                if(sendMessages.getPhoneNumber().replace("-", "").equals(messages.getTo())){
-                    log.info("updateData to [{}] data : sendState = {} , errorMessage = {}",sendMessages.getPhoneNumber(),status, messages.getStatusMessage());
-                    sendMessages.updateData(status ,messages.getStatusMessage());
+                    if(sendMessages.getPhoneNumber().replace("-", "").equals(messages.getTo())){
+                        log.info("updateData to [{}] data : sendState = {} , errorMessage = {}",sendMessages.getPhoneNumber(),status, messages.getStatusMessage());
+                        sendMessages.updateData(status ,messages.getStatusMessage());
+                    }
                 }
             }
+        } catch (Exception e){
+            e.printStackTrace();
+            String message = e.getMessage();
+            log.warn("updateSendMessages 중 예외 발생 : (Exception message : {})", message);
+            throw new GlobalException(ErrorCode.UPDATE_SEND_MESSAGE_FAIL);
         }
     }
 }

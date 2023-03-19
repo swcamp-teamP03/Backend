@@ -76,8 +76,7 @@ public class CopyGroupRepositoryImpl implements CopyGroupRepositoryCustom {
                 .where(userEq(searchDto.getUser()))
                 .fetchOne();
         PageImpl<CopyGroupListElementDto> copyGroupList = new PageImpl<>(result, searchDto.getPageable(), count);
-        return new CopyGroupListResponseDto(count,copyGroupList);
-
+        return new CopyGroupListResponseDto(count, copyGroupList);
     }
 
     private OrderSpecifier<?> groupSort(Pageable pageable) {

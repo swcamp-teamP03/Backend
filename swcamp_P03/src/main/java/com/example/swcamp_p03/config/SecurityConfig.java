@@ -53,7 +53,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests()
                 .antMatchers("/sign").permitAll()
-                .antMatchers("/*").permitAll()
+                .antMatchers("/redirect/*").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();

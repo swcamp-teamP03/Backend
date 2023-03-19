@@ -69,8 +69,13 @@ public class CustomerGroupController {
     }
 
     @PostMapping("/groups/{groupId}/file/download")
-    public ResponseEntity<Resource> fileDownload(@PathVariable Long groupId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody FileDownloadRequestDto requestDto) throws MalformedURLException {
-        return groupWriteService.fileDownload(groupId, userDetails, requestDto);
+    public void fileDownloadReason(@PathVariable Long groupId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody FileDownloadRequestDto requestDto) throws MalformedURLException {
+        groupWriteService.fileDownloadReason(groupId, userDetails, requestDto);
+    }
+
+    @GetMapping("/groups/{groupId}/file/download")
+    public ResponseEntity<Resource> fileDownload(@PathVariable Long groupId) throws MalformedURLException {
+        return groupWriteService.fileDownload(groupId);
     }
 
     @PostMapping("/groups/{groupId}")

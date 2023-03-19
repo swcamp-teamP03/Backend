@@ -8,13 +8,13 @@ import java.util.List;
 
 @Getter
 public class CopyGroupListResponseDto {
-    private int totalCopy;
     private Long totalCopyCount;
-    private List<CopyGroupListElementDto> GroupList;
+    private int totalCopy;
+    private List<CopyGroupListElementDto> groupList;
 
-    public CopyGroupListResponseDto(Long totalCopyCount, PageImpl<CopyGroupListElementDto> copyGroupList) {
+    public CopyGroupListResponseDto(Long totalCopyCount, PageImpl<CopyGroupListElementDto> groupList) {
         this.totalCopyCount = totalCopyCount;
-        this.totalCopy = copyGroupList.getTotalPages();
-        this.GroupList = copyGroupList.getContent();
+        this.totalCopy = groupList.getTotalPages();
+        this.groupList = groupList.getContent();
     }
 }
