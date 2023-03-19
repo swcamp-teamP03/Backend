@@ -79,7 +79,7 @@ public class CopyGroupService {
 
         List<GptCopyDto> copyList = createDto.getCopyList();
         for (GptCopyDto gptCopyDto : copyList) {
-            copyGroup.addGptCopy(new GptCopy(gptCopyDto.getContent(), copyGroup, gptCopyDto.getPin(), LocalDateTime.now(), null));
+            copyGroup.addGptCopy(new GptCopy(gptCopyDto.getContent(), copyGroup, gptCopyDto.getIsPinned(), LocalDateTime.now(), null));
         }
 
         return copyGroupRepository.save(copyGroup).getCopyGroupId();
@@ -105,7 +105,7 @@ public class CopyGroupService {
                 copyGroupDto
                         .getCopyList()
                         .stream()
-                        .map(c -> new GptCopy(c.getContent(), copyGroup, c.getPin(), gptCopyDel.getCreatedAt(), LocalDateTime.now()))
+                        .map(c -> new GptCopy(c.getContent(), copyGroup, c.getIsPinned(), gptCopyDel.getCreatedAt(), LocalDateTime.now()))
                         .toList());
 
         em.flush();

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class GptCopyDto {
     private Long copyId;
     private String content;
-    private Boolean pin;
+    private Boolean isPinned;
     private LocalDateTime createDate;
 
 
@@ -19,6 +19,6 @@ public class GptCopyDto {
         copyId = gptCopy.getGptCopyId();
         content = gptCopy.getContent();
         createDate = gptCopy.getCreatedAt();
-        pin = gptCopy.getPin();
+        isPinned  = gptCopy.getPin();
     }
 }
