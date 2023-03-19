@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -363,5 +364,44 @@ public class CampaignServiceCreateTest {
         //when
         //then
         assertThrows(GlobalException.class,()-> campaignService.createCampaign(user, requestDto, false));
+    }
+
+    @Test
+    @DisplayName("발송예약이 현재시간으로부터 15분 이상 차이나지 않을경우 즉시 발송하도록 동작하는지 테스트")
+    void CampaignCreateCheckTime15MTest() {
+        //given
+        LocalDateTime dtoSendingDate = LocalDateTime.now().plusMinutes(5);
+        System.out.println("dtoSendingDate.toString() = " + dtoSendingDate.toString());
+        CampaignRequestDto requestDto = new CampaignRequestDto();
+        requestDto.setCampaignName("testCampaignName");
+        requestDto.setCustomerGroupId(customerGroup.getCustomerGroupId());
+        requestDto.setCopyGroupId(copyGroup.getCopyGroupId());
+        requestDto.setMessageType("LMS");
+        requestDto.setSendType("ad");
+        requestDto.setSendURL("https://www.youtube.com/");
+        requestDto.setSendingDate(dtoSendingDate.toString());
+        requestDto.setMessageA("테스트 내용 A");
+        requestDto.setMessageB("테스트 내용 B");
+
+        //when
+        Long campaign;
+        try {
+            campaign = campaignService.createCampaign(user, requestDto, false);
+        } catch (Exception e){
+            e.printStackTrace();
+            fail("테스트 실패 : 예외 발생");
+            return;
+        }
+
+        //then
+        Campaign findCampaign = campaignRepository.findById(campaign).orElseThrow();
+        List<SendMessages> sendMessages = sendMessagesRepository.findAllByCampaign(findCampaign);
+        List<CampaignMessage> campaignMessages = campaignMessageRepository.findAllByCampaign(findCampaign);
+
+        LocalDateTime campaignSendingDate = findCampaign.getSendingDate();
+        System.out.println("dtoSendingDate.toString() = " + dtoSendingDate.toString());
+        System.out.println("campaignSendingDate = " + campaignSendingDate);
+        assertNotEquals(dtoSendingDate, campaignSendingDate);
+        assertTrue(campaignSendingDate.isBefore(dtoSendingDate));
     }
 }

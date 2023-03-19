@@ -109,6 +109,11 @@ public class CampaignService {
     @Transactional
     public Long createCampaign(User user, CampaignRequestDto requestDto , Boolean sendMessage) throws Exception{
 
+        if(requestDto.getSendingDate()!=null && checkTime15M(LocalDateTime.parse(requestDto.getSendingDate()))){
+            log.info("checkTime15M (calling setSendingDate(LocalDateTime.now().toString())) : 발송예약은 현재시간으로부터 15분 후부터 가능(따라서 즉시발송으로 변경)");
+            requestDto.setSendingDate(LocalDateTime.now().toString());
+        }
+
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         if(requestDto.getSendingDate()!=null){
             LocalDateTime parse = LocalDateTime.parse(requestDto.getSendingDate());
@@ -403,6 +408,11 @@ public class CampaignService {
             }
         }
         return url.toString();
+    }
+
+    private Boolean checkTime15M(LocalDateTime target) {
+        LocalDateTime compare = LocalDateTime.now().plusMinutes(16);
+        return compare.isAfter(target);
     }
 
     @Transactional
