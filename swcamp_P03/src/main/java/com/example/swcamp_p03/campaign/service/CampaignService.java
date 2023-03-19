@@ -85,7 +85,8 @@ public class CampaignService {
         List<SendMessageElementDto> list = allByCampaign
                 .stream()
                 .map((e)-> new SendMessageElementDto(
-                        e.getSendMessagesId(),
+//                        e.getSendMessagesId(),
+                        0L,
                         e.getCampaignMessage().getMessageSection() ,
                         e.getSendDateTime(),
                         e.getName().substring(0,2) + "*",
@@ -93,6 +94,11 @@ public class CampaignService {
                         e.getSendState(),
                         e.getErrorMessage()))
                 .toList();
+        int i = 1;
+        for (SendMessageElementDto sendMessageElementDto : list) {
+            sendMessageElementDto.setSendMessageId((long)i);
+            i++;
+        }
         return new SendMessageResponseDto(allByCampaign.size(), list);
     }
     @Transactional
@@ -102,6 +108,11 @@ public class CampaignService {
 
     @Transactional
     public Long createCampaign(User user, CampaignRequestDto requestDto , Boolean sendMessage) throws Exception{
+
+        if(requestDto.getSendingDate()!=null && checkTime15M(LocalDateTime.parse(requestDto.getSendingDate()))){
+            log.info("checkTime15M (calling setSendingDate(LocalDateTime.now().toString())) : 발송예약은 현재시간으로부터 15분 후부터 가능(따라서 즉시발송으로 변경)");
+            requestDto.setSendingDate(LocalDateTime.now().toString());
+        }
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         if(requestDto.getSendingDate()!=null){
@@ -397,6 +408,11 @@ public class CampaignService {
             }
         }
         return url.toString();
+    }
+
+    private Boolean checkTime15M(LocalDateTime target) {
+        LocalDateTime compare = LocalDateTime.now().plusMinutes(16);
+        return compare.isAfter(target);
     }
 
     @Transactional
