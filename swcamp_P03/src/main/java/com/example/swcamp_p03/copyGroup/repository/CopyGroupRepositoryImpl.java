@@ -49,7 +49,7 @@ public class CopyGroupRepositoryImpl implements CopyGroupRepositoryCustom {
                 .where(userEq(user))
                 .fetchOne();
         PageImpl<CopyGroupListElementDto> copyGroupList = new PageImpl<>(result, pageable, count);
-        return new CopyGroupListResponseDto(copyGroupList.getTotalPages(), copyGroupList.getContent());
+        return new CopyGroupListResponseDto(count, copyGroupList);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CopyGroupRepositoryImpl implements CopyGroupRepositoryCustom {
                 .where(userEq(searchDto.getUser()))
                 .fetchOne();
         PageImpl<CopyGroupListElementDto> copyGroupList = new PageImpl<>(result, searchDto.getPageable(), count);
-        return new CopyGroupListResponseDto(copyGroupList.getTotalPages(), copyGroupList.getContent());
+        return new CopyGroupListResponseDto(count, copyGroupList);
 
     }
 
