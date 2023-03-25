@@ -68,6 +68,7 @@ public class GroupWriteService {
 
     private final String exelDirectory = System.getProperty("user.dir") + "/excelFile/";
 
+    @Transactional
     public void writeGroup(UserDetailsImpl userDetails, GroupWriteRequestDto requestDto) throws IOException {
         // 절대 경로에 폴더 생성
         File folder = new File(exelDirectory);
@@ -325,7 +326,7 @@ public class GroupWriteService {
         Sheet worksheet = workbook.getSheetAt(0);
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
             Row row = worksheet.getRow(i);
-            if (row.getCell(0) != null && row.getCell(1) != null) {
+            if (row != null) {
                 String username = row.getCell(0).getStringCellValue();
                 String phoneNumber = row.getCell(1).getStringCellValue();
                 if (!username.equals("") || !phoneNumber.equals("")) {
