@@ -260,4 +260,4 @@ erDiagram
 	
 ```
 ---
-# [API 명세서](https://documenter.getpostman.com/view/22820772/2s93CNNZ8b)
+# [API 명세서 ()](https://documenter.getpostman.com/view/22820772/2s93CNNZ8b)
