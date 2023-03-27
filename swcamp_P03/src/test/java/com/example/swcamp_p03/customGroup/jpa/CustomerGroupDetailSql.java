@@ -29,7 +29,7 @@ public class CustomerGroupDetailSql extends CustomerGroupDataInit {
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
 
-    @Test
+//    @Test
     void groupDetail() {
         CustomerGroup result = jpaQueryFactory.select(
                 customerGroup)

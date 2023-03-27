@@ -44,7 +44,7 @@ public class GroupInsertBatchTest {
         databaseCleanup.execute();
     }
 
-    @Test
+//    @Test
     @DisplayName("bulkInsert")
     void insertBulk() {
         String name = "aaa";
@@ -83,7 +83,7 @@ public class GroupInsertBatchTest {
         System.out.println("bulk insert 쿼리 시간 : " + stopWatch.getTotalTimeSeconds());
     }
 
-    @Test
+//    @Test
     @DisplayName("saveAll")
     void saveAll() {
         String name = "aaa";

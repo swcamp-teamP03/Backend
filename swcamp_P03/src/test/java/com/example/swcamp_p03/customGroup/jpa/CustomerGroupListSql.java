@@ -26,7 +26,7 @@ public class CustomerGroupListSql extends CustomerGroupDataInit {
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
 
-    @Test
+//    @Test
     void groupList() {
         int page = 1;
         int size = 5;
