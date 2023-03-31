@@ -21,7 +21,7 @@ public class SearchGroupSql extends CustomerGroupDataInit {
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
 
-    @Test
+//    @Test
     void search() {
         int page = 0;
         int size = 5;

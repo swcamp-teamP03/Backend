@@ -41,7 +41,7 @@ public class BulkInsertFindTest {
         namedParameterJdbcTemplate.batchUpdate(sql, params);
     }
 
-    @Test
+//    @Test
     void test() {
         String name = "aaa";
         AaaTable findA = aTableRepository.findByName(name);

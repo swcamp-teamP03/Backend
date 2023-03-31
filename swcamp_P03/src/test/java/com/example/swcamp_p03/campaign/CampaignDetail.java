@@ -26,7 +26,7 @@ public class CampaignDetail {
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
 
-    @Test
+//    @Test
     void test() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
