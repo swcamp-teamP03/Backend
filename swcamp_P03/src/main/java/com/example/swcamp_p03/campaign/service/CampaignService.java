@@ -304,7 +304,7 @@ public class CampaignService {
         return apiMessagesList;
     }
 
-    private String naverApiLmsSend(ArrayList<NaverApiMessage> messages,String reserveTime,String contentType) throws Exception {
+    public String naverApiLmsSend(ArrayList<NaverApiMessage> messages,String reserveTime,String contentType) throws Exception {
 
         String timestamp = Long.toString(System.currentTimeMillis());
         String url = "https://sens.apigw.ntruss.com/sms/v2/services/" + messageSource.getMessage("key.naverserviceId", null, null) + "/messages";

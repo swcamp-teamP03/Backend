@@ -1,8 +1,10 @@
 package com.example.swcamp_p03.campaign.controller;
 
 
+import com.example.swcamp_p03.campaign.dto.api.NaverApiMessage;
 import com.example.swcamp_p03.campaign.dto.request.CampaignRequestDto;
 import com.example.swcamp_p03.campaign.dto.request.CommentRequestDto;
+import com.example.swcamp_p03.campaign.dto.request.MessageTestDto;
 import com.example.swcamp_p03.campaign.dto.response.CampaignCreateResponseDto;
 import com.example.swcamp_p03.campaign.dto.response.CampaignDetailDto;
 import com.example.swcamp_p03.campaign.dto.response.SendMessageResponseDto;
@@ -23,6 +25,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,6 +46,14 @@ public class CampaignController {
     public ResponseDto<SendMessageResponseDto> getSendMessages(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long campaignId) throws Exception {
         SendMessageResponseDto sendMessages = campaignService.getSendMessages(userDetails.getUser(), campaignId);
         return ResponseDto.success(sendMessages);
+    }
+
+    @PostMapping("/message")
+    public ResponseDto<String> testSendMessage(@RequestBody MessageTestDto message) throws Exception{
+        ArrayList<NaverApiMessage> apiMessages = new ArrayList<>();
+        apiMessages.add(new NaverApiMessage(message.getTo(), "테스트 전송", message.getMessage()));
+        campaignService.naverApiLmsSend(apiMessages, null, "COMM");
+        return ResponseDto.success("성공");
     }
 
 
