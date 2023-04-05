@@ -53,8 +53,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authResult.getPrincipal();
         String jwtToken = jwtTokenUtils.generateJwtToken(userDetailsImpl);
 
-//        Cookie setCookie = new Cookie("accessToken", jwtToken);
-//        setCookie.setHttpOnly(true);
         ResponseCookie cookie = ResponseCookie.from("accessToken", jwtToken)
                 .sameSite("None")
                 .httpOnly(true)
@@ -62,7 +60,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.addHeader("Set-Cookie", cookie.toString());
 
         ObjectMapper objectMapper = new ObjectMapper();
-//        response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwtToken);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         ResponseLogin loginSuccess = ResponseLogin.builder()
                 .success(true)
