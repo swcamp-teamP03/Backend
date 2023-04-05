@@ -13,9 +13,6 @@ public class RequestLogin {
     private String email;
     private String password;
     private String company;
-    private String companyNumber;
     private String username;
     private String phoneNumber;
-    private String callingNumber;
-    private String callRejectionNumber;
 }

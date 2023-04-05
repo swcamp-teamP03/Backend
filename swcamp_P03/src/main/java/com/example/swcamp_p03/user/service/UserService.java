@@ -1,5 +1,6 @@
 package com.example.swcamp_p03.user.service;
 
+import com.example.swcamp_p03.common.dto.ResponseDto;
 import com.example.swcamp_p03.common.exception.ErrorCode;
 import com.example.swcamp_p03.common.exception.GlobalException;
 import com.example.swcamp_p03.user.dto.response.MyInfoResponseDto;
@@ -28,9 +29,6 @@ public class UserService {
                     .username(requestLogin.getUsername())
                     .phoneNumber(requestLogin.getPhoneNumber())
                     .company(requestLogin.getCompany())
-                    .companyNumber(requestLogin.getCompanyNumber())
-                    .callingNumber(requestLogin.getCallingNumber())
-                    .callRejectionNumber(requestLogin.getCallRejectionNumber())
                     .build();
             userRepository.save(user);
         } else {
@@ -38,8 +36,7 @@ public class UserService {
         }
     }
 
-    public MyInfoResponseDto getMyInfo(User user) {
-        User findUser = userRepository.findByEmail(user.getEmail()).get();
-        return new MyInfoResponseDto(findUser);
+    public ResponseDto<MyInfoResponseDto> getMyInfo(User user) {
+        return ResponseDto.success(new MyInfoResponseDto(user));
     }
 }
