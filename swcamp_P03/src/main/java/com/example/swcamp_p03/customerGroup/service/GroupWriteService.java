@@ -130,6 +130,7 @@ public class GroupWriteService {
                 () -> new GlobalException(ErrorCode.CANT_EDIT)
         );
         if (Boolean.TRUE.equals(findGroup.getUnableEdit())) {
+            log.warn("캠페인을 생성한 고객 그룹은 수정이 불가합니다.");
             throw new GlobalException(ErrorCode.CANT_EDIT);
         }
         MultipartFile multipartFile = requestDto.getFile();
@@ -196,6 +197,7 @@ public class GroupWriteService {
             ExcelDownload download = new ExcelDownload(requestDto.getDownloadReason(), userDetails.getUser());
             excelDownLoadRepository.save(download);
         } else {
+            log.warn("비밀번호가 틀렸습니다.");
             throw new GlobalException(ErrorCode.NOT_VALID_DOWNLOAD);
         }
     }
@@ -225,6 +227,7 @@ public class GroupWriteService {
 
     private static InputStream excelUpload(MultipartFile file, String extension, String savedPath) throws IOException {
         if (extension == null || (!extension.equals("xlsx") && !extension.equals("xls"))) {
+            log.warn("엑셀 확장자가 유효하지 않습니다.");
             throw new GlobalException(ErrorCode.NOT_EXCEL_FILE);
         }
         InputStream fileInputStream = file.getInputStream();
@@ -331,8 +334,10 @@ public class GroupWriteService {
                 String phoneNumber = row.getCell(1).getStringCellValue();
                 if (!username.equals("") || !phoneNumber.equals("")) {
                     if (Boolean.FALSE.equals(validCheck.isUsername(username))) {
+                        log.warn("이름이 유효하지 않습니다.");
                         throw new GlobalException(ErrorCode.NOT_VALID_EXCEL_USERNAME);
                     } else if (Boolean.FALSE.equals(validCheck.isPhoneNumber(phoneNumber))) {
+                        log.warn("전화번호가 유효하지 않습니다.");
                         throw new GlobalException(ErrorCode.NOT_VALID_EXCEL_PHONE_NUMBER);
                     } else {
                         ExcelDataDto excelData = ExcelDataDto.excelDataRegister()

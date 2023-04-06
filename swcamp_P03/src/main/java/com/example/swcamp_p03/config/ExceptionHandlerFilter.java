@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.swcamp_p03.common.exception.ErrorCode;
 import com.example.swcamp_p03.common.exception.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
     @Override
@@ -23,8 +25,10 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (TokenExpiredException e) {
+            log.warn("토큰이 만료되었습니다.");
             setErrorResponse(response, ErrorCode.TOKEN_EXPIRED);
         } catch (JWTVerificationException | IllegalArgumentException e) {
+            log.warn("유효하지 않은 토큰입니다.");
             setErrorResponse(response, ErrorCode.INVALID_TOKEN);
         }
     }

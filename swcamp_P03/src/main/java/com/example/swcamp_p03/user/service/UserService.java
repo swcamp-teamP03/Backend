@@ -8,6 +8,7 @@ import com.example.swcamp_p03.user.entity.User;
 import com.example.swcamp_p03.user.dto.request.RequestLogin;
 import com.example.swcamp_p03.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -32,6 +34,7 @@ public class UserService {
                     .build();
             userRepository.save(user);
         } else {
+            log.warn("존재하는 아이디 입니다.");
             throw new GlobalException(ErrorCode.EXIST_EMAIL);
         }
     }

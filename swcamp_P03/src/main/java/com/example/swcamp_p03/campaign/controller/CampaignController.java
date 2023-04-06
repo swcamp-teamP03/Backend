@@ -14,6 +14,8 @@ import com.example.swcamp_p03.campaign.service.CampaignService;
 import com.example.swcamp_p03.campaign.service.CampaignWriteService;
 import com.example.swcamp_p03.common.dto.ResponseDto;
 import com.example.swcamp_p03.common.dto.SearchDto;
+import com.example.swcamp_p03.common.exception.ErrorCode;
+import com.example.swcamp_p03.common.exception.GlobalException;
 import com.example.swcamp_p03.config.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 @RestController
@@ -36,10 +40,38 @@ public class CampaignController {
     private final CampaignReadService campaignReadService;
     private final CampaignWriteService campaignWriteService;
     
-    @PostMapping("/campaign")
+//    @PostMapping("/campaign")
     public CampaignCreateResponseDto createCampaign(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CampaignRequestDto requestDto) throws Exception {
         Long campaignId = campaignService.createCampaign(userDetails.getUser(), requestDto);
         return new CampaignCreateResponseDto(campaignId, "success");
+    }
+
+    @PostMapping("/campaign")
+    public ResponseDto<String> createCampaignTestVersion(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CampaignRequestDto requestDto) throws Exception {
+
+        if(userDetails.getUser().getPhoneNumber() == null){
+            throw new GlobalException(ErrorCode.PHONE_NUMBER_NOT_REGISTERED);
+        }
+
+        if(requestDto.getSendingDate() != null && campaignService.checkTime15M(LocalDateTime.parse(requestDto.getSendingDate()))){
+            log.info("checkTime15M (calling setSendingDate(LocalDateTime.now().toString())) : 발송예약은 현재시간으로부터 15분 후부터 가능(따라서 즉시발송으로 변경)");
+            requestDto.setSendingDate(null);
+        }
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        if(requestDto.getSendingDate()!=null){
+            LocalDateTime parse = LocalDateTime.parse(requestDto.getSendingDate());
+            requestDto.setSendingDate(parse.format(dateTimeFormatter));
+        }
+
+        String phoneNum = userDetails.getUser().getPhoneNumber().replace("-", "");
+        ArrayList<NaverApiMessage> apiMessages = new ArrayList<>();
+        apiMessages.add(new NaverApiMessage(phoneNum, "copyt 테스트 발송문자","(광고)" +  requestDto.getMessageA() + " [이부분에 링크가 들어갑니다.]"));
+        if(requestDto.getMessageB() != null && !requestDto.getMessageB().equals("null")){
+            apiMessages.add(new NaverApiMessage(phoneNum, "copyt 테스트 발송문자","(광고)" +  requestDto.getMessageB() + " [이부분에 링크가 들어갑니다.]"));
+        }
+        campaignService.naverApiLmsSend(apiMessages, requestDto.getSendingDate(), "COMM");
+
+        return ResponseDto.success("성공");
     }
 
     @GetMapping("/campaigns/{campaignId}/sendmessages")
@@ -49,9 +81,13 @@ public class CampaignController {
     }
 
     @PostMapping("/message")
-    public ResponseDto<String> testSendMessage(@RequestBody MessageTestDto message) throws Exception{
+    public ResponseDto<String> testSendMessage(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody MessageTestDto message) throws Exception{
+        if(userDetails.getUser().getPhoneNumber() == null){
+            throw new GlobalException(ErrorCode.PHONE_NUMBER_NOT_REGISTERED);
+        }
+        String phoneNum = userDetails.getUser().getPhoneNumber().replace("-", "");
         ArrayList<NaverApiMessage> apiMessages = new ArrayList<>();
-        apiMessages.add(new NaverApiMessage(message.getTo(), "테스트 전송", message.getMessage()));
+        apiMessages.add(new NaverApiMessage(phoneNum , "copyt 테스트 발송문자", "(광고)" +   message.getMessage() + " [이부분에 링크가 들어갑니다.]"));
         campaignService.naverApiLmsSend(apiMessages, null, "COMM");
         return ResponseDto.success("성공");
     }
