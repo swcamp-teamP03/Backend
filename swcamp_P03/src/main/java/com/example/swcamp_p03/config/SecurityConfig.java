@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
         http
                 .authorizeRequests()
-                .antMatchers("/sign/*").permitAll()
+                .antMatchers("/sign","/sign/*").permitAll()
                 .antMatchers("/redirect/*").permitAll()
                 .anyRequest().authenticated();
 
