@@ -4,6 +4,7 @@ import com.example.swcamp_p03.copyGroup.entity.CopyGroup;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class CopyGroupDto {
 
     private int createCount;
     private int copyLength;
+    private String createdAt;
     private List<GptCopyDto> copyList = new ArrayList<>();
 
     public CopyGroupDto(CopyGroup copyGroup) {
@@ -30,5 +32,6 @@ public class CopyGroupDto {
         this.sector = copyGroup.getSector();
         this.createCount = copyGroup.getCreateCount();
         this.copyLength = copyGroup.getCopyLength();
+        this.createdAt = copyGroup.getCreatedAt().toString().split("T")[0];
     }
 }
