@@ -5,21 +5,15 @@ import lombok.Getter;
 
 @Getter
 public class MyInfoResponseDto {
-    private String company;
-    private String companyNumber;
+    private String email;
     private String username;
     private String phoneNumber;
-    private String email;
-    private String callingNumber;
-    private String callRejectionNumber;
+    private String company;
 
     public MyInfoResponseDto(User user) {
-        this.company = user.getCompany();
-        this.companyNumber = user.getCompanyNumber();
+        this.email = user.getEmail();
         this.username = user.getUsername();
         this.phoneNumber = user.getPhoneNumber();
-        this.email = user.getEmail();
-        this.callingNumber = user.getCallingNumber();
-        this.callRejectionNumber = user.getCallRejectionNumber();
+        this.company = user.getCompany();
     }
 }

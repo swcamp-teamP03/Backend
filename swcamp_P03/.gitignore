@@ -41,5 +41,6 @@ out/
 **/src/test/resources/application.yml
 excelFile/**
 **/application.yml
-logs/
+logs/*
+
 

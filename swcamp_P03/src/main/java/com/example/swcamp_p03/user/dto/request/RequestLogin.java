@@ -13,9 +13,7 @@ public class RequestLogin {
     private String email;
     private String password;
     private String company;
-    private String companyNumber;
     private String username;
+    @Pattern(regexp = "^(010|011|016|017|018|019)-[0-9]{3,4}-[0-9]{4}$", message = "전화번호가 유효하지 않습니다.")
     private String phoneNumber;
-    private String callingNumber;
-    private String callRejectionNumber;
 }
