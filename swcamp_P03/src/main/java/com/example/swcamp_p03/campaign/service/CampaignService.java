@@ -111,7 +111,7 @@ public class CampaignService {
 
         if(requestDto.getSendingDate()!=null && checkTime15M(LocalDateTime.parse(requestDto.getSendingDate()))){
             log.info("checkTime15M (calling setSendingDate(LocalDateTime.now().toString())) : 발송예약은 현재시간으로부터 15분 후부터 가능(따라서 즉시발송으로 변경)");
-            requestDto.setSendingDate(LocalDateTime.now().toString());
+            requestDto.setSendingDate(null);
         }
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -410,7 +410,7 @@ public class CampaignService {
         return url.toString();
     }
 
-    private Boolean checkTime15M(LocalDateTime target) {
+    public Boolean checkTime15M(LocalDateTime target) {
         LocalDateTime compare = LocalDateTime.now().plusMinutes(16);
         return compare.isAfter(target);
     }

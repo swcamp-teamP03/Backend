@@ -19,6 +19,7 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "USER-03", "유효하지 않는 토큰입니다."),
     INVALID_USER(HttpStatus.BAD_REQUEST, "USER-04","아이디 또는 비밀번호가 유효하지 않습니다."),
     UPDATE_SEND_MESSAGE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "updateSendMessages fail","updateSendMessages 업데이트가 실패 했습니다."),
+    PHONE_NUMBER_NOT_REGISTERED(HttpStatus.BAD_REQUEST, "Phone number not registered", "전화번호가 등록되지 않았습니다.")
     ;
 
     ErrorCode(HttpStatus httpStatus, String code, String message) {
