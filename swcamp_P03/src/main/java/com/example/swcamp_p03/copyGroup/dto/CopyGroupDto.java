@@ -17,9 +17,9 @@ public class CopyGroupDto {
     private String keyword;
     private String type;
     private String sector;
-
     private int createCount;
-    private int copyLength;
+    private String targetAge;
+    private String targetGender;
     private String createdAt;
     private List<GptCopyDto> copyList = new ArrayList<>();
 
@@ -31,7 +31,8 @@ public class CopyGroupDto {
         this.type = copyGroup.getCopyType();
         this.sector = copyGroup.getSector();
         this.createCount = copyGroup.getCreateCount();
-        this.copyLength = copyGroup.getCopyLength();
+        this.targetAge = copyGroup.getTargetAge();
+        this.targetGender = copyGroup.getTargetGender();
         this.createdAt = copyGroup.getCreatedAt().toString().split("T")[0];
     }
 }

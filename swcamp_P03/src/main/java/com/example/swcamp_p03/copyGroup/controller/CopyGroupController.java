@@ -72,14 +72,36 @@ public class CopyGroupController {
 
     @PostMapping("/gptcopy")
     public ResponseDto<CreateCopyResponseDto> createCopy(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CreateCopyRequestDto requestDto) throws Exception {
-        String question = "브랜드이름 " + requestDto.getBrandName() + "은 " + requestDto.getSector() + "업종이야."
-                + requestDto.getBrandName() + "의 제품인 " + requestDto.getProductName() + "에 대해 "
-                + requestDto.getKeyword() + "를 포함해서 " + requestDto.getType() + " 문자메시지 형식으로 "
-                + requestDto.getCopyLength() + "글자에 맞춰 써줘.";
+        int length = 100;
+        if(requestDto.getType().equals("짧게")){
+            length = 20;
+        }
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(requestDto.getSector());
+        sb.append(" 광고 문구를 작성해주세요.\\n브랜드 이름은 \\\"");
+        sb.append(requestDto.getBrandName());
+        sb.append("\\\"입니다.\\n상품명은 ");
+        sb.append(requestDto.getProductName());
+        sb.append("\\\"입니다.\\n타겟연령은 ");
+        sb.append(requestDto.getTargetAge());
+        sb.append(", 타겟성별은 ");
+        sb.append(requestDto.getTargetGender());
+        sb.append("입니다.\\n포함해야 할 키워드는 \\\"");
+        sb.append(requestDto.getKeyword());
+        sb.append("\\\"입니다.\\n문구 생성 수는 ");
+        sb.append(requestDto.getCreateCount());
+        sb.append("개 이고, 각 문구별 글자 수는 ");
+        sb.append(length);
+        sb.append("자에 맞춰서 작성해주세요.");
+
+
+
+        String question = sb.toString();
 
         CreateCopyResponseDto responseDto = new CreateCopyResponseDto();
         for (int i = 0; i < requestDto.getCreateCount(); i++) {
-            responseDto.addCopy(copyGroupService.getGptCopy(question));
+            responseDto.addCopy(copyGroupService.getGptCopy(question).replace("\n", ""));
         }
 
         return ResponseDto.success(responseDto);
