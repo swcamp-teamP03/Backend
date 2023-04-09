@@ -31,6 +31,8 @@ public class CopyGroup {
     private Integer createCount;
     private Integer copyLength;
     private Boolean unableEdit;
+    private String targetAge;
+    private String targetGender;
 
     @CreatedDate
     @Column(nullable = false)

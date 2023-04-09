@@ -36,6 +36,8 @@ public class CopyGroupHistory {
     private LocalDateTime updateAt;
 
     private LocalDateTime createdAt;
+    private String targetAge;
+    private String targetGender;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "USER_ID")
@@ -56,6 +58,8 @@ public class CopyGroupHistory {
         this.copyLength = copyGroup.getCopyLength();
         this.updateAt = copyGroup.getUpdateAt();
         this.createdAt = copyGroup.getCreatedAt();
+        this.targetAge = copyGroup.getTargetAge();
+        this.targetGender = copyGroup.getTargetGender();
         List<GptCopy> gptCopyList1 = copyGroup.getGptCopyList();
         for (GptCopy gptCopy : gptCopyList1) {
             gptCopyList.add(new GptCopyHistory(gptCopy.getContent(),this,gptCopy.getPin(),gptCopy.getUpdateAt()));
