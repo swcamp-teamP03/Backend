@@ -89,9 +89,7 @@ public class CopyGroupController {
         sb.append(requestDto.getTargetGender());
         sb.append("입니다.\\n포함해야 할 키워드는 \\\"");
         sb.append(requestDto.getKeyword());
-        sb.append("\\\"입니다.\\n문구 생성 수는 ");
-        sb.append(requestDto.getCreateCount());
-        sb.append("개 이고, 각 문구별 글자 수는 ");
+        sb.append("\\\"입니다. 글자 수는 ");
         sb.append(length);
         sb.append("자에 맞춰서 작성해주세요.");
 
