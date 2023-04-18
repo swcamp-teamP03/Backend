@@ -1,0 +1,61 @@
+spring:
+  profiles:
+    active: test-mysql
+---
+spring:
+  config:
+    activate:
+      on-profile: test-mysql
+  datasource:
+#    url: jdbc:mysql://localhost:3306/swcamp?rewriteBatchedStatements=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+#    username: root
+#    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  messages:
+    basename: message
+    encoding: UTF-8
+jwt:
+  secretKey: sw-camp
+
+servlet:
+  multipart:
+    max-file-size: 1MB
+    max-request-size: 1MB
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test-h2
+
+  datasource:
+    url: jdbc:h2:mem:test;NON_KEYWORDS=USER
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  messages:
+    basename: message
+    encoding: UTF-8
+
+jwt:
+  secretKey: sw-camp
+
+servlet:
+  multipart:
+    max-file-size: 1MB
+    max-request-size: 1MB
