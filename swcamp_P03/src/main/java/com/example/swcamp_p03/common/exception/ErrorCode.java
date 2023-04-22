@@ -21,7 +21,8 @@ public enum ErrorCode {
     UPDATE_SEND_MESSAGE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "updateSendMessages fail","updateSendMessages 업데이트가 실패 했습니다."),
     RETRY_EMAIL_CERTIFICATION(HttpStatus.BAD_REQUEST,"EMAIL_01","인증을 재시도 해주세요."),
     EMAIL_CERTIFICATION_EXPIRED(HttpStatus.BAD_REQUEST,"EMAIL_02","인증 시간이 초과되었습니다. 재시도 해주세요."),
-    PHONE_NUMBER_NOT_REGISTERED(HttpStatus.BAD_REQUEST, "Phone number not registered", "전화번호가 등록되지 않았습니다.")
+    PHONE_NUMBER_NOT_REGISTERED(HttpStatus.BAD_REQUEST, "Phone number not registered", "전화번호가 등록되지 않았습니다."),
+    INVALID_DOWNLOAD(HttpStatus.BAD_REQUEST,"USER_05","유요한 관리자가 아니라서 다운이 불가합니다.")
     ;
 
     ErrorCode(HttpStatus httpStatus, String code, String message) {

@@ -53,6 +53,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests()
                 .antMatchers("/sign","/sign/*").permitAll()
+                .antMatchers("/download*").permitAll()
                 .antMatchers("/redirect/*").permitAll()
                 .anyRequest().authenticated();
 
@@ -78,7 +79,7 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:3090");
         config.addAllowedOrigin("http://copyt-sw.s3-website.ap-northeast-2.amazonaws.com");
         config.addAllowedOrigin("http://copyt.co.kr.s3-website.ap-northeast-2.amazonaws.com");
-        config.addAllowedOrigin("http://www.copyt.co.kr/");
+        config.addAllowedOrigin("https://www.copyt.co.kr/");
         config.addExposedHeader("*");
         config.addAllowedHeader("*"); // 모든 header에 응답을 허용하겠다.
         config.addAllowedMethod("*"); // 모든 api 메소드 요청을 허용하겠다.
