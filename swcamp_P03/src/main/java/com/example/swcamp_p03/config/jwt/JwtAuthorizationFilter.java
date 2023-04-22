@@ -10,12 +10,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import static com.example.swcamp_p03.config.jwt.JwtProperties.HEADER_STRING;
 import static com.example.swcamp_p03.config.jwt.JwtProperties.TOKEN_PREFIX;
@@ -46,13 +48,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         String jwtToken = getJwtToken(jwtHeader);
         String email = jwtTokenUtils.extractUserEmail(jwtToken);
-
         checkUser(email);
         chain.doFilter(request, response);
     }
 
-    private static String getHeader(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain chain) throws IOException, ServletException {
+    public static String getHeader(HttpServletRequest request, HttpServletResponse response,
+                                   FilterChain chain) throws IOException, ServletException {
         String jwtHeader = request.getHeader(HEADER_STRING);
         if (jwtHeader == null || !jwtHeader.startsWith(TOKEN_PREFIX)) {
             chain.doFilter(request, response);
@@ -61,13 +62,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         return jwtHeader;
     }
 
-    private static String getJwtToken(String jwtHeader) {
+    public static String getJwtToken(String jwtHeader) {
         return jwtHeader.replace(TOKEN_PREFIX, "");
     }
 
-    private void checkUser(String email) {
+    public void checkUser(String email) {
         if (email != null) {
             User user = userRepository.findByEmail(email).orElse(null);
+            user.setVisitedTime(LocalDateTime.now());
+            userRepository.save(user);
             UserDetails userDetails = new UserDetailsImpl(user);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null,

@@ -329,7 +329,7 @@ public class GroupWriteService {
         Sheet worksheet = workbook.getSheetAt(0);
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
             Row row = worksheet.getRow(i);
-            if (row != null) {
+            if (row != null && row.getCell(0) !=null && row.getCell(1)!=null) {
                 String username = row.getCell(0).getStringCellValue();
                 String phoneNumber = row.getCell(1).getStringCellValue();
                 if (!username.equals("") || !phoneNumber.equals("")) {

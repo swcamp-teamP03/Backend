@@ -1,20 +1,20 @@
 package com.example.swcamp_p03.user.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "MEMBER")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -27,6 +27,9 @@ public class User {
     private String companyNumber;
     private String callingNumber;
     private String callRejectionNumber;
+    private Long campaignTestCount;
+    private LocalDateTime createdAt;
+    private LocalDateTime visitedTime;
 
     public List<String> getRoleList() {
         if (this.roles.length() > 0) {
@@ -46,5 +49,7 @@ public class User {
         this.companyNumber = companyNumber;
         this.callingNumber = callingNumber;
         this.callRejectionNumber = callRejectionNumber;
+        this.createdAt = LocalDateTime.now();
+        this.campaignTestCount = 0L;
     }
 }
