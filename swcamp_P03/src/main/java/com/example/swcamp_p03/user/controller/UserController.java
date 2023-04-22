@@ -7,7 +7,6 @@ import com.example.swcamp_p03.user.dto.response.MyInfoResponseDto;
 import com.example.swcamp_p03.user.service.EmailService;
 import com.example.swcamp_p03.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +38,5 @@ public class UserController {
                                    @RequestParam("certificationNumber") String certificationNumber) {
         return emailService.mailConfirm(email, certificationNumber);
     }
-
 
 }
