@@ -4,7 +4,9 @@ import com.example.swcamp_p03.common.dto.ResponseDto;
 import com.example.swcamp_p03.common.exception.ErrorCode;
 import com.example.swcamp_p03.common.exception.GlobalException;
 import com.example.swcamp_p03.user.entity.MailConfirm;
+import com.example.swcamp_p03.user.entity.User;
 import com.example.swcamp_p03.user.repository.MailConfirmRepository;
+import com.example.swcamp_p03.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,7 @@ import java.util.Random;
 @Service
 @Slf4j
 public class EmailService {
+    private final UserRepository userRepository;
     private final JavaMailSender javaMailSender;
     private final MailConfirmRepository mailConfirmRepository;
 
@@ -34,6 +37,11 @@ public class EmailService {
 
     @Transactional
     public void sendSimpleMessage(String to) throws Exception {
+        Optional<User> findEmail = userRepository.findByEmail(to);
+        if (findEmail.isPresent()) {
+            log.warn("이미 가입한 이메일입니다.");
+            throw new GlobalException(ErrorCode.EXIST_EMAIL);
+        }
         MimeMessage message = createMessage(to);
         try {
             javaMailSender.send(message); // 메일 발송
@@ -85,9 +93,9 @@ public class EmailService {
         return key.toString();
     }
 
-    public ResponseDto<Boolean> mailConfirm(String email, String certificationNumber) {
+    public ResponseDto<String> mailConfirm(String email, String certificationNumber) {
         Optional<MailConfirm> findEmail = mailConfirmRepository.findByEmail(email);
-        Boolean check = false;
+        String check = "인증번호가 일치하지 않습니다.";
         if (findEmail.isPresent()) {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime createdAt = findEmail.get().getCreatedAt();
@@ -97,7 +105,7 @@ public class EmailService {
                 throw new GlobalException(ErrorCode.EMAIL_CERTIFICATION_EXPIRED);
             } else {
                 if (findEmail.get().getCertificationNumber().equals(certificationNumber)) {
-                    check = true;
+                    check = "인증번호가 일치합니다.";
                 }
             }
         } else {
