@@ -34,7 +34,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
 public class CopyGroupService {
 
     private final CopyGroupRepository copyGroupRepository;
@@ -43,10 +42,12 @@ public class CopyGroupService {
     private final CopyGroupHistoryRepository copyGroupHistoryRepository;
     private final EntityManager em;
 
+    @Transactional(readOnly = true)
     public CopyGroupListResponseDto copyGroupList(User user, Pageable pageable) {
         return copyGroupRepository.findTotalCopyGroup(user, pageable);
     }
 
+    @Transactional(readOnly = true)
     public CopyGroupDto getCopyGroup(User user, Long copyGroupId) {
         CopyGroup copyGroup = copyGroupRepository.findById(copyGroupId).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
         if (user.getUserId() != copyGroup.getUser().getUserId()) {
@@ -168,6 +169,7 @@ public class CopyGroupService {
         return requestDto;
     }
 
+    @Transactional(readOnly = true)
     public CopyGroupListResponseDto getSearch(SearchDto searchDto) {
         return copyGroupRepository.findSearch(searchDto);
     }
