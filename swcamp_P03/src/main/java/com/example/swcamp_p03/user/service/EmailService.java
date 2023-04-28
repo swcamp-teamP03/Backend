@@ -95,7 +95,7 @@ public class EmailService {
 
     public ResponseDto<String> mailConfirm(String email, String certificationNumber) {
         Optional<MailConfirm> findEmail = mailConfirmRepository.findByEmail(email);
-        String check = "인증번호가 일치하지 않습니다.";
+        String message = "";
         if (findEmail.isPresent()) {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime createdAt = findEmail.get().getCreatedAt();
@@ -105,13 +105,15 @@ public class EmailService {
                 throw new GlobalException(ErrorCode.EMAIL_CERTIFICATION_EXPIRED);
             } else {
                 if (findEmail.get().getCertificationNumber().equals(certificationNumber)) {
-                    check = "인증번호가 일치합니다.";
+                    message = "인증번호가 일치합니다.";
+                } else {
+                    throw new GlobalException(ErrorCode.INVALID_EMAIL_NUMBER);
                 }
             }
         } else {
-            log.warn("이메일 인증을 누르지 않았습니다. 인증을 눌러주세요");
+            log.warn("인증을 재시도 해주세요.");
             throw new GlobalException(ErrorCode.RETRY_EMAIL_CERTIFICATION);
         }
-        return ResponseDto.success(check);
+        return ResponseDto.success(message);
     }
 }

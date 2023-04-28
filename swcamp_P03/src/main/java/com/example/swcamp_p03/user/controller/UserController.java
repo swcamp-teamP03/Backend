@@ -35,7 +35,7 @@ public class UserController {
 
     @PostMapping("/sign/mailConfirm")
     public ResponseDto<String> mailConfirm(@RequestParam("email") String email,
-                                   @RequestParam("certificationNumber") String certificationNumber) {
+                                               @RequestParam("certificationNumber") String certificationNumber) {
         return emailService.mailConfirm(email, certificationNumber);
     }
 

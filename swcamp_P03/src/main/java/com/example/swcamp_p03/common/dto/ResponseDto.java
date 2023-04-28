@@ -26,8 +26,8 @@ public class ResponseDto<T> {
     @Getter
     @AllArgsConstructor
     static class Error {
+        private String code;
         private String message;
-        private String detail;
     }
 
 }
