@@ -2,7 +2,6 @@ package com.example.swcamp_p03.user.controller;
 
 import com.example.swcamp_p03.common.dto.ResponseDto;
 import com.example.swcamp_p03.config.UserDetailsImpl;
-import com.example.swcamp_p03.user.dto.MessageDto;
 import com.example.swcamp_p03.user.dto.request.RequestLogin;
 import com.example.swcamp_p03.user.dto.response.MyInfoResponseDto;
 import com.example.swcamp_p03.user.service.EmailService;
@@ -35,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/sign/mailConfirm")
-    public ResponseDto<MessageDto> mailConfirm(@RequestParam("email") String email,
+    public ResponseDto<String> mailConfirm(@RequestParam("email") String email,
                                                @RequestParam("certificationNumber") String certificationNumber) {
         return emailService.mailConfirm(email, certificationNumber);
     }

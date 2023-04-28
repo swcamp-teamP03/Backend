@@ -3,7 +3,6 @@ package com.example.swcamp_p03.user.service;
 import com.example.swcamp_p03.common.dto.ResponseDto;
 import com.example.swcamp_p03.common.exception.ErrorCode;
 import com.example.swcamp_p03.common.exception.GlobalException;
-import com.example.swcamp_p03.user.dto.MessageDto;
 import com.example.swcamp_p03.user.entity.MailConfirm;
 import com.example.swcamp_p03.user.entity.User;
 import com.example.swcamp_p03.user.repository.MailConfirmRepository;
@@ -94,10 +93,9 @@ public class EmailService {
         return key.toString();
     }
 
-    public ResponseDto<MessageDto> mailConfirm(String email, String certificationNumber) {
+    public ResponseDto<String> mailConfirm(String email, String certificationNumber) {
         Optional<MailConfirm> findEmail = mailConfirmRepository.findByEmail(email);
-        String message = "인증번호가 일치하지 않습니다.";
-        Boolean check = false;
+        String message = "";
         if (findEmail.isPresent()) {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime createdAt = findEmail.get().getCreatedAt();
@@ -108,13 +106,14 @@ public class EmailService {
             } else {
                 if (findEmail.get().getCertificationNumber().equals(certificationNumber)) {
                     message = "인증번호가 일치합니다.";
-                    check = true;
+                } else {
+                    throw new GlobalException(ErrorCode.INVALID_EMAIL_NUMBER);
                 }
             }
         } else {
-            log.warn("이메일 인증을 누르지 않았습니다. 인증을 눌러주세요");
+            log.warn("인증을 재시도 해주세요.");
             throw new GlobalException(ErrorCode.RETRY_EMAIL_CERTIFICATION);
         }
-        return ResponseDto.success(new MessageDto(message, check));
+        return ResponseDto.success(message);
     }
 }
